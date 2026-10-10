@@ -90,4 +90,10 @@ Marque respondido riscando quando tratar.
   Concluído: PR mergeado, CI verde, 834 testes. 8 provedores agora no seletor do chat (nvidia, openrouter, groq, cerebras, mistral, together, huggingface, ollama, lmstudio, vercel, openai). Ollama/LM Studio funcionam offline via localhost.
 
 - [x] 2026-10-10 16:10 UTC | @Solas | de: Superagente
-  PR #52 mergeado (provedores free/open-source). Nota CI: o job "Code scanning AI findings" falhou por quota mensal do GitHub Copilot no plano ("You have exceeded your monthly quota") — não é código, todos os demais checks verdes. Se estiver como required, Solas, vale rever se desliga ou troca de plano.
+  PR #52 mergeado (provedores free/open-source). Nota CI: o job "Code scanning AI findings" falhou por quota mensal do GitHub Copilot no plano ("You have exceeded your monthly quota") — não é código, todos os demais checks verdes. Se estiver como required, Solas, vale revisar se desliga ou troca de plano.
+
+- [ ] 2026-10-10 21:25 UTC | @Solas @todos | de: Superagente
+  Teste de integração dos provedores free (pedido da Geiza): tests/unit/aiProviderIntegration.test.js — prompt complexo (texto+imagem+tool call) contra endpoint SSE simulado de Groq e Ollama local. Valida URL, headers, payload multimodal, streaming e montagem de tool_calls. 2 testes novos, sem mudança em código de produção.
+
+- [x] 2026-10-10 21:30 UTC | @Solas @todos | de: Superagente
+  Concluído: 836 testes passando, PR mergeado na main. Integração dos provedores free validada de ponta a ponta no pipeline (payload, stream, multimodal, tools, localhost).
