@@ -1,9 +1,29 @@
+// AcodeX release signing: uses acodex.keystore from the project root
+// (never committed, keep it private) or environment variables in CI
+// (ACODEX_KEYSTORE_PATH / ACODEX_STORE_PASSWORD / ACODEX_KEY_PASSWORD).
+def acodexKeystore = System.getenv('ACODEX_KEYSTORE_PATH') ?: rootProject.file('acodex.keystore')
+def acodexStorePass = System.getenv('ACODEX_STORE_PASSWORD') ?: ''
+def acodexKeyPass = System.getenv('ACODEX_KEY_PASSWORD') ?: acodexStorePass
+
 android {
+    if (acodexKeystore.exists()) {
+        signingConfigs {
+            acodexRelease {
+                storeFile acodexKeystore
+                storePassword acodexStorePass
+                keyAlias 'acodex'
+                keyPassword acodexKeyPass
+            }
+        }
+    }
     packagingOptions {
         pickFirst 'META-INF/versions/9/OSGI-INF/MANIFEST.MF'
     }
     buildTypes {
         release {
+            if (acodexKeystore.exists()) {
+                signingConfig signingConfigs.acodexRelease
+            }
             //might cause ClassNotFoundException errors
             //to fix those errors you need to either put @Keep on the class/feild or add a entry in progrud rules file
             minifyEnabled true

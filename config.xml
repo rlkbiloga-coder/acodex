@@ -1,14 +1,14 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.foxdebug.acode" android-versionCode="1011" version="1.13.5"
+<widget id="com.acodex.editor" android-versionCode="1011" version="1.13.5"
     xmlns="http://www.w3.org/ns/widgets"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>Acodex</name>
+    <name>AcodeX</name>
     <description>
-        Light weight code editor and web IDE for android.
+        AcodeX — light weight code editor and web IDE for Android, fork of Acode with the built-in AcodeX IA module (AI coding agents and critical command guard).
     </description>
-    <author email="ajit@foxdebug.com" href="https://foxdebug.com">
-        Foxdebug
+    <author email="acodex@rlkbiloga-coder" href="https://github.com/rlkbiloga-coder/acodex">
+        AcodeX
     </author>
     <content src="index.html" />
     <access launch-external="yes" origin="*" />

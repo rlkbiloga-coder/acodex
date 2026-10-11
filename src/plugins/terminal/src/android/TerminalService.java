@@ -1,4 +1,4 @@
-package com.foxdebug.acode.rk.exec.terminal;
+package com.acodex.editor.rk.exec.terminal;
 
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -24,7 +24,7 @@ import java.io.OutputStream;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
-import com.foxdebug.acode.rk.exec.terminal.*;
+import com.acodex.editor.rk.exec.terminal.*;
 
 
 public class TerminalService extends Service {
@@ -38,10 +38,10 @@ public class TerminalService extends Service {
 
     public static final String CHANNEL_ID = "terminal_exec_channel";
     
-    public static final String ACTION_EXIT_SERVICE = "com.foxdebug.acode.ACTION_EXIT_SERVICE";
-    public static final String MOVE_TO_BACKGROUND = "com.foxdebug.acode.MOVE_TO_BACKGROUND";
-    public static final String MOVE_TO_FOREGROUND = "com.foxdebug.acode.MOVE_TO_FOREGROUND";
-    public static final String ACTION_TOGGLE_WAKE_LOCK = "com.foxdebug.acode.ACTION_TOGGLE_WAKE_LOCK";
+    public static final String ACTION_EXIT_SERVICE = "com.acodex.editor.ACTION_EXIT_SERVICE";
+    public static final String MOVE_TO_BACKGROUND = "com.acodex.editor.MOVE_TO_BACKGROUND";
+    public static final String MOVE_TO_FOREGROUND = "com.acodex.editor.MOVE_TO_FOREGROUND";
+    public static final String ACTION_TOGGLE_WAKE_LOCK = "com.acodex.editor.ACTION_TOGGLE_WAKE_LOCK";
     public static boolean Default_Foreground = true;
 
     private final Map<String, Process> processes = new ConcurrentHashMap<>();

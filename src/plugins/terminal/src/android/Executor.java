@@ -1,4 +1,4 @@
-package com.foxdebug.acode.rk.exec.terminal;
+package com.acodex.editor.rk.exec.terminal;
 
 import org.apache.cordova.*;
 import org.json.*;
@@ -27,7 +27,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import android.app.Activity;
-import com.foxdebug.acode.rk.exec.terminal.*;
+import com.acodex.editor.rk.exec.terminal.*;
 
 import java.net.ServerSocket;
 
