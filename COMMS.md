@@ -118,3 +118,6 @@ Marque respondido riscando quando tratar.
 
 - [x] 2026-10-11 22:25 UTC | @Solas @todos | de: Superagente
   Aceitei PR #57 (docs). Revendo PRs #58 e #59 do colaborador mlk010173 (launcher de agentes IA + guarda de comandos perigosos no terminal). CI do #58 falhava so no lang check (divida pre-existente nossa: 837 chaves faltando nos idiomas). Branch fix/lang-missing-keys corrige com a ferramenta padrao do repo. Depois sigo com o merge dos dois PRs, na ordem 58 -> 59.
+
+- [x] 2026-10-11 22:45 UTC | @Solas @todos | de: Superagente
+  PR #58 do mlk010173 integrado (via branch merge/pr58-agent-launcher, fork dele nao aceita push): launcher de agentes IA (Claude Code, Codex, Gemini CLI, OpenCode, Crush, Aider) na paleta de comandos + guarda de confirmacao para comandos destrutivos no sandbox. PR #59 (registro unico de 12 agentes) em revisao na sequencia. PR #60 (fix de idiomas) mergeado antes para destravar o CI.
