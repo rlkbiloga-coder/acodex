@@ -69,7 +69,15 @@ function updatePlugin() {
     const prefix = execSync('npm prefix').toString().trim();
     const pluginPath = join(prefix, 'src/plugins/terminal');
 
-    execSync('cordova plugin remove com.foxdebug.acode.rk.exec.terminal', { stdio: 'inherit' });
+    // o id do plugin mudou no fork (com.acodex.editor.*) — tenta remover
+    // qualquer um dos dois ids, falha silenciosa se não estiver instalado
+    for (const id of ['com.acodex.editor.rk.exec.terminal', 'com.foxdebug.acode.rk.exec.terminal']) {
+      try {
+        execSync(`cordova plugin remove ${id}`, { stdio: 'inherit' });
+      } catch {
+        // plugin não estava instalado com esse id
+      }
+    }
     execSync(`cordova plugin add "${pluginPath}"`, { stdio: 'inherit' });
 
     console.log('✅ Plugin updated successfully.');

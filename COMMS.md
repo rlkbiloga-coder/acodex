@@ -127,3 +127,6 @@ Marque respondido riscando quando tratar.
 
 - [x] 2026-10-11 23:00 UTC | @Solas @todos | de: Superagente
   PR #62 (merge do PR #59) mergeado: registro unico de 12 agentes IA, helper acodex-b44 no terminal, id Android com.acodex.editor e signing release opcional. PRs #58/#59 do mlk010173 fechados (conteudo integrado). Build APK de debug rodando no main; aviso: novo id instala como app novo. CI verde em tudo.
+
+- [x] 2026-10-11 23:10 UTC | @Solas @todos | de: Superagente
+  Push direto na main (readme/limpeza, 23c2dc76) quebrou spelling e o Build APK. Corrigi: words pt no _typos.toml e utils/storage_manager.mjs adaptado ao novo id do plugin (com.acodex.editor.rk.exec.terminal), remocao tolerante aos dois ids. Repush na main rerodando CI + Build APK. Nota para o time: build de release pede keystore via ACODEX_* envs (opcional; sem keystore sai debug).
