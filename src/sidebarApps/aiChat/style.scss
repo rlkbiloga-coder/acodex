@@ -35,15 +35,16 @@
   .ai-empty {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: stretch;
     gap: 8px;
     margin: auto 0;
-    text-align: center;
+    text-align: left;
     color: var(--secondary-text-color);
 
     > .icon {
-      font-size: 2rem;
-      color: var(--active-color);
+      align-self: flex-start;
+      font-size: 1.6rem;
+      color: var(--secondary-text-color);
     }
 
     strong {
@@ -94,15 +95,20 @@
 
     &.user {
       align-self: flex-end;
-      background: var(--active-color);
-      color: var(--button-text-color, #fff);
+      background: var(--secondary-color);
+      color: var(--primary-text-color);
+      border: 1px solid var(--border-color);
+      border-radius: 14px 14px 4px 14px;
     }
 
+    // Resposta do assistente: texto corrido, sem balão (estilo Base44)
     &.assistant {
-      align-self: flex-start;
-      background: var(--secondary-color);
-      color: var(--secondary-text-color);
-      border: 1px solid var(--border-color);
+      align-self: stretch;
+      max-width: 100%;
+      padding: 4px 2px;
+      background: transparent;
+      color: var(--primary-text-color);
+      border: none;
     }
 
     &.tool {
@@ -341,13 +347,9 @@
     }
   }
 
-  // Painel de atividade (log do raciocínio)
+  // Log de atividade (timeline estilo Base44)
   .ai-log {
-    margin: 4px 0;
-    border-radius: 8px;
-    border: 1px solid var(--border-color, rgba(122, 122, 122, 0.3));
-    background: var(--secondary-color, #1e1e1e);
-    overflow: hidden;
+    margin: 6px 0 10px;
     animation: ai-msg-in 0.18s ease;
 
     .ai-log-header {
@@ -355,30 +357,44 @@
       display: flex;
       align-items: center;
       gap: 8px;
-      padding: 6px 10px;
+      padding: 4px 0;
       border: none;
       background: transparent;
       color: var(--secondary-text-color, inherit);
-      font-size: 0.75rem;
-      font-weight: 600;
+      font-size: 0.78rem;
+      font-weight: 500;
+      text-align: left;
+    }
+
+    .ai-log-spinner {
+      flex: none;
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      border: 2px solid var(--border-color, rgba(122, 122, 122, 0.4));
+      border-top-color: var(--active-color, #7c4dff);
+      animation: ai-log-spin 0.8s linear infinite;
     }
 
     .ai-log-status {
       flex: 1;
-      text-align: left;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
     }
 
-    .ai-log-chev {
+    .ai-log-chev,
+    .ai-log-row-chev {
+      flex: none;
+      font-size: 1rem;
+      opacity: 0.7;
       transition: transform var(--dur-fast, 140ms) ease;
     }
 
     .ai-log-steps {
       display: none;
-      margin: 0;
-      padding: 2px 10px 8px 28px;
+      margin: 2px 0 0;
+      padding: 0;
       list-style: none;
     }
 
@@ -391,70 +407,135 @@
     }
 
     .ai-log-step {
-      position: relative;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 2px 0;
-      font-size: 0.72rem;
-      color: var(--secondary-text-color, inherit);
+      min-width: 0;
 
-      .ai-log-dot {
-        position: absolute;
-        left: -14px;
-        width: 7px;
-        height: 7px;
-        border-radius: 50%;
-        background: var(--border-color, #888);
+      .ai-log-row {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 5px 2px;
+        border: none;
+        background: transparent;
+        color: var(--secondary-text-color, inherit);
+        font-size: 0.78rem;
+        text-align: left;
+        cursor: pointer;
+      }
+
+      .ai-log-kind {
+        flex: none;
+        display: inline-flex;
+        opacity: 0.85;
       }
 
       .ai-log-label {
-        flex: 0 1 auto;
+        flex: 1 1 auto;
+        min-width: 0;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
       }
 
       .ai-log-meta {
-        flex: 1;
-        text-align: right;
-        opacity: 0.7;
-        font-size: 0.65rem;
+        flex: none;
+        max-width: 38%;
+        opacity: 0.6;
+        font-size: 0.68rem;
+        font-variant-numeric: tabular-nums;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
       }
 
-      &.running .ai-log-dot {
-        background: var(--active-color, #7c4dff);
-        animation: ai-log-pulse 0.9s ease-in-out infinite;
+      &.plain .ai-log-row {
+        cursor: default;
       }
 
-      &.done .ai-log-dot {
-        background: var(--success-color, #34c759);
+      &.plain .ai-log-row-chev {
+        visibility: hidden;
       }
 
-      &.fail .ai-log-dot {
-        background: var(--error-text-color, #d93025);
+      &.running .ai-log-label {
+        animation: ai-log-pulse 1.2s ease-in-out infinite;
       }
 
-      &.fail .ai-log-meta {
+      &.fail .ai-log-kind,
+      &.fail .ai-log-label {
         color: var(--error-text-color, #d93025);
-        opacity: 1;
+      }
+
+      .ai-log-body {
+        display: none;
+        padding: 2px 0 8px 22px;
+      }
+
+      &.expanded .ai-log-body {
+        display: block;
+      }
+
+      &.expanded .ai-log-row-chev {
+        transform: rotate(180deg);
       }
     }
 
-    &.finished.ok .ai-log-header {
-      color: var(--success-color, #34c759);
+    .ai-log-block-title {
+      margin: 6px 0 4px;
+      font-size: 0.74rem;
+      font-weight: 600;
+      color: var(--secondary-text-color, inherit);
+    }
+
+    .ai-log-code-wrap {
+      position: relative;
+      border-radius: 8px;
+      background: var(--secondary-color, #1e1e1e);
+      border: 1px solid var(--border-color, rgba(122, 122, 122, 0.25));
+    }
+
+    .ai-log-code {
+      margin: 0;
+      padding: 10px 34px 10px 12px;
+      max-height: 180px;
+      overflow: auto;
+      font-family: var(--monospace-font, monospace);
+      font-size: 0.7rem;
+      line-height: 1.5;
+      white-space: pre-wrap;
+      word-break: break-word;
+      user-select: text;
+    }
+
+    .ai-log-copy {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      display: inline-flex;
+      padding: 4px;
+      border: none;
+      border-radius: 6px;
+      background: transparent;
+      color: var(--secondary-text-color, inherit);
+      opacity: 0.7;
     }
 
     &.finished.failed .ai-log-header {
       color: var(--error-text-color, #d93025);
     }
 
+    &.finished .ai-log-spinner {
+      display: none;
+    }
+
+    @keyframes ai-log-spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
     @keyframes ai-log-pulse {
       50% {
-        opacity: 0.35;
+        opacity: 0.45;
       }
     }
   }

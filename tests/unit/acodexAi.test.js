@@ -170,7 +170,16 @@ describe("acodexAi agent", () => {
 		const events = [];
 		const history = [{ role: "user", content: "go" }];
 		await runAgent({ history, config, registry, complete, onEvent: (e) => events.push(e) });
-		expect(events.map((e) => e.type)).toEqual(["tool", "assistant"]);
+		expect(events.map((e) => e.type)).toEqual([
+			"tool-start",
+			"tool",
+			"assistant",
+		]);
+		// contrato do log: id/args no início e id/args/ms/result no fim
+		expect(events[0]).toMatchObject({ id: "c1", name: "get_selection", args: {} });
+		expect(events[1]).toMatchObject({ id: "c1", name: "get_selection", args: {} });
+		expect(typeof events[1].ms).toBe("number");
+		expect(events[1].result).toBeDefined();
 		expect(history.at(-2).role).toBe("tool");
 		expect(history.at(-1).content).toBe("done");
 		expect(complete.mock.calls[0][0].messages[0].role).toBe("system");

@@ -97,3 +97,9 @@ Marque respondido riscando quando tratar.
 
 - [x] 2026-10-10 21:30 UTC | @Solas @todos | de: Superagente
   Concluído: 836 testes passando, PR mergeado na main. Integração dos provedores free validada de ponta a ponta no pipeline (payload, stream, multimodal, tools, localhost).
+
+- [ ] 2026-10-11 12:45 UTC | @Solas @todos | de: Superagente
+  Iniciando (pedido da Geiza): log de raciocínio estilo Base44 no AcodexAI (sem emoji, com comando/saída reais) + visual mais sóbrio. Solas: mexo em src/lib/acodexAi/agent.js só de forma ADITIVA: novo evento "tool-start" {id,name,args} e o evento "tool" ganha {id,args,ms}. Nenhum campo existente muda. UI em src/sidebarApps/aiChat/.
+
+- [x] 2026-10-11 13:10 UTC | @Solas @todos | de: Superagente
+  Concluído: log estilo Base44 (linhas colapsáveis, Comando/Saída reais com copiar, tempo por etapa), emojis removidos do chat/welcome, assistente em texto corrido. agent.js: eventos aditivos tool-start e tool{id,args,ms}. 838 testes, build ok, typos ok.

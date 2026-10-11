@@ -283,10 +283,10 @@ function renderEmptyState() {
 	const $empty = (
 		<div className="ai-empty">
 			<span className="icon brain" />
-			<strong>Acodex AI</strong>
+			<strong>Assistente do editor</strong>
 			<p>
-				Lê e edita seus arquivos, cria abas, troca temas, abre o terminal e
-				executa qualquer comando do app.
+				Lê e edita os arquivos abertos, executa comandos do app e mostra cada
+				ação em um log detalhado.
 			</p>
 		</div>
 	);
@@ -664,9 +664,14 @@ async function send(rawText) {
 
 	const log = createActivityLog();
 	$messages.append(log.$el);
-	const prepStep = log.addStep("Preparando contexto do editor");
-	prepStep.done("ok");
-	log.setStatus("Consultando o modelo…");
+	const prepStep = log.addStep("Preparando contexto do editor", {
+		kind: "think",
+		command: buildSystemContext() || undefined,
+	});
+	prepStep.done(undefined, 0);
+	log.setStatus("Consultando o modelo");
+	/** @type {Map<string, ReturnType<typeof log.addStep>>} */
+	const runningSteps = new Map();
 
 	controller = new AbortController();
 	setBusy(true);
@@ -696,22 +701,29 @@ async function send(rawText) {
 			systemContext: buildSystemContext(),
 			skillCatalog,
 			onEvent(event) {
-				if (event.type === "tool") {
-					const label = TOOL_LABELS[event.name] || event.name;
+				if (event.type === "tool-start") {
 					const isSkill =
 						event.name === "list_skills" || event.name === "load_skill";
-					const step = log.addStep(label, {
-						icon: isSkill ? "🧩" : "🔧",
-						detail: event.name,
-					});
+					runningSteps.set(
+						event.id,
+						log.addStep(TOOL_LABELS[event.name] || event.name, {
+							kind: isSkill ? "skill" : "tool",
+							command: { tool: event.name, args: event.args },
+							detail: event.name,
+						}),
+					);
+					log.setStatus(TOOL_LABELS[event.name] || event.name);
+				} else if (event.type === "tool") {
+					const step = runningSteps.get(event.id);
+					runningSteps.delete(event.id);
 					if (event.result?.error) {
-						step.fail(event.result.error);
+						step?.fail(event.result.error, event.ms);
 					} else {
-						step.done("ok");
+						step?.done(event.result, event.ms);
 					}
-					log.setStatus("Executando ações…");
+					log.setStatus("Processando resultado");
 				} else if (event.type === "assistant-delta") {
-					log.setStatus("Escrevendo resposta…");
+					log.setStatus("Escrevendo resposta");
 					liveBuffer += event.text;
 					renderLive();
 				} else if (event.content !== undefined) {
@@ -725,10 +737,9 @@ async function send(rawText) {
 		history = history.slice(0, snapshot - 1);
 		failed = error?.name !== "AbortError";
 		if (failed) {
-			log.addStep(`Erro: ${error?.message || error}`, {
-				icon: "❌",
-				running: false,
-			});
+			log
+				.addStep("Erro na requisição", { kind: "error", detail: "falhou" })
+				.fail(String(error?.message || error));
 			appendMessage("error", `Erro: ${error?.message || error}`);
 		} else if (liveBuffer) {
 			appendMessage("assistant", liveBuffer, true);
