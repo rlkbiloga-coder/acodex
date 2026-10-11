@@ -59,10 +59,10 @@ function createWelcomeContent() {
 				</h1>
 				<p className="tagline">IDE • IA • VOICE • SANDBOX</p>
 				<div className="power-chips">
-					<span className="chip">⚡ AI Chat</span>
-					<span className="chip">🎙 Voice</span>
-					<span className="chip">🐍 Python</span>
-					<span className="chip">🧪 Sandbox</span>
+					<span className="chip">AI Chat</span>
+					<span className="chip">Voz</span>
+					<span className="chip">Python</span>
+					<span className="chip">Sandbox</span>
 				</div>
 			</header>
 

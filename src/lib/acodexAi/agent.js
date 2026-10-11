@@ -11,8 +11,22 @@ You can read and edit the user's open files and run app commands through tools.
 export const MAX_AGENT_STEPS = 8;
 
 /**
+ * Parâmetros da tool call como objeto (para exibição no log). Nunca lança.
+ * @param {string|undefined} raw
+ * @returns {object}
+ */
+function parseToolArgs(raw) {
+	try {
+		const parsed = raw ? JSON.parse(raw) : {};
+		return parsed && typeof parsed === "object" ? parsed : {};
+	} catch {
+		return {};
+	}
+}
+
+/**
  * @typedef {import("./client").ChatMessage} ChatMessage
- * @typedef {{type: "tool", name: string, result: object} | {type: "assistant", content: string} | {type: "assistant-delta", text: string}} AgentEvent
+ * @typedef {{type: "tool-start", id: string, name: string, args: object} | {type: "tool", id: string, name: string, args: object, ms: number, result: object} | {type: "assistant", content: string} | {type: "assistant-delta", text: string}} AgentEvent
  */
 
 /**
@@ -66,8 +80,19 @@ export async function runAgent({
 
 		for (const call of message.tool_calls) {
 			const name = call.function?.name;
+			const id = call.id || `${name}-${step}`;
+			const args = parseToolArgs(call.function?.arguments);
+			onEvent({ type: "tool-start", id, name, args });
+			const startedAt = Date.now();
 			const result = await registry.execute(name, call.function?.arguments);
-			onEvent({ type: "tool", name, result });
+			onEvent({
+				type: "tool",
+				id,
+				name,
+				args,
+				ms: Date.now() - startedAt,
+				result,
+			});
 			history.push({
 				role: "tool",
 				tool_call_id: call.id,

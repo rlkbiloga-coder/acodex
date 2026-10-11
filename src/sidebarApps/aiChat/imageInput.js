@@ -78,7 +78,7 @@ function loadImage(src) {
 }
 
 /**
- * Cria a UI de anexo de imagem: botão 📷, input de arquivo oculto e
+ * Cria a UI de anexo de imagem: botão de anexo, input de arquivo oculto e
  * chip de pré-visualização.
  * @param {{ onChange: () => void }} callbacks
  */
