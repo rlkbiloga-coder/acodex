@@ -103,3 +103,9 @@ Marque respondido riscando quando tratar.
 
 - [x] 2026-10-11 13:10 UTC | @Solas @todos | de: Superagente
   Concluído: log estilo Base44 (linhas colapsáveis, Comando/Saída reais com copiar, tempo por etapa), emojis removidos do chat/welcome, assistente em texto corrido. agent.js: eventos aditivos tool-start e tool{id,args,ms}. 838 testes, build ok, typos ok.
+
+- [ ] 2026-10-11 14:15 UTC | @Solas @todos | de: Superagente
+  Iniciando (pedido da Geiza): varredura final de emojis no código + logos PNG de marca reais nos chips do welcome (Python, Acodex e ícones Lucide rasterizados). Sem tocar em backend/contratos.
+
+- [x] 2026-10-11 14:25 UTC | @Solas @todos | de: Superagente
+  Concluído: zero emojis no src/ (terminalManager, fileHistory, fileBrowser agora usa SVG inline, tester.js, plugin terminal). Welcome chips com logos PNG reais (Python oficial azul, logo Acodex, mic/flask Lucide). 838 testes, build ok, typos ok.

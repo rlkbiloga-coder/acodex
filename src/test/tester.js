@@ -566,16 +566,16 @@ async function runTestsInternal() {
 		console.log(data);
 	}
 
-	writeOutput("🚀 Test Runner Started\n");
+	writeOutput("Test Runner Started\n");
 	writeOutput("Running Acode test suite...\n");
 
 	try {
 		for (const runner of activeRunners) {
 			await runner.executeSuite(writeOutput);
 		}
-		writeOutput("\n🎉 All test suites completed!\n");
+		writeOutput("\nAll test suites completed!\n");
 	} catch (error) {
-		writeOutput(`\n⚠️ Test execution error: ${error.message}\n`);
+		writeOutput(`\nTest execution error: ${error.message}\n`);
 		if (error.stack) {
 			writeOutput(`${error.stack}\n`);
 		}
@@ -756,7 +756,7 @@ class TestRunner {
 		this.suiteState.skipped = 0;
 		updateUI();
 
-		line(`🧪 Running suite: ${this.name}`);
+		line(`Running suite: ${this.name}`);
 
 		// Run tests
 		for (const test of this.tests) {
@@ -847,7 +847,7 @@ class TestRunner {
 			: "0.0";
 
 		line(
-			`📋 Suite Summary: ${this.passed}/${total} passed (Success Rate: ${percentage}%)\n`,
+			`Suite Summary: ${this.passed}/${total} passed (Success Rate: ${percentage}%)\n`,
 		);
 
 		return this.results;

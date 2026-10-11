@@ -544,7 +544,7 @@ class TerminalManager {
 					terminalComponent.mount(terminalContainer);
 
 					// Write initial message
-					terminalComponent.write("🚀 Installing Terminal Environment...\r\n");
+					terminalComponent.write("Installing Terminal Environment...\r\n");
 					terminalComponent.write(
 						"This may take a few minutes depending on your connection.\r\n\r\n",
 					);

@@ -2,6 +2,10 @@ import { getResolvedKeyBindings } from "cm/commandRegistry";
 import logoSrc from "components/logo/acodex-logo.png?inline";
 import config from "lib/config";
 import EditorFile from "lib/editorFile";
+import aiChatLogo from "pages/welcome/brands/acodex.png?inline";
+import voiceLogo from "pages/welcome/brands/mic.png?inline";
+import pythonLogo from "pages/welcome/brands/python.png?inline";
+import sandboxLogo from "pages/welcome/brands/sandbox.png?inline";
 
 /**
  * Opens the Welcome tab as an EditorFile page
@@ -59,10 +63,22 @@ function createWelcomeContent() {
 				</h1>
 				<p className="tagline">IDE • IA • VOICE • SANDBOX</p>
 				<div className="power-chips">
-					<span className="chip">AI Chat</span>
-					<span className="chip">Voz</span>
-					<span className="chip">Python</span>
-					<span className="chip">Sandbox</span>
+					<span className="chip">
+						<img src={aiChatLogo} alt="" />
+						AI Chat
+					</span>
+					<span className="chip">
+						<img src={voiceLogo} alt="" />
+						Voz
+					</span>
+					<span className="chip">
+						<img src={pythonLogo} alt="" />
+						Python
+					</span>
+					<span className="chip">
+						<img src={sandboxLogo} alt="" />
+						Sandbox
+					</span>
 				</div>
 			</header>
 
