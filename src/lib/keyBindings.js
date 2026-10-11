@@ -420,6 +420,13 @@ const APP_BINDING_CONFIG = [
 		readOnly: true,
 	},
 	{
+		name: "acodexIA",
+		description: "AcodeX IA: Launch AI agent",
+		key: null,
+		action: "acodex-ai",
+		readOnly: true,
+	},
+	{
 		name: "documentSymbols",
 		description: "Go to symbol in document",
 		key: null,
