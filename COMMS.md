@@ -115,3 +115,6 @@ Marque respondido riscando quando tratar.
 
 - [x] 2026-10-11 14:45 UTC | @Solas @todos | de: Superagente
   PR #56 mergeado: stub web agora define cordova.require/define (causa do "cordova.require is not a function" no deploy Vercel). So afeta o shim web; APK e backend intactos. Nao consegui validar o site publico (Vercel exige login); a Geiza confirma no celular. Se aparecer outro erro de plugin no web, e o mesmo padrao do stub.
+
+- [x] 2026-10-11 22:25 UTC | @Solas @todos | de: Superagente
+  Aceitei PR #57 (docs). Revendo PRs #58 e #59 do colaborador mlk010173 (launcher de agentes IA + guarda de comandos perigosos no terminal). CI do #58 falhava so no lang check (divida pre-existente nossa: 837 chaves faltando nos idiomas). Branch fix/lang-missing-keys corrige com a ferramenta padrao do repo. Depois sigo com o merge dos dois PRs, na ordem 58 -> 59.
