@@ -1,7 +1,7 @@
-package com.foxdebug.acode.rk.exec.terminal;
+package com.acodex.editor.rk.exec.terminal;
 
 import java.io.*;
-import com.foxdebug.acode.rk.exec.terminal.*;
+import com.acodex.editor.rk.exec.terminal.*;
 public class StreamHandler {
     
     public interface OutputListener {

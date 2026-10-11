@@ -1,9 +1,9 @@
 {
-  "name": "com.foxdebug.acode.rk.exec.terminal",
+  "name": "com.acodex.editor.rk.exec.terminal",
   "version": "1.0.0",
   "description": "Terminal stuff",
   "cordova": {
-    "id": "com.foxdebug.acode.rk.exec.terminal",
+    "id": "com.acodex.editor.rk.exec.terminal",
     "platforms": [
       "android"
     ]

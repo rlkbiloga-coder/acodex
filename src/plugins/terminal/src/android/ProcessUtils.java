@@ -1,4 +1,4 @@
-package com.foxdebug.acode.rk.exec.terminal;
+package com.acodex.editor.rk.exec.terminal;
 
 import java.lang.reflect.Field;
 import java.io.*;
@@ -6,7 +6,7 @@ import java.nio.charset.StandardCharsets;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import android.util.Log;
-import com.foxdebug.acode.rk.exec.terminal.*;
+import com.acodex.editor.rk.exec.terminal.*;
 
 public class ProcessUtils {
     

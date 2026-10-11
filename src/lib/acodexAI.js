@@ -7,73 +7,39 @@
  */
 
 import select from "dialogs/select";
+import {
+	AGENT_REGISTRY,
+	buildApiHelperInstall,
+	TIER_LABEL,
+} from "lib/acodexAgents";
 
 /**
  * AcodeX IA — AI coding agent launcher.
  *
- * Opens a picker with the supported AI coding agents, creates a terminal
- * session and, inside the sandbox, installs the agent (if missing) and
- * starts it. Non-interactive agents are never auto-installed twice:
- * the generated command checks for the binary first.
+ * Tudo é lido do REGISTRO ÚNICO em lib/acodexAgents.js:
+ * para adicionar ou remover um agente, altere apenas aquele arquivo.
+ * O seletor abre um terminal e, dentro do sandbox, garante que o
+ * agente esteja instalado antes de iniciá-lo. Agentes de API instalam
+ * um helper discreto (um único script) que fala com o serviço externo.
  */
 
 /**
- * @typedef {Object} AiAgent
- * @property {string} name Display name shown in the picker.
- * @property {string} bin Binary used to start the agent.
- * @property {string} description Short description shown in the picker.
- * @property {string} install Shell command that installs the agent
- *   inside the Alpine sandbox when the binary is missing.
- */
-
-/** @type {AiAgent[]} */
-export const AI_AGENTS = [
-	{
-		name: "Claude Code",
-		bin: "claude",
-		description: "Anthropic coding agent",
-		install: "npm install -g @anthropic-ai/claude-code",
-	},
-	{
-		name: "OpenAI Codex",
-		bin: "codex",
-		description: "OpenAI coding agent",
-		install: "npm install -g @openai/codex",
-	},
-	{
-		name: "Gemini CLI",
-		bin: "gemini",
-		description: "Google AI coding agent",
-		install: "npm install -g @google/gemini-cli",
-	},
-	{
-		name: "OpenCode",
-		bin: "opencode",
-		description: "Open source coding agent",
-		install: "npm install -g opencode-ai",
-	},
-	{
-		name: "Crush",
-		bin: "crush",
-		description: "Charm coding agent",
-		install: "npm install -g @charmbracelet/crush",
-	},
-	{
-		name: "Aider",
-		bin: "aider",
-		description: "AI pair programming (Python)",
-		install:
-			"apk add -q python3 py3-pip >/dev/null 2>&1; python3 -m pip install --break-system-packages aider-chat",
-	},
-];
-
-/**
- * Builds the shell command that ensures the agent is installed and runs it.
- * @param {AiAgent} agent
+ * Builds the shell command that ensures a CLI agent is installed and runs it.
+ * @param {object} agent Entrada do registro com kind "cli"
  * @returns {string}
  */
 export function buildAgentCommand(agent) {
 	return `command -v ${agent.bin} >/dev/null 2>&1 || { ${agent.install}; }; ${agent.bin}`;
+}
+
+/**
+ * Builds the shell command that installs the helper of an API agent.
+ * @param {object} agent Entrada do registro com kind "api"
+ * @returns {string}
+ */
+export function buildApiAgentCommand(agent) {
+	const hint = `echo '${agent.script} pronto: ${agent.script} "sua mensagem para o agente"'`;
+	return `${buildApiHelperInstall(agent)}; ${hint}`;
 }
 
 /**
@@ -93,7 +59,7 @@ async function waitForConnection(component, timeout = 15000) {
 
 /**
  * Launches an agent in a new terminal session.
- * @param {AiAgent} agent
+ * @param {object} agent Entrada do registro (qualquer kind)
  * @returns {Promise<void>}
  */
 export async function launchAiAgent(agent) {
@@ -111,7 +77,11 @@ export async function launchAiAgent(agent) {
 	if (!connected) {
 		throw new Error("Terminal session did not connect in time");
 	}
-	component.write(`${buildAgentCommand(agent)}\r`);
+	const cmd =
+		agent.kind === "api"
+			? buildApiAgentCommand(agent)
+			: buildAgentCommand(agent);
+	component.write(`${cmd}\r`);
 }
 
 /**
@@ -119,16 +89,17 @@ export async function launchAiAgent(agent) {
  * @returns {Promise<void>}
  */
 export default async function acodexAI() {
+	const agents = Object.values(AGENT_REGISTRY);
 	const agentName = await select(
 		strings["acodex ia agent"] || "AcodeX IA: choose an AI agent",
-		AI_AGENTS.map((agent) => ({
+		agents.map((agent) => ({
 			value: agent.name,
 			text: agent.name,
-			subText: agent.description,
+			subText: `${agent.description} [${TIER_LABEL[agent.tier]}]`,
 		})),
 		{ hideOnSelect: true },
 	);
-	const agent = AI_AGENTS.find(({ name }) => name === agentName);
+	const agent = agents.find(({ name }) => name === agentName);
 	if (!agent) return;
 	await launchAiAgent(agent);
 }
