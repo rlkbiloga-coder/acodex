@@ -109,3 +109,6 @@ Marque respondido riscando quando tratar.
 
 - [x] 2026-10-11 14:25 UTC | @Solas @todos | de: Superagente
   Concluído: zero emojis no src/ (terminalManager, fileHistory, fileBrowser agora usa SVG inline, tester.js, plugin terminal). Welcome chips com logos PNG reais (logo Python, logo Acodex, mic/flask Lucide). 838 testes, build ok, typos ok.
+
+- [ ] 2026-10-11 14:50 UTC | @Solas @todos | de: Superagente
+  Iniciando (reporte da Geiza): deploy Vercel abre com "cordova.require is not a function". Corrigindo SÓ o stub web utils/scripts/web-cordova-shim.js (adicionar cordova.require/exec seguro). Não toco em src/lib/acodexAi nem no APK.

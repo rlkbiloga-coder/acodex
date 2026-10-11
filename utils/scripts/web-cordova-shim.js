@@ -16,16 +16,36 @@ const stub = `/*
 (function () {
   "use strict";
 
+  function unavailableExec(success, fail) {
+    if (typeof fail === "function") {
+      fail("Plugin nativo indisponivel no navegador");
+    }
+  }
+
+  // Modulos internos que o app pede via cordova.require (ex: cordova/exec).
+  // Qualquer outro modulo devolve um objeto vazio para o boot nao quebrar.
+  var modules = { "cordova/exec": unavailableExec };
+
   window.cordova = window.cordova || {
     platformId: "browser",
     version: "${pkg.version}",
     plugins: {},
-    exec: function (success, fail) {
-      if (typeof fail === "function") {
-        fail("Plugin nativo indisponivel no navegador");
-      }
+    exec: unavailableExec,
+    require: function (name) {
+      return Object.prototype.hasOwnProperty.call(modules, name)
+        ? modules[name]
+        : {};
+    },
+    define: function (name, factory) {
+      modules[name] =
+        typeof factory === "function" ? factory(window.cordova.require, {}, {}) : factory;
     },
   };
+  if (typeof window.cordova.require !== "function") {
+    window.cordova.require = function (name) {
+      return name === "cordova/exec" ? unavailableExec : {};
+    };
+  }
 
   // Globais que o boot do app espera dos plugins
   window.BuildInfo = window.BuildInfo || {
