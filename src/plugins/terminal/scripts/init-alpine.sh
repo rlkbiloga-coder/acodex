@@ -349,6 +349,64 @@ if ! grep -q 'PS1=' "$PREFIX/alpine/initrc"; then
 fi
 
 
+# AcodeX IA: critical command guard.
+# The guard is rewritten on every boot so it stays in sync with the app,
+# while the initrc only sources it once (idempotent via the marker below).
+cat > "$PREFIX/alpine/acodex-ia-guard.sh" <<'GUARD'
+# ACODEX_IA_GUARD — AcodeX IA safety layer.
+# Copyright (c) 2026 mlk010173. Licensed under the AcodeX IA License
+# (see LICENSE-ACODEX-IA in the repository root). Personal and
+# non-commercial use allowed with attribution; anything else requires
+# prior written permission from the copyright holder.
+# Asks for confirmation ONLY before critical commands run;
+# every other command executes normally.
+
+__acodex_ia_confirm() {
+    printf "\r\n\033[1;33m[AcodeX IA] Comando critico:\033[0m %s\r\n" "$*"
+    printf "\033[1;33mExecutar mesmo assim? [s/N]\033[0m "
+    local __answer
+    read -r __answer
+    case "$__answer" in
+        s|S|sim|Sim|SIM|y|Y|yes|Yes|YES) return 0 ;;
+        *) printf "\r\n[AcodeX IA] Cancelado.\r\n"; return 1 ;;
+    esac
+}
+
+# rm only asks when recursive AND force are combined (rm -rf ...)
+rm() {
+    local __recursive=0 __force=0 __arg
+    for __arg in "$@"; do
+        case "$__arg" in
+            -*)
+                case "$__arg" in
+                    *r*|*R*) __recursive=1 ;;
+                esac
+                case "$__arg" in
+                    *f*) __force=1 ;;
+                esac
+                ;;
+        esac
+    done
+    if [ "$__recursive" = 1 ] && [ "$__force" = 1 ]; then
+        __acodex_ia_confirm "rm $*" && command rm "$@"
+    else
+        command rm "$@"
+    fi
+}
+
+# Raw disk writes can wipe partitions instantly.
+dd() { __acodex_ia_confirm "dd $*" && command dd "$@"; }
+wipefs() { __acodex_ia_confirm "wipefs $*" && command wipefs "$@"; }
+fdisk() { __acodex_ia_confirm "fdisk $*" && command fdisk "$@"; }
+mkfs() { __acodex_ia_confirm "mkfs $*" && command mkfs "$@"; }
+GUARD
+chmod +x "$PREFIX/alpine/acodex-ia-guard.sh"
+
+# Source the guard from initrc exactly once.
+if ! grep -q "ACODEX_IA_GUARD_SOURCE" "$PREFIX/alpine/initrc" 2>/dev/null; then
+    printf '\n# ACODEX_IA_GUARD_SOURCE\n[ -f /acodex-ia-guard.sh ] && . /acodex-ia-guard.sh\n' >> "$PREFIX/alpine/initrc"
+fi
+
 chmod +x "$PREFIX/alpine/initrc"
 
 if [ "$FAILSAFE" != true ]; then
