@@ -48,7 +48,7 @@ export const AGENT_REGISTRY = {
 		install: "npm install -g @google/gemini-cli",
 		description: "Google AI coding agent (tem tier grátis)",
 	},
-	"opencode": {
+	opencode: {
 		name: "OpenCode",
 		kind: "cli",
 		tier: "free",
@@ -57,7 +57,7 @@ export const AGENT_REGISTRY = {
 		install: "npm install -g opencode-ai",
 		description: "Coding agent open-source (chave própria)",
 	},
-	"crush": {
+	crush: {
 		name: "Crush",
 		kind: "cli",
 		tier: "free",
@@ -66,7 +66,7 @@ export const AGENT_REGISTRY = {
 		install: "npm install -g @charmbracelet/crush",
 		description: "Coding agent open-source da Charm",
 	},
-	"aider": {
+	aider: {
 		name: "Aider",
 		kind: "cli",
 		tier: "free",
@@ -76,7 +76,7 @@ export const AGENT_REGISTRY = {
 			"apk add -q python3 py3-pip >/dev/null 2>&1; python3 -m pip install --break-system-packages aider-chat",
 		description: "AI pair programming open-source (Python)",
 	},
-		"ollama": {
+	ollama: {
 		name: "Ollama",
 		kind: "cli",
 		tier: "free",
@@ -94,7 +94,7 @@ export const AGENT_REGISTRY = {
 		install: "npm install -g @qwen-code/qwen-code@latest",
 		description: "Agente open-source da Alibaba (tier grátis generoso)",
 	},
-	"goose": {
+	goose: {
 		name: "Goose",
 		kind: "cli",
 		tier: "free",
@@ -104,7 +104,7 @@ export const AGENT_REGISTRY = {
 			"curl -fsSL https://github.com/block/goose/releases/download/stable/download_cli.sh | bash",
 		description: "Agente open-source da Block",
 	},
-	"openhands": {
+	openhands: {
 		name: "OpenHands",
 		kind: "cli",
 		tier: "free",
@@ -114,7 +114,7 @@ export const AGENT_REGISTRY = {
 			"apk add -q python3 py3-pip >/dev/null 2>&1; python3 -m pip install --break-system-packages openhands-ai",
 		description: "Agente autônomo open-source completo (Python)",
 	},
-	"amp": {
+	amp: {
 		name: "Amp",
 		kind: "cli",
 		tier: "freemium",
@@ -133,7 +133,7 @@ export const AGENT_REGISTRY = {
 		description: "Anthropic coding agent (assinatura ou API paga)",
 		note: "pago — funciona quando você tiver a chave/conta",
 	},
-	"codex": {
+	codex: {
 		name: "OpenAI Codex",
 		kind: "cli",
 		tier: "paid",

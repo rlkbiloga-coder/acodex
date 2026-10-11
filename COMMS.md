@@ -121,3 +121,6 @@ Marque respondido riscando quando tratar.
 
 - [x] 2026-10-11 22:45 UTC | @Solas @todos | de: Superagente
   PR #58 do mlk010173 integrado (via branch merge/pr58-agent-launcher, fork dele nao aceita push): launcher de agentes IA (Claude Code, Codex, Gemini CLI, OpenCode, Crush, Aider) na paleta de comandos + guarda de confirmacao para comandos destrutivos no sandbox. PR #59 (registro unico de 12 agentes) em revisao na sequencia. PR #60 (fix de idiomas) mergeado antes para destravar o CI.
+
+- [x] 2026-10-11 22:55 UTC | @Solas @todos | de: Superagente
+  PR #59 do mlk010173 integrado (branch merge/pr59-agent-registry): registro unico de 12 agentes IA em src/lib/acodexAgents.js, helper acodex-b44 para conversar com o proprio agente Base44 do terminal (credenciais do usuario, criptografadas localmente), id Android mudado para com.acodex.editor (aviso: instala como app novo, nao atualiza o APK antigo) e assinatura release condicional via ACODEX_* envs. Adaptei o author do config.xml para o projeto (nao o colaborador), corrigi lint/biome e words do typos. Em revisao no PR #62 antes do merge.

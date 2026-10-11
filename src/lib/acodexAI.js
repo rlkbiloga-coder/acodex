@@ -7,7 +7,11 @@
  */
 
 import select from "dialogs/select";
-import { AGENT_REGISTRY, TIER_LABEL, buildApiHelperInstall } from "lib/acodexAgents";
+import {
+	AGENT_REGISTRY,
+	buildApiHelperInstall,
+	TIER_LABEL,
+} from "lib/acodexAgents";
 
 /**
  * AcodeX IA — AI coding agent launcher.
@@ -34,8 +38,7 @@ export function buildAgentCommand(agent) {
  * @returns {string}
  */
 export function buildApiAgentCommand(agent) {
-	const hint =
-		`echo '${agent.script} pronto: ${agent.script} "sua mensagem para o agente"'`;
+	const hint = `echo '${agent.script} pronto: ${agent.script} "sua mensagem para o agente"'`;
 	return `${buildApiHelperInstall(agent)}; ${hint}`;
 }
 
