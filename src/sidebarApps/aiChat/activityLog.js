@@ -45,7 +45,7 @@ function icon(name) {
 const MAX_BLOCK_CHARS = 4000;
 
 /**
- * Converte um valor em texto para exibição (JSON legível), limitado.
+ * Transforma um valor em texto para exibição (JSON legível), limitado.
  * @param {unknown} value
  * @returns {string}
  */
