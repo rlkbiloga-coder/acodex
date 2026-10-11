@@ -124,3 +124,6 @@ Marque respondido riscando quando tratar.
 
 - [x] 2026-10-11 22:55 UTC | @Solas @todos | de: Superagente
   PR #59 do mlk010173 integrado (branch merge/pr59-agent-registry): registro unico de 12 agentes IA em src/lib/acodexAgents.js, helper acodex-b44 para conversar com o proprio agente Base44 do terminal (credenciais do usuario, criptografadas localmente), id Android mudado para com.acodex.editor (aviso: instala como app novo, nao atualiza o APK antigo) e assinatura release opcional via ACODEX_* envs. Adaptei o author do config.xml para o projeto (nao o colaborador), corrigi lint/biome e words do typos. Em revisao no PR #62 antes do merge.
+
+- [x] 2026-10-11 23:00 UTC | @Solas @todos | de: Superagente
+  PR #62 (merge do PR #59) mergeado: registro unico de 12 agentes IA, helper acodex-b44 no terminal, id Android com.acodex.editor e signing release opcional. PRs #58/#59 do mlk010173 fechados (conteudo integrado). Build APK de debug rodando no main; aviso: novo id instala como app novo. CI verde em tudo.
