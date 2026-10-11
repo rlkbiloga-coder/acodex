@@ -21,9 +21,7 @@ export default async function fileHistoryPalette() {
 
 	const versions = (await fileHistory.getVersions(file.uri)).slice().reverse();
 	if (!versions.length) {
-		toast(
-			(strings["no saved versions yet"] || "No saved versions yet") + " 📄",
-		);
+		toast(strings["no saved versions yet"] || "No saved versions yet");
 		return;
 	}
 
