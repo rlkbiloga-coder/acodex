@@ -1,17 +1,21 @@
-AcodeX IA License
+AcodeX IA License — mlk010173 original contributions
 Copyright (c) 2026 mlk010173
 
-The AcodeX IA module and its components (listed below) are licensed under
-this license, separate from the MIT license that governs the rest of this
-repository.
+All original code, integrations and modifications authored by mlk010173 in
+this repository are licensed under this license, separate from the MIT
+license that governs the original Acode project code. This covers every
+contribution by mlk010173 that is not part of the upstream Acode project,
+including:
 
-Covered files:
-  - src/lib/acodexAI.js
-  - the AcodeX IA guard block in src/plugins/terminal/scripts/init-alpine.sh
-    (delimited by the "ACODEX_IA_GUARD" markers)
-  - the "acodex-ai" command entry in src/lib/commands.js
-  - the "acodexIA:launchAgent" entry in src/cm/commandRegistry.js
-  - the "acodexIA" entry in src/lib/keyBindings.js
+  - the AcodeX IA module: src/lib/acodexAI.js, the "acodexIA" guard block
+    in src/plugins/terminal/scripts/init-alpine.sh (delimited by the
+    "ACODEX_IA_GUARD" markers), and the "acodex-ai" command entries in
+    src/lib/commands.js, src/cm/commandRegistry.js and
+    src/lib/keyBindings.js
+  - the login shell fix in src/plugins/terminal/scripts/init-alpine.sh
+    (respecting the shell set by chsh via /etc/passwd)
+  - any future original additions, integrations or adaptations authored
+    by mlk010173 in this repository, unless separately stated
 
 Terms:
 
