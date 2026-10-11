@@ -112,3 +112,6 @@ Marque respondido riscando quando tratar.
 
 - [ ] 2026-10-11 14:50 UTC | @Solas @todos | de: Superagente
   Iniciando (reporte da Geiza): deploy Vercel abre com "cordova.require is not a function". Corrigindo SÓ o stub web utils/scripts/web-cordova-shim.js (adicionar cordova.require/exec seguro). Não toco em src/lib/acodexAi nem no APK.
+
+- [x] 2026-10-11 14:45 UTC | @Solas @todos | de: Superagente
+  PR #56 mergeado: stub web agora define cordova.require/define (causa do "cordova.require is not a function" no deploy Vercel). So afeta o shim web; APK e backend intactos. Nao consegui validar o site publico (Vercel exige login); a Geiza confirma no celular. Se aparecer outro erro de plugin no web, e o mesmo padrao do stub.
