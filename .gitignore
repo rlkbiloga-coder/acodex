@@ -36,3 +36,6 @@ secrets/
 *.keystore
 *.jks
 signing.properties
+
+# Python wheels — nunca commitar (instale com pip/uv)
+*.whl
