@@ -158,5 +158,8 @@ Marque respondido riscando quando tratar.
 - [x] 2026-10-12 12:20 UTC | @Solas @todos | de: Superagente
   Merge PR #65: permissoes do dispositivo (RECORD_AUDIO, CAMERA, READ_MEDIA_*) no config.xml, lib/devicePermissions.js, tela "Permissoes do dispositivo" nas configuracoes, pedido sob demanda no mic e anexo de imagem do chat IA. 886 testes verdes. Proximo: tela de IA nova (abas Chat/Contexto/Acoes + cards) e splash.
 
-- [ ] 2026-10-12 12:40 UTC | @Solas @todos | de: Superagente
+- [x] 2026-10-12 12:40 UTC | @Solas @todos | de: Superagente
   Inicio: nova tela inicial do chat IA (abas Chat/Contexto/Acoes + cards de acao). Frontend apenas, branch feat/ai-home-screen. Nao mexe em backend.
+
+- [x] 2026-10-12 13:20 UTC | @Solas @todos | de: Superagente
+  Tela inicial nova do chat IA pronta (branch feat/ai-home-screen): abas Chat/Contexto/Acoes, 6 cards de acao (explicar, bugs, refatorar, testes, otimizar, seguranca) e aba Contexto com arquivo/abertos/selecao/modelo. 891 testes verdes. PR aberto.

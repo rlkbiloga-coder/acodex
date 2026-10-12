@@ -1306,3 +1306,139 @@
   	color: var(--error-color, #f66);
   }
 }
+
+  /* ===== Tela inicial: abas Chat/Contexto/Acoes ===== */
+  .ai-home {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: auto 0;
+    text-align: left;
+  }
+
+  .ai-home-tabs {
+    display: flex;
+    gap: 4px;
+    padding: 3px;
+    border-radius: 10px;
+    background: rgba(128, 128, 128, 0.10);
+  }
+
+  .ai-home-tab {
+    flex: 1;
+    padding: 6px 8px;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--secondary-text-color);
+    font-size: 0.8rem;
+    text-align: center;
+    transition: background 0.15s ease, color 0.15s ease;
+
+    &.active {
+      background: var(--secondary-color);
+      color: var(--primary-text-color);
+    }
+  }
+
+  .ai-home-pane {
+    display: none;
+    flex-direction: column;
+    gap: 8px;
+
+    &.visible {
+      display: flex;
+    }
+  }
+
+  .ai-home-hero {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    color: var(--secondary-text-color);
+
+    > .icon {
+      font-size: 1.6rem;
+    }
+
+    strong {
+      color: var(--primary-text-color);
+      font-size: 1rem;
+    }
+
+    p {
+      margin: 0;
+      font-size: 0.85rem;
+      line-height: 1.4;
+    }
+  }
+
+  .ai-home-context {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .ai-context-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 0.85rem;
+
+    span {
+      color: var(--secondary-text-color);
+    }
+
+    strong {
+      color: var(--primary-text-color);
+      font-weight: 500;
+      text-align: right;
+      overflow-wrap: anywhere;
+    }
+  }
+
+  .ai-actions-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+
+  .ai-action-card {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    align-items: flex-start;
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    background: transparent;
+    color: var(--primary-text-color);
+    text-align: left;
+    transition: background 0.15s ease, border-color 0.15s ease;
+
+    > .icon {
+      font-size: 1.2rem;
+      color: var(--active-color);
+    }
+
+    strong {
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .ai-action-desc {
+      font-size: 0.72rem;
+      color: var(--secondary-text-color);
+      line-height: 1.3;
+    }
+
+    &:active,
+    &:hover {
+      border-color: var(--active-color);
+      background: rgba(128, 128, 128, 0.08);
+    }
+  }
