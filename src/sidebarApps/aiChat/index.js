@@ -8,6 +8,7 @@ import { validateAiConfig, withBuiltinKey } from "lib/acodexAi/client";
 import { createSkillRegistry } from "lib/acodexAi/skills";
 import { createToolRegistry } from "lib/acodexAi/tools";
 import commands from "lib/commands";
+import { ensureDevicePermission } from "lib/devicePermissions";
 import EditorFile from "lib/editorFile";
 import openFile from "lib/openFile";
 import appSettings from "lib/settings";
@@ -549,10 +550,15 @@ function onVoiceStateChange(state, message) {
 	}
 }
 
-function onMicClick() {
+async function onMicClick() {
 	if (!voiceInput) return;
 	if (voiceInput.isListening()) {
 		voiceInput.stop();
+		return;
+	}
+	const allowed = await ensureDevicePermission("microphone", globalThis.system);
+	if (!allowed) {
+		window.toast?.("Permita o microfone para usar o ditado", 3000);
 		return;
 	}
 	$input.focus();

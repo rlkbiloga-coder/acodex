@@ -8,6 +8,8 @@
  * OpenAI e afins.
  */
 
+import { ensureDevicePermission } from "lib/devicePermissions";
+
 /** Maior dimensão da imagem reduzida antes do envio. */
 export const MAX_IMAGE_DIM = 1024;
 
@@ -103,7 +105,11 @@ export function createImageInput({ onChange } = {}) {
 			className="ai-send ai-attach"
 			aria-label="Anexar imagem"
 			title="Anexar imagem para análise"
-			onclick={() => $fileInput.click()}
+			onclick={async () => {
+				await ensureDevicePermission("media", globalThis.system);
+				await ensureDevicePermission("camera", globalThis.system);
+				$fileInput.click();
+			}}
 		>
 			<span className="icon image_alt" />
 		</button>
