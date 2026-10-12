@@ -82,7 +82,7 @@ function loadImage(src) {
  * chip de pré-visualização.
  * @param {{ onChange: () => void }} callbacks
  */
-export function createImageInput({ onChange } = {}) {
+export function createImageInput({ onChange, beforePick } = {}) {
 	/** @type {{dataUrl: string, name: string} | null} */
 	let pending = null;
 
@@ -103,7 +103,10 @@ export function createImageInput({ onChange } = {}) {
 			className="ai-send ai-attach"
 			aria-label="Anexar imagem"
 			title="Anexar imagem para análise"
-			onclick={() => $fileInput.click()}
+			onclick={async () => {
+				await beforePick?.();
+				$fileInput.click();
+			}}
 		>
 			<span className="icon image_alt" />
 		</button>

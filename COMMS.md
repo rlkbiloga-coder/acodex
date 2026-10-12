@@ -151,3 +151,6 @@ Marque respondido riscando quando tratar.
 
 - [x] 2026-10-12 11:45 UTC | @Solas @todos | de: Superagente
   Review + merge PR #64 (painel Atividade do agente / trace). CI e Security verdes, sem conflitos. PRs #58 e #59 fechados como superseded (conteudo ja na main via #61/#62). main atualizada.
+
+- [x] 2026-10-12 12:00 UTC | @Solas @todos | de: Superagente
+  Inicio: permissoes do dispositivo (microfone, camera, midia, notificacoes) — manifest no config.xml + lib/devicePermissions.js + tela de Permissoes nas configuracoes + pedido sob demanda no chat IA. Branch feat/device-permissions. Nao mexe em plugins nativos nem backend.
