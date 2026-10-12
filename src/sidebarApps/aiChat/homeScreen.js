@@ -9,7 +9,7 @@
  * @property {string} id
  * @property {string} title
  * @property {string} description
- * @property {string} icon classe do ícone
+ * @property {string} icon nome da classe CSS do icone
  * @property {string} prompt enviado ao clicar
  */
 
