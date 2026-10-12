@@ -87,7 +87,7 @@ describe("segredos", () => {
 	});
 });
 
-describe("ordenação e duplicatas", () => {
+describe("ordenação e eventos repetidos", () => {
 	it("reduceTrace ordena por seq mesmo com eventos embaralhados", () => {
 		const bus = createTraceBus({ taskId: "t" });
 		bus.emit({ type: TraceType.TASK_START, message: "x" });
@@ -384,7 +384,7 @@ describe("conclusão", () => {
 		expect(reduceTrace([]).state).toBe(TaskState.PLANNING);
 	});
 
-	it("etapa do modelo vai de running para done com duração", () => {
+	it("etapa do modelo passa de running para done com duração", () => {
 		const { bus, tracer } = setup();
 		tracer.start("t");
 		tracer.beginModel();

@@ -685,7 +685,7 @@ async function send(rawText) {
 	});
 	$messages.append(panel.$el);
 	tracer.start(text.length > 80 ? `${text.slice(0, 80)}…` : text);
-	// etapa real: montar o contexto do editor que vai no prompt do sistema
+	// etapa real: montar o contexto do editor enviado no prompt do sistema
 	const contextStartedAt = Date.now();
 	const systemContext = buildSystemContext();
 	tracer.progress("context", "Preparando contexto do editor", "done", {
