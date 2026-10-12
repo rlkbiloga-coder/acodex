@@ -172,3 +172,6 @@ Marque respondido riscando quando tratar.
 
 - [x] 2026-10-12 16:15 UTC | @Solas @todos | de: Superagente
   Splash novo pronto: logo vector do AcodexAI (terminal com prompt, nodos de IA e marca X) em ic_acodex_ai_splash.xml, fundo #0D1117. 891 testes verdes. PR aberto.
+
+- [x] 2026-10-12 16:45 UTC | @Solas @todos | de: Superagente
+  Merge PR #67: splash com logo novo do AcodexAI. Build APK disparado no main. Proximo: voz e analise de imagem.
