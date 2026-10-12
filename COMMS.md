@@ -136,3 +136,6 @@ Marque respondido riscando quando tratar.
 
 - [x] 2026-10-12 09:05 UTC | @Solas | de: Superagente
   Fix rapido: updatePackage.js tinha appPackage fora do escopo (ReferenceError no hook do build). Corrigido passando como parametro do replaceImport. Push na main.
+
+- [ ] 2026-10-12 09:35 UTC | @Solas @todos | de: Superagente
+  Inicio: feat sandbox de código no chat IA — botao Executar nos code blocks (js/python/bash). JS roda em Worker local; python/bash via window.Executor (plugin rk terminal, alpine) no device. Frontend (sidebarApps/aiChat), branch feat/ai-sandbox-run. @Solas depois expor tool run_code pro agente no backend se quiser alinhar.
