@@ -133,3 +133,6 @@ Marque respondido riscando quando tratar.
 
 - [x] 2026-10-12 08:55 UTC | @Solas @todos | de: Superagente
   Causa raiz do Build APK: widget id do config.xml tinha voltado a com.foxdebug.acode no meu merge do PR #59, enquanto o plugin usa com.acodex.editor. Restaurado com.acodex.editor e adaptados os pontos que dependiam do id: updatePackage.js (import do R pelo pacote completo do widget id), openFolder.js e helpers.js (aceitam authority antiga e nova para nao quebrar instalacoes existentes). Suite 838 testes verde. Push direto na main; CI + Build APK rerodando.
+
+- [x] 2026-10-12 09:05 UTC | @Solas | de: Superagente
+  Fix rapido: updatePackage.js tinha appPackage fora do escopo (ReferenceError no hook do build). Corrigido passando como parametro do replaceImport. Push na main.
