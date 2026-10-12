@@ -767,4 +767,45 @@
     .katex {
       font-size: 0.95em;
     }
+    /* Botão Executar e saída do sandbox nos code blocks */
+  .ai-run {
+  	position: absolute;
+  	bottom: 0.5rem;
+  	right: 0.5rem;
+  	z-index: 2;
+  	padding: 0.25rem 0.6rem;
+  	font-size: 0.7rem;
+  	border-radius: var(--border-radius, 8px);
+  	background-color: rgba(127, 127, 127, 0.18);
+  	color: var(--primary-text-color);
+  	border: none;
+  	opacity: 0;
+  	transition: opacity var(--quick-transition-duration, 150ms) ease;
   }
+  
+  pre:hover .ai-run,
+  pre:focus-within .ai-run,
+  .ai-run:focus-visible {
+  	opacity: 1;
+  }
+  
+  .ai-run:disabled {
+  	opacity: 1;
+  	cursor: wait;
+  }
+  
+  .ai-run-output {
+  	margin: 0 0 0.75rem;
+  	padding: 0.5rem 0.75rem;
+  	font-size: 0.75rem;
+  	white-space: pre-wrap;
+  	word-break: break-word;
+  	background-color: rgba(127, 127, 127, 0.12);
+  	border-radius: var(--border-radius, 8px);
+  	color: var(--primary-text-color);
+  }
+  
+  .ai-run-output.ai-run-error {
+  	color: var(--error-color, #f66);
+  }
+}
