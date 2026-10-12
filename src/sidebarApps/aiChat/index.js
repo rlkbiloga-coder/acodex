@@ -15,6 +15,7 @@ import appSettings from "lib/settings";
 import { upgradeAssistantMessage } from "./advancedRender";
 import { createAgentActivity } from "./agentActivity";
 import { renderAssistantMessage } from "./format";
+import { createAiHome } from "./homeScreen";
 import {
 	buildVisionContent,
 	createImageInput,
@@ -298,28 +299,26 @@ function initApp(el) {
 }
 
 function renderEmptyState() {
-	const $empty = (
-		<div className="ai-empty">
-			<span className="icon brain" />
-			<strong>Assistente do editor</strong>
-			<p>
-				Lê e edita os arquivos abertos, executa comandos do app e mostra cada
-				ação em um log detalhado.
-			</p>
-		</div>
-	);
-	for (const text of SUGGESTIONS) {
-		$empty.append(
-			<button
-				type="button"
-				className="ai-suggestion"
-				onclick={() => send(text)}
-			>
-				{text}
-			</button>,
-		);
-	}
-	$messages.replaceChildren($empty);
+	const $home = createAiHome({
+		getContext: () => ({
+			activeFile: editorManager.activeFile,
+			openFilesCount: editorManager.files?.length ?? 0,
+			selectionLength: getSelectionLength(),
+			model: appSettings.value.aiModel,
+		}),
+		onAction: (prompt) => send(prompt),
+		onSuggestion: (text) => send(text),
+		suggestions: SUGGESTIONS,
+	}).el;
+	$messages.replaceChildren($home);
+}
+
+function getSelectionLength() {
+	const editor =
+		editorManager.activeFile?.type === "editor" ? editorManager.editor : null;
+	const { from, to } = editor?.state?.selection?.main ?? {};
+	if (from === undefined) return 0;
+	return to - from;
 }
 
 /**
