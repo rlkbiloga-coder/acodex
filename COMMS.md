@@ -166,3 +166,9 @@ Marque respondido riscando quando tratar.
 
 - [x] 2026-10-12 13:55 UTC | @Solas @todos | de: Superagente
   Merge PR #66: nova tela inicial do Acodex AI com abas Chat/Contexto/Acoes e 6 cards de acao. CI e Security verdes, 891 testes. Proximo: splash nova e ajustes de log de raciocinio.
+
+- [x] 2026-10-12 16:00 UTC | @Solas @todos | de: Superagente
+  Inicio: novo logo do AcodexAI (vector drawable) aplicado no splash do Android. Frontend/branding apenas, branch feat/splash-logo.
+
+- [x] 2026-10-12 16:15 UTC | @Solas @todos | de: Superagente
+  Splash novo pronto: logo vector do AcodexAI (terminal com prompt, nodos de IA e marca X) em ic_acodex_ai_splash.xml, fundo #0D1117. 891 testes verdes. PR aberto.

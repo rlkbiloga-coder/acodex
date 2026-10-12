@@ -31,7 +31,7 @@
         <preference name="BackgroundColor" value="0xFF313131" />
         <preference name="AndroidWindowSplashScreenBackground" value="@color/ic_splash_background" />
         <preference name="AndroidWindowSplashScreenAnimatedIcon"
-            value="res/android/drawable/ic_launcher_foreground.xml" />
+            value="res/android/drawable/ic_acodex_ai_splash.xml" />
         <preference name="AndroidPostSplashScreenTheme" value="@style/Theme.App.Activity" />
         <preference name="AndroidPersistentFileLocation" value="Compatibility" />
         <preference name="AndroidLaunchMode" value="singleTask" />
