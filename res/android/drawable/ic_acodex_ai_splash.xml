@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="432dp"
+    android:height="432dp"
+    android:viewportWidth="432"
+    android:viewportHeight="432">
+
+    <!-- Janela do terminal -->
+    <path
+        android:fillColor="#F5F7FA"
+        android:pathData="M96,120 h240 a24,24 0 0 1 24,24 v144 a24,24 0 0 1 -24,24 h-240 a24,24 0 0 1 -24,-24 v-144 a24,24 0 0 1 24,-24 z" />
+    <!-- Barra de titulo -->
+    <path
+        android:fillColor="#2B3245"
+        android:pathData="M72,144 a24,24 0 0 1 24,-24 h240 a24,24 0 0 1 24,24 v18 h-288 z" />
+    <!-- Pontos da janela -->
+    <path
+        android:fillColor="#F5F7FA"
+        android:pathData="M92,141 m-6,0 a6,6 0 1 1 12,0 a6,6 0 1 1 -12,0" />
+    <path
+        android:fillColor="#F5F7FA"
+        android:pathData="M116,141 m-6,0 a6,6 0 1 1 12,0 a6,6 0 1 1 -12,0" />
+    <!-- Prompt -->
+    <path
+        android:fillColor="#22D3EE"
+        android:pathData="M112,196 l52,34 l-52,34 v-16 l28,-18 l-28,-18 z" />
+    <!-- Cursor -->
+    <path
+        android:fillColor="#F5F7FA"
+        android:pathData="M182,210 h44 a6,6 0 0 1 6,6 v4 a6,6 0 0 1 -6,6 h-44 a6,6 0 0 1 -6,-6 v-4 a6,6 0 0 1 6,-6 z" />
+    <!-- Nodos de IA a direita -->
+    <path
+        android:fillColor="#22D3EE"
+        android:pathData="M258,206 m-8,0 a8,8 0 1 1 16,0 a8,8 0 1 1 -16,0" />
+    <path
+        android:fillColor="#22D3EE"
+        android:pathData="M286,238 m-8,0 a8,8 0 1 1 16,0 a8,8 0 1 1 -16,0" />
+    <path
+        android:fillColor="#22D3EE"
+        android:pathData="M258,270 m-8,0 a8,8 0 1 1 16,0 a8,8 0 1 1 -16,0" />
+    <path
+        android:strokeColor="#22D3EE"
+        android:strokeWidth="6"
+        android:fillColor="#00000000"
+        android:pathData="M258,206 L286,238 L258,270" />
+    <!-- Marca X abaixo -->
+    <path
+        android:fillColor="#22D3EE"
+        android:pathData="M186,316 l20,0 l14,20 l14,-20 l20,0 l-24,34 l24,34 l-20,0 l-14,-20 l-14,20 l-20,0 l24,-34 z" />
+</vector>
