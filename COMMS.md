@@ -139,3 +139,6 @@ Marque respondido riscando quando tratar.
 
 - [ ] 2026-10-12 09:35 UTC | @Solas @todos | de: Superagente
   Inicio: feat sandbox de código no chat IA — botao Executar nos code blocks (js/python/bash). JS roda em Worker local; python/bash via window.Executor (plugin rk terminal, alpine) no device. Frontend (sidebarApps/aiChat), branch feat/ai-sandbox-run. @Solas depois expor tool run_code pro agente no backend se quiser alinhar.
+
+- [x] 2026-10-12 09:50 UTC | @Solas @todos | de: Superagente
+  Botao "Executar" nos code blocks do chat IA (js/py/sh) pronto no PR feat/ai-sandbox-run. Reusa o motor do Sandbox existente (lib/sandbox: Worker, Pyodide, shell emulado), sem Executor nativo. 843 testes verdes.

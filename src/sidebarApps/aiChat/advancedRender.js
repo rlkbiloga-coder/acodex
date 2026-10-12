@@ -13,6 +13,7 @@
 import DOMPurify from "dompurify";
 import { renderMarkdown } from "pages/markdownPreview/renderer";
 import { copyText } from "./format";
+import { canRun, detectCodeLanguage, runCode } from "./sandboxRunner";
 
 const EXTERNAL_LINK_PATTERN = /^(?:[a-z][a-z0-9+.-]*:|\/\/)/i;
 
@@ -93,9 +94,59 @@ function decorateCodeBlocks($root) {
 				if ($copy.isConnected) $copy.textContent = "Copiar";
 			}, 1600);
 		};
+		decorateRunButton($pre);
 		$pre.style.position = "relative";
 		$pre.append($copy);
 	}
+}
+
+/**
+ * Adiciona o botão Executar em blocos de código executáveis (js/python/bash).
+ * JS roda em Worker local; python/bash rodam no sandbox do device.
+ * @param {HTMLPreElement} $pre
+ */
+function decorateRunButton($pre) {
+	if ($pre.closest(".mermaid") || $pre.querySelector(".ai-run")) return;
+
+	const $code = $pre.querySelector("code");
+	const lang = detectCodeLanguage($code);
+	if (!lang || !canRun(lang)) return;
+
+	const $run = document.createElement("button");
+	$run.type = "button";
+	$run.className = "ai-run";
+	$run.textContent = "▶ Executar";
+	$run.onclick = async () => {
+		if ($run.disabled) return;
+		$run.disabled = true;
+		$run.textContent = "Executando…";
+
+		let result;
+		try {
+			result = await runCode(lang, $code.textContent || "");
+		} catch (error) {
+			result = { ok: false, output: String(error) };
+		}
+
+		let $out = $pre.nextElementSibling;
+		if (!$out?.classList?.contains("ai-run-output")) {
+			$out = document.createElement("pre");
+			$out.className = "ai-run-output";
+			$pre.after($out);
+		}
+		$out.textContent = result.output || "(sem saída)";
+		$out.classList.toggle("ai-run-error", !result.ok);
+
+		$run.textContent = result.ok ? "▶ Executar" : "✕ Falhou";
+		setTimeout(() => {
+			if ($run.isConnected) {
+				$run.textContent = "▶ Executar";
+				$run.disabled = false;
+			}
+		}, 1600);
+		$run.disabled = false;
+	};
+	$pre.append($run);
 }
 
 /**
