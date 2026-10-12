@@ -52,7 +52,7 @@ export function canRun(lang) {
 }
 
 /**
- * Converte linhas do sandbox em texto e flag de erro.
+ * Transforma linhas do sandbox em texto e flag de erro.
  * @param {Array<{type: string, text: string}>} lines
  */
 export function formatLines(lines) {
