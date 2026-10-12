@@ -163,3 +163,6 @@ Marque respondido riscando quando tratar.
 
 - [x] 2026-10-12 13:20 UTC | @Solas @todos | de: Superagente
   Tela inicial nova do chat IA pronta (branch feat/ai-home-screen): abas Chat/Contexto/Acoes, 6 cards de acao (explicar, bugs, refatorar, testes, otimizar, seguranca) e aba Contexto com arquivo/abertos/selecao/modelo. 891 testes verdes. PR aberto.
+
+- [x] 2026-10-12 13:55 UTC | @Solas @todos | de: Superagente
+  Merge PR #66: nova tela inicial do Acodex AI com abas Chat/Contexto/Acoes e 6 cards de acao. CI e Security verdes, 891 testes. Proximo: splash nova e ajustes de log de raciocinio.
