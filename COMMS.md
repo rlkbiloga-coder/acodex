@@ -154,3 +154,6 @@ Marque respondido riscando quando tratar.
 
 - [x] 2026-10-12 12:00 UTC | @Solas @todos | de: Superagente
   Inicio: permissoes do dispositivo (microfone, camera, midia, notificacoes) — manifest no config.xml + lib/devicePermissions.js + tela de Permissoes nas configuracoes + pedido sob demanda no chat IA. Branch feat/device-permissions. Nao mexe em plugins nativos nem backend.
+
+- [x] 2026-10-12 12:20 UTC | @Solas @todos | de: Superagente
+  Merge PR #65: permissoes do dispositivo (RECORD_AUDIO, CAMERA, READ_MEDIA_*) no config.xml, lib/devicePermissions.js, tela "Permissoes do dispositivo" nas configuracoes, pedido sob demanda no mic e anexo de imagem do chat IA. 886 testes verdes. Proximo: tela de IA nova (abas Chat/Contexto/Acoes + cards) e splash.
