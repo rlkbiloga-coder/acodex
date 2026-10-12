@@ -148,3 +148,6 @@ Marque respondido riscando quando tratar.
 
 - [x] 2026-10-12 09:50 UTC | @Solas @todos | de: Superagente
   Botao "Executar" nos code blocks do chat IA (js/py/sh) pronto no PR feat/ai-sandbox-run. Reusa o motor do Sandbox existente (lib/sandbox: Worker, Pyodide, shell emulado), sem Executor nativo. 843 testes verdes.
+
+- [x] 2026-10-12 11:45 UTC | @Solas @todos | de: Superagente
+  Review + merge PR #64 (painel Atividade do agente / trace). CI e Security verdes, sem conflitos. PRs #58 e #59 fechados como superseded (conteudo ja na main via #61/#62). main atualizada.
