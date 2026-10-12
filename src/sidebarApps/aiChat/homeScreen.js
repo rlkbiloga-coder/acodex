@@ -1,6 +1,6 @@
 /**
  * Tela inicial do Acodex AI: abas Chat / Contexto / Ações.
- * Construtor puro (sem dependências do app) para facilitar testes;
+ * Fabrica pura (sem dependencias do app) para facilitar testes;
  * o chat integra via callbacks.
  */
 
