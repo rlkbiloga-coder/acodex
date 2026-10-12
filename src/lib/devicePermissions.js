@@ -26,7 +26,7 @@ export const PERMISSIONS = [
 	{
 		id: "camera",
 		label: "Câmera",
-		reason: "Tirar foto e enviar para a IA analisar.",
+		reason: "Fotografar e enviar para a IA analisar.",
 		android: ["android.permission.CAMERA"],
 	},
 	{
@@ -53,7 +53,7 @@ export const PERMISSIONS = [
 	{
 		id: "notifications",
 		label: "Notificações",
-		reason: "Avisar quando processos do terminal terminarem.",
+		reason: "Avisar quando tarefas do terminal terminarem.",
 		android: ["android.permission.POST_NOTIFICATIONS"],
 		minSdk: 33,
 	},
@@ -89,7 +89,7 @@ export function detectSdk(userAgent = globalThis.navigator?.userAgent || "") {
 	return map[release] ?? 23;
 }
 
-/** Converte callback style do plugin em Promise. */
+/** Adapta o callback do plugin em Promise. */
 function call(fn, ...args) {
 	return new Promise((resolve, reject) => {
 		fn(...args, resolve, reject);

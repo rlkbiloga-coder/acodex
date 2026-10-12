@@ -12,7 +12,7 @@ const STATUS_LABEL = {
 };
 
 /**
- * Monta os itens da página a partir do estado atual das permissões.
+ * Monta a lista da página a partir do estado atual das permissões.
  * @param {Array<{id: string, label: string, reason: string, status: string}>} statuses
  */
 export function buildPermissionItems(statuses) {

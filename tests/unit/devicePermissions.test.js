@@ -70,7 +70,7 @@ describe("devicePermissions", () => {
 		expect(await ensureDevicePermission("inexistente", null)).toBe(false);
 	});
 
-	it("lista status e monta itens da tela", async () => {
+	it("lista status e monta a lista da tela", async () => {
 		const system = fakeSystem(new Set(["android.permission.RECORD_AUDIO"]));
 		const statuses = await getPermissionStatuses(system, 34);
 		expect(statuses.map((s) => s.id)).toEqual([
