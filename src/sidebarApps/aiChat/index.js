@@ -11,8 +11,8 @@ import commands from "lib/commands";
 import EditorFile from "lib/editorFile";
 import openFile from "lib/openFile";
 import appSettings from "lib/settings";
-import { createActivityLog } from "./activityLog";
 import { upgradeAssistantMessage } from "./advancedRender";
+import { createAgentActivity } from "./agentActivity";
 import { renderAssistantMessage } from "./format";
 import {
 	buildVisionContent,
@@ -20,6 +20,7 @@ import {
 	DEFAULT_IMAGE_PROMPT,
 } from "./imageInput";
 import { createModelSwitcher } from "./modelSwitcher";
+import { createAgentTracer, createTraceBus } from "./traceEvents";
 import { createVoiceInput, isVoiceSupported } from "./voiceInput";
 
 const TOOL_LABELS = {
@@ -84,6 +85,16 @@ const TASK_PROMPTS = {
 	seguranca:
 		"Faça uma auditoria de segurança neste código: injeção (SQL/command), XSS, path traversal, exposição de dados sensíveis e chaves, validação de entrada ausente e dependências inseguras. Relate cada item com severidade, vetor de ataque e mitigação com código.",
 };
+
+/** Ferramentas que alteram arquivos de verdade (geram evento file_change). */
+const FILE_CHANGE_TOOLS = {
+	replace_active_file: "modified",
+	insert_text: "modified",
+	create_file: "created",
+};
+
+/** Último texto enviado, para "Tentar novamente" depois de uma falha. */
+let lastSentText = "";
 
 const CONFIG_ERRORS = {
 	"missing-api-key": "Configure sua chave de API para usar o Acodex AI.",
@@ -662,16 +673,26 @@ async function send(rawText) {
 	imageInput?.clear();
 	updateSendState();
 
-	const log = createActivityLog();
-	$messages.append(log.$el);
-	const prepStep = log.addStep("Preparando contexto do editor", {
-		kind: "think",
-		command: buildSystemContext() || undefined,
+	lastSentText = text;
+	const bus = createTraceBus();
+	const tracer = createAgentTracer(bus, {
+		labels: TOOL_LABELS,
+		fileTools: FILE_CHANGE_TOOLS,
 	});
-	prepStep.done(undefined, 0);
-	log.setStatus("Consultando o modelo");
-	/** @type {Map<string, ReturnType<typeof log.addStep>>} */
-	const runningSteps = new Map();
+	const panel = createAgentActivity(bus, {
+		onCancel: () => controller?.abort(),
+		onRetry: () => send(lastSentText),
+	});
+	$messages.append(panel.$el);
+	tracer.start(text.length > 80 ? `${text.slice(0, 80)}…` : text);
+	// etapa real: montar o contexto do editor enviado no prompt do sistema
+	const contextStartedAt = Date.now();
+	const systemContext = buildSystemContext();
+	tracer.progress("context", "Preparando contexto do editor", "done", {
+		duration_ms: Date.now() - contextStartedAt,
+		metadata: { kind: "context", command: systemContext || undefined },
+	});
+	tracer.beginModel();
 
 	controller = new AbortController();
 	setBusy(true);
@@ -698,32 +719,15 @@ async function send(rawText) {
 			config,
 			registry,
 			signal: controller.signal,
-			systemContext: buildSystemContext(),
+			systemContext,
 			skillCatalog,
 			onEvent(event) {
-				if (event.type === "tool-start") {
-					const isSkill =
-						event.name === "list_skills" || event.name === "load_skill";
-					runningSteps.set(
-						event.id,
-						log.addStep(TOOL_LABELS[event.name] || event.name, {
-							kind: isSkill ? "skill" : "tool",
-							command: { tool: event.name, args: event.args },
-							detail: event.name,
-						}),
-					);
-					log.setStatus(TOOL_LABELS[event.name] || event.name);
-				} else if (event.type === "tool") {
-					const step = runningSteps.get(event.id);
-					runningSteps.delete(event.id);
-					if (event.result?.error) {
-						step?.fail(event.result.error, event.ms);
-					} else {
-						step?.done(event.result, event.ms);
-					}
-					log.setStatus("Processando resultado");
+				// toda atividade do agente vira evento tipado no bus (nada simulado)
+				tracer.handleAgentEvent(event);
+				if (event.type === "tool") {
+					// o agente volta a consultar o modelo depois de cada ferramenta
+					tracer.beginModel("Analisando resultado da ferramenta");
 				} else if (event.type === "assistant-delta") {
-					log.setStatus("Escrevendo resposta");
 					liveBuffer += event.text;
 					renderLive();
 				} else if (event.content !== undefined) {
@@ -737,15 +741,15 @@ async function send(rawText) {
 		history = history.slice(0, snapshot - 1);
 		failed = error?.name !== "AbortError";
 		if (failed) {
-			log
-				.addStep("Erro na requisição", { kind: "error", detail: "falhou" })
-				.fail(String(error?.message || error));
+			tracer.end("failed", String(error?.message || error));
 			appendMessage("error", `Erro: ${error?.message || error}`);
-		} else if (liveBuffer) {
-			appendMessage("assistant", liveBuffer, true);
+		} else {
+			tracer.end("cancelled");
+			if (liveBuffer) appendMessage("assistant", liveBuffer, true);
 		}
 	} finally {
-		log.finish({ error: failed });
+		// só conclui se nenhum erro/cancelamento já encerrou a tarefa
+		tracer.end("done");
 		$liveMsg?.classList.remove("ai-live");
 		$liveMsg = null;
 		controller = null;
