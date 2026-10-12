@@ -8,8 +8,6 @@
  * OpenAI e afins.
  */
 
-import { ensureDevicePermission } from "lib/devicePermissions";
-
 /** Maior dimensão da imagem reduzida antes do envio. */
 export const MAX_IMAGE_DIM = 1024;
 
@@ -84,7 +82,7 @@ function loadImage(src) {
  * chip de pré-visualização.
  * @param {{ onChange: () => void }} callbacks
  */
-export function createImageInput({ onChange } = {}) {
+export function createImageInput({ onChange, beforePick } = {}) {
 	/** @type {{dataUrl: string, name: string} | null} */
 	let pending = null;
 
@@ -106,8 +104,7 @@ export function createImageInput({ onChange } = {}) {
 			aria-label="Anexar imagem"
 			title="Anexar imagem para análise"
 			onclick={async () => {
-				await ensureDevicePermission("media", globalThis.system);
-				await ensureDevicePermission("camera", globalThis.system);
+				await beforePick?.();
 				$fileInput.click();
 			}}
 		>

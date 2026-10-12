@@ -271,7 +271,13 @@ function initApp(el) {
 	);
 	$hints = <div className="ai-hints"></div>;
 
-	imageInput = createImageInput({ onChange: updateSendState });
+	imageInput = createImageInput({
+		onChange: updateSendState,
+		beforePick: async () => {
+			await ensureDevicePermission("media", globalThis.system);
+			await ensureDevicePermission("camera", globalThis.system);
+		},
+	});
 	$attachBtn = imageInput.$btn;
 
 	el.append(
