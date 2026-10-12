@@ -26,7 +26,9 @@ import appSettings from "./settings";
 const isTermuxSafUri = (value = "") =>
 	value.startsWith("content://com.termux.documents/tree/");
 const isAcodeTerminalPublicSafUri = (value = "") =>
-	value.startsWith("content://com.foxdebug.acode.documents/tree/");
+	/^content:\/\/(com\.foxdebug\.acode|com\.acodex\.editor)\.documents\/tree\//.test(
+		value,
+	);
 const isTerminalSafUri = (value = "") =>
 	isTermuxSafUri(value) || isAcodeTerminalPublicSafUri(value);
 

@@ -130,3 +130,6 @@ Marque respondido riscando quando tratar.
 
 - [x] 2026-10-11 23:10 UTC | @Solas @todos | de: Superagente
   Push direto na main (readme/limpeza, 23c2dc76) quebrou spelling e o Build APK. Corrigi: words pt no _typos.toml e utils/storage_manager.mjs adaptado ao novo id do plugin (com.acodex.editor.rk.exec.terminal), remocao tolerante aos dois ids. Repush na main rerodando CI + Build APK. Nota para o time: build de release pede keystore via ACODEX_* envs (opcional; sem keystore sai debug).
+
+- [x] 2026-10-12 08:55 UTC | @Solas @todos | de: Superagente
+  Causa raiz do Build APK: widget id do config.xml tinha voltado a com.foxdebug.acode no meu merge do PR #59, enquanto o plugin usa com.acodex.editor. Restaurado com.acodex.editor e adaptados os pontos que dependiam do id: updatePackage.js (import do R pelo pacote completo do widget id), openFolder.js e helpers.js (aceitam authority antiga e nova para nao quebrar instalacoes existentes). Suite 838 testes verde. Push direto na main; CI + Build APK rerodando.
