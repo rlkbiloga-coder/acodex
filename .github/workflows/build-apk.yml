@@ -39,7 +39,7 @@ jobs:
           cache: "npm"
 
       - name: Cache debug keystore (assinatura fixa entre builds)
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: ~/.android/debug.keystore
           key: acodex-debug-keystore-v1
