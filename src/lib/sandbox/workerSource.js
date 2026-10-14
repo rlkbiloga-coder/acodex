@@ -4,6 +4,10 @@
  * Runs untrusted JavaScript inside a Worker: console.* calls and errors are
  * posted back to the host as structured messages. Kept as a plain string
  * (no imports) so it can be unit-tested and instantiated via a Blob URL.
+ *
+ * Networking: the global `net` object lets sandboxed code call
+ * net.get(url, options). The request is routed through the host, which
+ * validates the URL and performs it with the native HTTP stack (no CORS).
  */
 
 export const JS_WORKER_SOURCE = `
@@ -44,14 +48,52 @@ self.addEventListener("unhandledrejection", function (event) {
 		: String(event.reason);
 	post("error", "Unhandled promise rejection: " + reason);
 });
-self.addEventListener("message", function (event) {
-	var code = event.data && event.data.code;
-	try {
-		var result = self.eval(code);
-		if (result !== undefined) {
-			post("result", fmt(result));
-		}
+var netSeq = 0;
+var netPending = {};
+self.net = {
+	get: function netGet(url, options) {
+		var id = ++netSeq;
+		return new Promise(function (resolve, reject) {
+			netPending[id] = { resolve: resolve, reject: reject };
+			self.postMessage({
+				type: "net",
+				id: id,
+				url: String(url),
+				options: options || {}
+			});
+		});
+	}
+};
+function settle(promise) {
+	if (promise && typeof promise.then === "function") {
+		promise.then(
+			function (value) {
+				if (value !== undefined) post("result", fmt(value));
+				post("end", "");
+			},
+			function (error) {
+				post("error", error && error.message ? error.message : String(error));
+				post("end", "");
+			}
+		);
+	} else {
+		if (promise !== undefined) post("result", fmt(promise));
 		post("end", "");
+	}
+}
+self.addEventListener("message", function (event) {
+	var data = event.data;
+	if (data && data.type === "net-result") {
+		var pending = netPending[data.id];
+		if (!pending) return;
+		delete netPending[data.id];
+		if (data.ok) pending.resolve(data.response);
+		else pending.reject(new Error(data.error));
+		return;
+	}
+	if (!data || data.type !== "run") return;
+	try {
+		settle(self.eval(data.code));
 	} catch (error) {
 		post("error", error && error.message ? error.message : String(error));
 		post("end", "");
