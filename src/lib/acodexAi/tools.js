@@ -298,15 +298,34 @@ export function createToolRegistry(deps) {
 	};
 
 	return {
-		/** OpenAI-compatible tool definitions. */
-		definitions: Object.entries(tools).map(([name, tool]) => ({
-			type: "function",
-			function: {
-				name,
-				description: tool.description,
-				parameters: tool.parameters,
-			},
-		})),
+		/** OpenAI-compatible tool definitions (reflete o estado atual do registry). */
+		get definitions() {
+			return Object.entries(tools).map(([name, tool]) => ({
+				type: "function",
+				function: {
+					name,
+					description: tool.description,
+					parameters: tool.parameters,
+				},
+			}));
+		},
+		/**
+		 * Registra uma tool em tempo de execução (ex.: tools de um servidor MCP).
+		 * @param {string} name
+		 * @param {{description: string, parameters: object, run: (args: any) => any}} tool
+		 */
+		registerTool(name, tool) {
+			tools[name] = tool;
+		},
+
+		/**
+		 * Remove uma tool registrada dinamicamente.
+		 * @param {string} name
+		 */
+		removeTool(name) {
+			delete tools[name];
+		},
+
 		/**
 		 * @param {string} name
 		 * @param {string} rawArgs JSON string from the model

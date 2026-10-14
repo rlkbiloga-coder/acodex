@@ -1,10 +1,12 @@
 import "./style.scss";
 import "./modelSwitcher.scss";
+import toast from "components/toast";
 import confirm from "dialogs/confirm";
 import multiPrompt from "dialogs/multiPrompt";
 import { runAgent } from "lib/acodexAi/agent";
 import { BUILTIN_SKILLS } from "lib/acodexAi/builtinSkills";
 import { validateAiConfig, withBuiltinKey } from "lib/acodexAi/client";
+import { createMcpClient } from "lib/acodexAi/mcp";
 import { getProviderForBaseUrl } from "lib/acodexAi/models";
 import { createSkillRegistry } from "lib/acodexAi/skills";
 import { createToolRegistry } from "lib/acodexAi/tools";
@@ -140,6 +142,11 @@ let liveBuffer = "";
 let $hints;
 /** @type {{ $toggle: HTMLElement, open: () => void }|null} */
 let switcherApi = null;
+
+/** @type {ReturnType<typeof createMcpClient>|null} */
+let mcpClient = null;
+/** @type {string[]} tools MCP registradas no momento */
+let mcpToolNames = [];
 /** @type {HTMLElement} */
 let $messages;
 /** @type {HTMLTextAreaElement} */
@@ -352,6 +359,7 @@ function initApp(el) {
 	if ($voiceHint) el.append($voiceHint);
 	el.append(imageInput.$fileInput);
 	void initSkills();
+	void syncMcpTools();
 	renderEmptyState();
 }
 
@@ -368,6 +376,7 @@ function renderEmptyState() {
 		getProvider: () => ({
 			label: getProviderLabel(),
 			model: getConfig().model,
+			mcpCount: mcpToolNames.length,
 		}),
 		onProviderClick: () => switcherApi?.open(),
 		onShortcut: (id) => onShortcut(id),
@@ -389,6 +398,44 @@ function onShortcut(id) {
 		void commands["open-folder"]();
 	} else if (id === "agents") {
 		send("/ajuda");
+	}
+}
+
+/**
+ * Sincroniza as tools MCP configuradas com o registry.
+ * Reconecta quando a URL muda e remove tools de sessões anteriores.
+ */
+async function syncMcpTools() {
+	for (const name of mcpToolNames) registry.removeTool(name);
+	mcpToolNames = [];
+	mcpClient = null;
+	const url = appSettings.value.aiMcpUrl?.trim();
+	if (!url) return;
+	try {
+		mcpClient = createMcpClient({ url, name: "acodex" });
+		await mcpClient.initialize();
+		const tools = await mcpClient.listTools();
+		for (const tool of tools) {
+			const safe = tool.name.replace(/[^a-zA-Z0-9_-]/g, "_").slice(0, 64);
+			const local = `mcp__${safe}`;
+			if (registry.definitions.some((d) => d.function.name === local)) {
+				continue;
+			}
+			registry.registerTool(local, {
+				description: `[MCP] ${tool.description}`.slice(0, 1024),
+				parameters: tool.parameters,
+				run: (args) => mcpClient.callTool(tool.name, args),
+			});
+			mcpToolNames.push(local);
+		}
+		if (mcpToolNames.length) {
+			toast(`${mcpToolNames.length} ferramentas MCP conectadas`);
+		} else {
+			toast("Servidor MCP conectado, nenhuma tool publicada");
+		}
+	} catch (error) {
+		mcpClient = null;
+		toast(`MCP: ${error?.message || error}`);
 	}
 }
 
@@ -880,6 +927,13 @@ async function openSettings() {
 					value: current.apiKey,
 					sensitive: true,
 				},
+				{
+					id: "mcpUrl",
+					type: "url",
+					placeholder: "Servidor MCP (opcional, ex: https://host/mcp)",
+					value: appSettings.value.aiMcpUrl,
+					required: false,
+				},
 			],
 			"Funciona com Vercel AI Gateway, OpenAI, OpenRouter, Groq ou qualquer API compatível com OpenAI. A chave fica salva apenas neste dispositivo.",
 		);
@@ -888,9 +942,11 @@ async function openSettings() {
 				aiBaseUrl: result.baseUrl.trim(),
 				aiModel: result.model.trim(),
 				aiApiKey: result.apiKey.trim(),
+				aiMcpUrl: (result.mcpUrl || "").trim(),
 			},
 			false,
 		);
+		await syncMcpTools();
 	} catch {
 		// Dialog dismissed.
 	}
