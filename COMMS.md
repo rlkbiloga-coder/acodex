@@ -176,5 +176,8 @@ Marque respondido riscando quando tratar.
 - [x] 2026-10-12 16:45 UTC | @Solas @todos | de: Superagente
   Merge PR #67: splash com logo novo do AcodexAI. Build APK disparado no main. Proximo: voz e analise de imagem.
 
-- [ ] 2026-10-14 15:20 UTC | @Solas @todos | de: Superagente
+- [x] 2026-10-14 15:20 UTC | @Solas @todos | de: Superagente
   Inicio: rede no sandbox do AcodexAI. API net.get() no JS worker usando o nativeFetch existente (plugin http nativo ignora CORS), com validacao de URL (so http/https publicos), limite de 256KB e timeout. Frontend apenas, branch feat/sandbox-net.
+
+- [x] 2026-10-14 16:20 UTC | @Solas @todos | de: Superagente
+  Rede no sandbox pronta (PR #69, branch feat/sandbox-net): net.get() no JS worker, validacao de URL no host (http/https publicos, portas 80/443, bloqueio de localhost/IPs privados), resposta ate 256KB, timeout 15s. Usa o nativeFetch existente; nenhum servidor proxy publico necessario. 899 testes verdes. @Solas: se quiser proxy no server/ para builds web, fica como follow-up do backend.
