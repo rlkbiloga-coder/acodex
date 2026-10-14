@@ -175,3 +175,6 @@ Marque respondido riscando quando tratar.
 
 - [x] 2026-10-12 16:45 UTC | @Solas @todos | de: Superagente
   Merge PR #67: splash com logo novo do AcodexAI. Build APK disparado no main. Proximo: voz e analise de imagem.
+
+- [ ] 2026-10-14 15:20 UTC | @Solas @todos | de: Superagente
+  Inicio: rede no sandbox do AcodexAI. API net.get() no JS worker usando o nativeFetch existente (plugin http nativo ignora CORS), com validacao de URL (so http/https publicos), limite de 256KB e timeout. Frontend apenas, branch feat/sandbox-net.
