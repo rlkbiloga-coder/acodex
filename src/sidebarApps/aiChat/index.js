@@ -5,6 +5,7 @@ import multiPrompt from "dialogs/multiPrompt";
 import { runAgent } from "lib/acodexAi/agent";
 import { BUILTIN_SKILLS } from "lib/acodexAi/builtinSkills";
 import { validateAiConfig, withBuiltinKey } from "lib/acodexAi/client";
+import { getProviderForBaseUrl } from "lib/acodexAi/models";
 import { createSkillRegistry } from "lib/acodexAi/skills";
 import { createToolRegistry } from "lib/acodexAi/tools";
 import commands from "lib/commands";
@@ -15,7 +16,7 @@ import appSettings from "lib/settings";
 import { upgradeAssistantMessage } from "./advancedRender";
 import { createAgentActivity } from "./agentActivity";
 import { renderAssistantMessage } from "./format";
-import { createAiHome } from "./homeScreen";
+import { createAiHome, createIcon } from "./homeScreen";
 import {
 	buildVisionContent,
 	createImageInput,
@@ -41,16 +42,36 @@ const TOOL_LABELS = {
 	load_skill: "Carregando skill",
 };
 
-const SUGGESTIONS = [
-	"Explique o arquivo aberto",
-	"Encontre bugs neste código",
-	"Refatore a seleção atual",
-	"Gere casos de teste para o arquivo",
-	"Otimize a performance do código",
-	"Audite a segurança deste código",
-];
-
 const FENCE = "```";
+
+/** Limite de caracteres da mensagem (mostrado no contador do composer). */
+const MAX_INPUT = 2000;
+
+/** @type {HTMLElement|undefined} */
+let $counter;
+/** @type {HTMLElement|undefined} */
+let $composerProvider;
+/** @type {HTMLElement|undefined} */
+let $composerProviderName;
+
+function updateCounter() {
+	if (!$counter) return;
+	const length = $input?.value?.length ?? 0;
+	$counter.textContent = `${length}/${MAX_INPUT}`;
+	$counter.classList.toggle("near-limit", length > MAX_INPUT * 0.9);
+}
+
+/** Nome curto do provedor ativo (ex.: "Vercel AI"). */
+function getProviderLabel() {
+	const provider = getProviderForBaseUrl(getConfig().baseUrl);
+	return provider?.label || "IA";
+}
+
+function updateComposerProvider() {
+	if ($composerProviderName) {
+		$composerProviderName.textContent = getProviderLabel();
+	}
+}
 
 const SLASH_COMMANDS = [
 	{ cmd: "/arquivo", desc: "Envia o arquivo atual como contexto" },
@@ -192,12 +213,14 @@ function initApp(el) {
 		<textarea
 			className="ai-input"
 			rows="2"
-			placeholder="Pergunte ou peça uma tarefa..."
+			placeholder="Digite sua mensagem..."
+			maxlength={MAX_INPUT}
 			aria-label="Mensagem para o Acodex AI"
 			onkeydown={onKeyDown}
 			oninput={() => {
 				autoResize();
 				updateHints();
+				updateCounter();
 			}}
 		/>
 	);
@@ -208,7 +231,7 @@ function initApp(el) {
 			aria-label="Enviar"
 			onclick={onSendClick}
 		>
-			<span className="icon arrow_upward" />
+			{createIcon("send", 20)}
 		</button>
 	);
 	if (isVoiceSupported()) {
@@ -242,10 +265,21 @@ function initApp(el) {
 	});
 	switcherApi = switcher;
 
+	const $brand = <span className="ai-brand-logo" aria-hidden="true"></span>;
+	$brand.append(createIcon("brain", 26));
+	const $gear = <span className="ai-gear-slot"></span>;
+	$gear.append(createIcon("gear", 18));
 	el.content = (
 		<div className="header">
 			<div className="title">
-				<span>Acodex AI</span>
+				{$brand}
+				<span className="ai-brand-text">
+					<span className="ai-brand-name">Acodex AI</span>
+					<span className="ai-brand-status">
+						<i className="ai-home-dot" />
+						Online
+					</span>
+				</span>
 				{switcher.$toggle}
 				<span className="actions">
 					<button
@@ -264,7 +298,7 @@ function initApp(el) {
 						aria-label="Configurações do Acodex AI"
 						onclick={openSettings}
 					>
-						<span className="icon edit" />
+						{$gear}
 					</button>
 				</span>
 			</div>
@@ -281,14 +315,37 @@ function initApp(el) {
 	});
 	$attachBtn = imageInput.$btn;
 
+	$counter = <span className="ai-counter">0/{MAX_INPUT}</span>;
+	$composerProvider = <span className="ai-composer-provider"></span>;
+	$composerProvider.append(createIcon("sparkle", 14));
+	$composerProviderName = <span></span>;
+	$composerProvider.append($composerProviderName);
+	updateComposerProvider();
+	const $tools = <span className="ai-composer-tools"></span>;
+	$tools.append(imageInput.$btn);
+	const $adjust = (
+		<button
+			type="button"
+			className="ai-send ai-attach ai-adjust"
+			aria-label="Trocar modelo"
+			title="Trocar modelo"
+			onclick={() => switcher.open()}
+		></button>
+	);
+	$adjust.append(createIcon("sliders", 16));
+	$tools.append($adjust);
+	if ($micBtn) $tools.append($micBtn);
 	el.append(
 		$messages,
 		<div className="ai-composer">
 			{imageInput.$chip}
 			{$hints}
+			<div className="ai-composer-top">{$tools}</div>
 			{$input}
-			{imageInput.$btn}
-			{$micBtn ? $micBtn : null}
+			<div className="ai-composer-bottom">
+				{$counter}
+				{$composerProvider}
+			</div>
 			{$sendBtn}
 		</div>,
 	);
@@ -308,9 +365,31 @@ function renderEmptyState() {
 		}),
 		onAction: (prompt) => send(prompt),
 		onSuggestion: (text) => send(text),
-		suggestions: SUGGESTIONS,
+		getProvider: () => ({
+			label: getProviderLabel(),
+			model: getConfig().model,
+		}),
+		onProviderClick: () => switcherApi?.open(),
+		onShortcut: (id) => onShortcut(id),
+		onSettings: openSettings,
 	}).el;
 	$messages.replaceChildren($home);
+}
+
+/**
+ * Atalhos da faixa inferior da tela inicial.
+ * @param {string} id
+ */
+function onShortcut(id) {
+	if (id === "models") {
+		switcherApi?.open();
+	} else if (id === "plugins") {
+		void commands.open("plugins");
+	} else if (id === "projects") {
+		void commands["open-folder"]();
+	} else if (id === "agents") {
+		send("/ajuda");
+	}
 }
 
 function getSelectionLength() {

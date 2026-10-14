@@ -77,3 +77,75 @@ describe("homeScreen", () => {
 		expect(suggestions).toEqual(["Explique o arquivo"]);
 	});
 });
+
+describe("homeScreen redesenhada", () => {
+	const make = (extra = {}) =>
+		createAiHome({
+			getContext: () => baseCtx,
+			onAction: () => {},
+			onSuggestion: () => {},
+			getProvider: () => ({ label: "Vercel AI Gateway" }),
+			...extra,
+		});
+
+	it("abas-cartão têm título e subtítulo", () => {
+		const home = make();
+		const texts = [...home.el.querySelectorAll(".ai-home-tab")].map((t) =>
+			t.textContent.trim(),
+		);
+		expect(texts).toEqual([
+			"ChatConverse com IA",
+			"ContextoSeu projeto",
+			"AçõesAutomatize",
+		]);
+	});
+
+	it("banner mostra o provedor ativo e abre o seletor", () => {
+		let opened = 0;
+		const home = make({ onProviderClick: () => opened++ });
+		const card = home.el.querySelector(".ai-provider-card");
+		expect(card.textContent).toContain("Vercel AI Gateway");
+		expect(card.querySelector(".ai-badge-active").textContent).toBe("Ativo");
+		card.dispatchEvent(new MouseEvent("click"));
+		expect(opened).toBe(1);
+	});
+
+	it("seis sugestões com subtítulo e ícone svg", () => {
+		const home = make();
+		const items = home.el.querySelectorAll(".ai-suggestion");
+		expect(items).toHaveLength(6);
+		for (const item of items) {
+			expect(item.querySelector("svg")).toBeTruthy();
+			expect(item.querySelector(".ai-suggestion-text span").textContent).not.toBe("");
+		}
+	});
+
+	it("faixa de atalhos dispara onShortcut com o id", () => {
+		const ids = [];
+		const home = make({ onShortcut: (id) => ids.push(id) });
+		for (const btn of home.el.querySelectorAll(".ai-shortcut")) {
+			btn.dispatchEvent(new MouseEvent("click"));
+		}
+		expect(ids).toEqual(["agents", "models", "plugins", "projects"]);
+	});
+
+	it("'Ver todos' leva para a aba Ações", () => {
+		const home = make();
+		home.el.querySelector(".ai-see-all").dispatchEvent(new MouseEvent("click"));
+		expect(home.el.querySelector('[data-tab="actions"]').classList).toContain(
+			"active",
+		);
+	});
+
+	it("sugestões customizadas continuam funcionando", () => {
+		const got = [];
+		const home = make({
+			suggestions: ["Algo novo"],
+			onSuggestion: (t) => got.push(t),
+		});
+		const items = home.el.querySelectorAll(".ai-suggestion");
+		expect(items).toHaveLength(1);
+		items[0].dispatchEvent(new MouseEvent("click"));
+		expect(got).toEqual(["Algo novo"]);
+	});
+});

@@ -1307,76 +1307,344 @@
   }
 }
 
-  /* ===== Tela inicial: abas Chat/Contexto/Acoes ===== */
-  .ai-home {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin: auto 0;
-    text-align: left;
+
+/* ===== Tela inicial redesenhada (neon glass) ===== */
+.container.acodex-ai {
+  --ai-violet: #8b5cf6;
+  --ai-indigo: #6366f1;
+  --ai-cyan: #22d3ee;
+  --ai-ok: #34d399;
+  --ai-card: rgba(20, 22, 56, 0.62);
+  --ai-card-line: rgba(129, 120, 255, 0.22);
+  --ai-card-line-hot: rgba(139, 124, 255, 0.75);
+  --ai-glow: 0 0 18px rgba(124, 92, 255, 0.35);
+
+  background:
+    radial-gradient(120% 60% at 85% 0%, rgba(99, 70, 255, 0.16), transparent 60%),
+    radial-gradient(90% 50% at 0% 100%, rgba(34, 211, 238, 0.07), transparent 60%),
+    var(--primary-color);
+
+  .ai-svg {
+    flex: none;
+    display: block;
   }
 
-  .ai-home-tabs {
-    display: flex;
-    gap: 4px;
-    padding: 3px;
-    border-radius: 10px;
-    background: rgba(128, 128, 128, 0.10);
-  }
+  // ---- Header: logo + nome + status ----
+  .header {
+    border-bottom: none;
+    padding: 12px 12px 4px;
 
-  .ai-home-tab {
-    flex: 1;
-    padding: 6px 8px;
-    border: 0;
-    border-radius: 8px;
-    background: transparent;
-    color: var(--secondary-text-color);
-    font-size: 0.8rem;
-    text-align: center;
-    transition: background 0.15s ease, color 0.15s ease;
-
-    &.active {
-      background: var(--secondary-color);
-      color: var(--primary-text-color);
+    .title {
+      gap: 10px;
+      flex-wrap: wrap;
     }
   }
 
+  .ai-brand-logo {
+    flex: none;
+    width: 46px;
+    height: 46px;
+    display: grid;
+    place-items: center;
+    border-radius: 14px;
+    color: #b9a8ff;
+    background: linear-gradient(145deg, rgba(124, 92, 255, 0.28), rgba(34, 211, 238, 0.12));
+    border: 1px solid var(--ai-card-line-hot);
+    box-shadow: var(--ai-glow), inset 0 0 14px rgba(124, 92, 255, 0.25);
+  }
+
+  .ai-brand-text {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .ai-brand-name {
+    font-size: 1.12rem;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    color: var(--primary-text-color);
+  }
+
+  .ai-brand-status,
+  .ai-home-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.74rem;
+    color: var(--secondary-text-color);
+  }
+
+  .ai-home-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--ai-ok);
+    box-shadow: 0 0 8px var(--ai-ok);
+  }
+
+  .ai-gear-slot {
+    display: grid;
+    place-items: center;
+  }
+
+  // ---- Tela inicial ----
+  .ai-home {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin: 0;
+    padding: 4px 0 6px;
+    text-align: left;
+  }
+
+  // O cabeçalho (logo/nome) fica no .header; o hero da home só entra
+  // em telas onde o header não é visível.
+  .ai-home-hero {
+    display: none;
+  }
+
+  .ai-home-lead {
+    margin: 0;
+    font-size: 0.95rem;
+    line-height: 1.45;
+    color: var(--secondary-text-color);
+  }
+
+  // ---- Abas em cartões ----
+  .ai-home-tabs {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    padding: 0;
+    background: transparent;
+  }
+
+  .ai-home-tab {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    min-height: 88px;
+    padding: 12px 10px;
+    border-radius: 14px;
+    border: 1px solid var(--ai-card-line);
+    background: var(--ai-card);
+    color: var(--secondary-text-color);
+    text-align: left;
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.12s ease;
+
+    .ai-svg {
+      color: #8b7cff;
+      margin-bottom: 2px;
+    }
+
+    strong {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--primary-text-color);
+    }
+
+    .ai-home-tab-sub {
+      font-size: 0.7rem;
+      color: var(--secondary-text-color);
+    }
+
+    &:active {
+      transform: scale(0.98);
+    }
+
+    &.active {
+      border-color: var(--ai-card-line-hot);
+      background: linear-gradient(160deg, rgba(124, 92, 255, 0.28), rgba(34, 211, 238, 0.07)), var(--ai-card);
+      box-shadow: var(--ai-glow), inset 0 0 18px rgba(124, 92, 255, 0.18);
+      color: var(--primary-text-color);
+
+      .ai-svg {
+        color: #c4b8ff;
+      }
+    }
+  }
+
+  // ---- Banner do provedor ----
+  .ai-provider-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 14px;
+    border-radius: 16px;
+    border: 1px solid var(--ai-card-line-hot);
+    background: linear-gradient(120deg, rgba(99, 70, 255, 0.22), rgba(34, 211, 238, 0.07)), var(--ai-card);
+    box-shadow: var(--ai-glow);
+    color: var(--primary-text-color);
+    text-align: left;
+  }
+
+  .ai-provider-icon {
+    flex: none;
+    width: 42px;
+    height: 42px;
+    display: grid;
+    place-items: center;
+    border-radius: 12px;
+    color: #fff;
+    background: linear-gradient(145deg, #7c4dff, #4f46e5);
+    box-shadow: 0 0 14px rgba(124, 77, 255, 0.55);
+  }
+
+  .ai-provider-text {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .ai-provider-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+  }
+
+  .ai-provider-name {
+    font-size: 0.98rem;
+    font-weight: 600;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .ai-badge-active {
+    flex: none;
+    font-style: normal;
+    font-size: 0.68rem;
+    padding: 2px 9px;
+    border-radius: 999px;
+    color: var(--ai-ok);
+    background: rgba(52, 211, 153, 0.14);
+    border: 1px solid rgba(52, 211, 153, 0.4);
+  }
+
+  .ai-provider-sub {
+    font-size: 0.74rem;
+    color: var(--secondary-text-color);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .ai-chev {
+    flex: none;
+    display: grid;
+    place-items: center;
+    color: var(--secondary-text-color);
+  }
+
+  // ---- Painéis ----
   .ai-home-pane {
     display: none;
     flex-direction: column;
-    gap: 8px;
+    gap: 9px;
 
     &.visible {
       display: flex;
     }
   }
 
-  .ai-home-hero {
+  .ai-section-head {
     display: flex;
-    flex-direction: column;
-    gap: 4px;
-    color: var(--secondary-text-color);
+    align-items: center;
+    justify-content: space-between;
+    padding: 2px 2px 0;
+  }
 
-    > .icon {
-      font-size: 1.6rem;
-    }
+  .ai-section-title {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #8b7cff;
 
     strong {
-      color: var(--primary-text-color);
       font-size: 1rem;
-    }
-
-    p {
-      margin: 0;
-      font-size: 0.85rem;
-      line-height: 1.4;
+      color: var(--primary-text-color);
     }
   }
 
-  .ai-home-context {
+  .ai-see-all {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 2px;
+    border: none;
+    background: transparent;
+    color: var(--ai-cyan);
+    font-size: 0.78rem;
+  }
+
+  // ---- Sugestões em cartões ----
+  .ai-suggestion {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    min-height: 64px;
+    padding: 12px;
+    border-radius: 14px;
+    border: 1px solid var(--ai-card-line);
+    background: var(--ai-card);
+    color: var(--primary-text-color);
+    text-align: left;
+    transition: border-color 0.18s ease, transform 0.12s ease;
+
+    &:active {
+      transform: scale(0.99);
+      border-color: var(--ai-card-line-hot);
+    }
+  }
+
+  .ai-suggestion-icon {
+    flex: none;
+    width: 42px;
+    height: 42px;
+    display: grid;
+    place-items: center;
+    border-radius: 12px;
+    color: #a99bff;
+    background: rgba(99, 70, 255, 0.16);
+    border: 1px solid rgba(139, 124, 255, 0.3);
+  }
+
+  .ai-suggestion-text {
+    flex: 1;
+    min-width: 0;
     display: flex;
     flex-direction: column;
     gap: 2px;
+
+    strong {
+      font-size: 0.92rem;
+      font-weight: 500;
+      line-height: 1.25;
+    }
+
+    span {
+      font-size: 0.74rem;
+      color: var(--secondary-text-color);
+    }
+  }
+
+  // ---- Contexto ----
+  .ai-home-context {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
   }
 
   .ai-context-row {
@@ -1384,9 +1652,10 @@
     justify-content: space-between;
     align-items: center;
     gap: 8px;
-    padding: 8px 10px;
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
+    padding: 12px;
+    border: 1px solid var(--ai-card-line);
+    border-radius: 12px;
+    background: var(--ai-card);
     font-size: 0.85rem;
 
     span {
@@ -1401,6 +1670,7 @@
     }
   }
 
+  // ---- Ações (grade) ----
   .ai-actions-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -1410,23 +1680,22 @@
   .ai-action-card {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 6px;
     align-items: flex-start;
-    padding: 10px;
-    border: 1px solid var(--border-color);
-    border-radius: 10px;
-    background: transparent;
+    padding: 12px;
+    border: 1px solid var(--ai-card-line);
+    border-radius: 14px;
+    background: var(--ai-card);
     color: var(--primary-text-color);
     text-align: left;
-    transition: background 0.15s ease, border-color 0.15s ease;
 
-    > .icon {
-      font-size: 1.2rem;
-      color: var(--active-color);
+    .ai-suggestion-icon {
+      width: 38px;
+      height: 38px;
     }
 
     strong {
-      font-size: 0.85rem;
+      font-size: 0.86rem;
       font-weight: 600;
     }
 
@@ -1436,9 +1705,137 @@
       line-height: 1.3;
     }
 
-    &:active,
-    &:hover {
-      border-color: var(--active-color);
-      background: rgba(128, 128, 128, 0.08);
+    &:active {
+      border-color: var(--ai-card-line-hot);
+      box-shadow: var(--ai-glow);
     }
   }
+
+  // ---- Faixa de atalhos ----
+  .ai-shortcuts {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin-top: 2px;
+  }
+
+  .ai-shortcut {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-height: 68px;
+    padding: 8px 4px;
+    border-radius: 14px;
+    border: 1px solid var(--ai-card-line);
+    background: var(--ai-card);
+    color: var(--secondary-text-color);
+    font-size: 0.72rem;
+
+    .ai-svg {
+      color: #a99bff;
+    }
+
+    &:active {
+      border-color: var(--ai-card-line-hot);
+    }
+  }
+
+  // ---- Composer em cartão ----
+  .ai-composer {
+    position: relative;
+    display: block;
+    margin: 6px 10px 10px;
+    padding: 10px 12px 8px;
+    border-radius: 18px;
+    border: 1px solid var(--ai-card-line-hot);
+    background: linear-gradient(160deg, rgba(99, 70, 255, 0.18), rgba(34, 211, 238, 0.05)), var(--ai-card);
+    box-shadow: var(--ai-glow), inset 0 0 22px rgba(99, 70, 255, 0.12);
+
+    .ai-input {
+      display: block;
+      width: 100%;
+      min-height: 44px;
+      padding: 6px 54px 6px 2px;
+      border: none;
+      background: transparent;
+      box-shadow: none;
+      outline: none;
+      color: var(--primary-text-color);
+    }
+
+    .ai-composer-top {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 2px;
+    }
+
+    .ai-composer-tools {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .ai-composer-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 6px;
+      font-size: 0.72rem;
+      color: var(--secondary-text-color);
+    }
+
+    .ai-counter.near-limit {
+      color: var(--error-text-color, #f87171);
+    }
+
+    .ai-composer-provider {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      color: #8b7cff;
+    }
+
+    .ai-attach,
+    .ai-adjust,
+    .ai-mic {
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      color: var(--secondary-text-color);
+      background: rgba(129, 120, 255, 0.1);
+      border: 1px solid var(--ai-card-line);
+    }
+
+    .ai-send:not(.ai-attach):not(.ai-mic):not(.ai-adjust) {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-62%);
+      width: 52px;
+      height: 52px;
+      color: #fff;
+      background: linear-gradient(145deg, #8b5cf6, #4f46e5);
+      box-shadow: 0 0 20px rgba(124, 77, 255, 0.6);
+    }
+  }
+
+  @media (max-width: 360px) {
+    .ai-home-tab {
+      min-height: 78px;
+      padding: 10px 8px;
+    }
+    .ai-shortcuts {
+      gap: 6px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ai-home-tab,
+    .ai-suggestion {
+      transition: none;
+    }
+  }
+}
