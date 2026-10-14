@@ -319,9 +319,11 @@ export function createAiHome(options) {
 	function renderProvider() {
 		const provider = getProvider();
 		$provName.textContent = provider?.label || "Provedor de IA";
-		$provSub.textContent = provider?.model
+		let sub = provider?.model
 			? `${provider.model} \u2022 Rápido e seguro`
 			: "Modelos disponíveis \u2022 Rápido e seguro";
+		if (provider?.mcpCount) sub += ` \u2022 ${provider.mcpCount} MCP`;
+		$provSub.textContent = sub;
 	}
 
 	// ---------- Painéis ----------
