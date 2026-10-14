@@ -5,6 +5,7 @@ import {
 	runJavaScript,
 	runShellCommand,
 	SANDBOX_MODES,
+	validateNetUrl,
 } from "lib/sandbox";
 import { JS_WORKER_SOURCE } from "lib/sandbox/workerSource";
 
@@ -97,7 +98,7 @@ describe("runJavaScript", () => {
 		});
 		// the "end" signal terminates the worker and is not surfaced as a line
 		expect(lines).toEqual([{ type: "log", text: "olá" }]);
-		expect(worker.posted).toEqual({ code: "console.log('x')" });
+		expect(worker.posted).toEqual({ type: "run", code: "console.log('x')" });
 	});
 
 	it("resolves with an error line when Worker cannot start", async () => {
@@ -128,5 +129,110 @@ describe("runJavaScript", () => {
 		});
 		expect(lines[0].type).toBe("error");
 		expect(lines[0].text).toContain("Timeout");
+	});
+});
+
+describe("validateNetUrl", () => {
+	it("accepts public https urls", () => {
+		expect(validateNetUrl("https://api.github.com/repos").ok).toBe(true);
+	});
+
+	it("normalizes the accepted url", () => {
+		const check = validateNetUrl("https://example.com/dados");
+		expect(check.ok).toBe(true);
+		expect(check.url).toBe("https://example.com/dados");
+	});
+
+	it("rejects empty and invalid urls", () => {
+		expect(validateNetUrl("").ok).toBe(false);
+		expect(validateNetUrl("ftp://x.com").ok).toBe(false);
+		expect(validateNetUrl("http:// a b").ok).toBe(false);
+	});
+
+	it("rejects non-http protocols", () => {
+		expect(validateNetUrl("file:///etc/passwd").ok).toBe(false);
+		expect(validateNetUrl("ws://echo.example.com").ok).toBe(false);
+	});
+
+	it("rejects private and loopback hosts", () => {
+		expect(validateNetUrl("http://localhost/x").ok).toBe(false);
+		expect(validateNetUrl("http://127.0.0.1/x").ok).toBe(false);
+		expect(validateNetUrl("http://192.168.0.10/x").ok).toBe(false);
+		expect(validateNetUrl("http://10.0.0.5/x").ok).toBe(false);
+		expect(validateNetUrl("http://169.254.169.254/meta").ok).toBe(false);
+		expect(validateNetUrl("http://[::1]/x").ok).toBe(false);
+		expect(validateNetUrl("http://meu-pc.local/x").ok).toBe(false);
+	});
+
+	it("rejects non-standard ports and huge urls", () => {
+		expect(validateNetUrl("http://example.com:8080/x").ok).toBe(false);
+		expect(
+			validateNetUrl(`https://example.com/${"a".repeat(3000)}`).ok,
+		).toBe(false);
+	});
+});
+
+describe("runJavaScript net bridge", () => {
+	it("routes worker net requests through the validated fetcher", async () => {
+		const seen = [];
+		const worker = {
+			onmessage: null,
+			onerror: null,
+			terminate: () => {},
+			replies: [],
+			postMessage(message) {
+				if (message.type === "run") {
+					worker.onmessage?.({
+						data: { type: "net", id: 7, url: "https://example.com/api", options: {} },
+					});
+				} else if (message.type === "net-result") {
+					seen.push(message);
+					worker.onmessage?.({ data: { type: "log", text: "feito" } });
+					worker.onmessage?.({ data: { type: "end", text: "" } });
+				}
+			},
+		};
+		await runJavaScript("net.get('x')", {
+			WorkerCtor: function FakeWorker() {
+				return worker;
+			},
+			makeUrl: () => "blob:fake",
+			timeoutMs: 1000,
+			netFetch: async (url) => {
+				expect(url).toBe("https://example.com/api");
+				return { status: 200, ok: true, body: "payload", truncated: false };
+			},
+		});
+		expect(seen[0].ok).toBe(true);
+		expect(seen[0].response.body).toBe("payload");
+	});
+
+	it("reports rejected urls back to the worker", async () => {
+		let reply = null;
+		const worker = {
+			onmessage: null,
+			onerror: null,
+			terminate: () => {},
+			postMessage(message) {
+				if (message.type === "run") {
+					worker.onmessage?.({
+						data: { type: "net", id: 1, url: "http://localhost", options: {} },
+					});
+				} else if (message.type === "net-result") {
+					reply = message;
+					worker.onmessage?.({ data: { type: "end", text: "" } });
+				}
+			},
+		};
+		await runJavaScript("net.get('x')", {
+			WorkerCtor: function FakeWorker() {
+				return worker;
+			},
+			makeUrl: () => "blob:fake",
+			timeoutMs: 1000,
+			netFetch: async () => ({ status: 200, ok: true, body: "", truncated: false }),
+		});
+		expect(reply.ok).toBe(false);
+		expect(reply.error).toContain("privado");
 	});
 });
