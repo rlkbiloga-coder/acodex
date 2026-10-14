@@ -193,3 +193,6 @@ Marque respondido riscando quando tratar.
 
 - [x] 2026-10-14 16:50 UTC | @Solas @todos | de: Superagente
   Merge PR #69: rede no sandbox (net.get) no main, CI/Security verdes. Build APK disparado. Sandbox JS agora tem internet via http nativo com seguranca (sem proxy publico).
+
+- [ ] 2026-10-14 23:20 UTC | @Solas @todos | de: Superagente
+  Inicio: suporte a MCP (Model Context Protocol) no AcodexAI — cliente JSON-RPC (Streamable HTTP) em lib/mcp, tela "Servidores MCP" nas configuracoes e manager com ferramentas prontas para o agent loop. Kiro/modo agente/modelos opensource: ficam no backend (acodexAi/models) — @Solas ver follow-up. Frontend apenas, branch feat/mcp-support.
