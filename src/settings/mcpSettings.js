@@ -4,6 +4,7 @@ import prompt from "dialogs/prompt";
 import { nativeFetch } from "lib/acodexAi/nativeFetch";
 import appSettings from "lib/settings";
 import { testMcpConnection } from "./mcpConnection";
+import { MCP_SERVER_PRESETS } from "./mcpPresets";
 
 function currentUrl() {
 	return appSettings.value.aiMcpUrl || "";
@@ -36,6 +37,14 @@ export default function mcpSettings() {
 			icon: "delete_outline",
 			chevron: false,
 		},
+		// Presets públicos verificados: um toque configura.
+		...MCP_SERVER_PRESETS.map((preset) => ({
+			key: `preset:${preset.id}`,
+			text: `Usar ${preset.name}`,
+			info: preset.description,
+			icon: "cloud_download",
+			chevron: false,
+		})),
 	];
 
 	const page = settingsPage(
@@ -74,6 +83,17 @@ export default function mcpSettings() {
 				} catch (error) {
 					alert("MCP", `Falha na conexão: ${error?.message || error}`);
 				}
+				return;
+			}
+			if (key?.startsWith("preset:")) {
+				const preset = MCP_SERVER_PRESETS.find(
+					(p) => p.id === key.slice("preset:".length),
+				);
+				if (!preset) return;
+				await appSettings.update({ aiMcpUrl: preset.url }, false);
+				page.hide();
+				mcpSettings();
+				alert("MCP", `${preset.name} configurado. Use "Testar conexão".`);
 				return;
 			}
 			if (key === "clear") {
