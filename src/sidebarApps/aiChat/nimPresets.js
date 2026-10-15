@@ -9,6 +9,16 @@ export const NVIDIA_NIM_BASE_URL = "https://integrate.api.nvidia.com/v1";
 /** Seleção de modelos fortes do NIM (gratuitos, ~40 req/min por conta). */
 export const NVIDIA_NIM_MODELS = [
 	{
+		id: "z-ai/glm-5.3",
+		label: "GLM 5.3 (NIM)",
+		badges: ["NIM grátis", "raciocínio"],
+	},
+	{
+		id: "z-ai/glm-5.3-flash",
+		label: "GLM 5.3 Flash (NIM)",
+		badges: ["NIM grátis", "rápido"],
+	},
+	{
 		id: "moonshotai/kimi-k3",
 		label: "Kimi K3 (NIM)",
 		badges: ["NIM grátis", "híbrido MoE"],
