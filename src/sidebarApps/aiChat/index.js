@@ -6,6 +6,7 @@ import multiPrompt from "dialogs/multiPrompt";
 import { runAgent } from "lib/acodexAi/agent";
 import { BUILTIN_SKILLS } from "lib/acodexAi/builtinSkills";
 import { validateAiConfig, withBuiltinKey } from "lib/acodexAi/client";
+import { registerDataTools } from "lib/acodexAi/dataTools";
 import { createMcpClient } from "lib/acodexAi/mcp";
 import { getProviderForBaseUrl } from "lib/acodexAi/models";
 import { createSkillRegistry } from "lib/acodexAi/skills";
@@ -186,7 +187,7 @@ async function initSkills() {
 	skillCatalog = registrySkills.catalogPrompt;
 }
 
-const registry = createToolRegistry({
+const registryDeps = {
 	getActiveFile: () => editorManager.activeFile,
 	getOpenFiles: () => editorManager.files,
 	getEditor: () =>
@@ -198,7 +199,10 @@ const registry = createToolRegistry({
 	listCommands: () => Object.keys(commands),
 	confirm: (title, message) => confirm(title, message),
 	skills: skillHolder,
-});
+};
+const registry = createToolRegistry(registryDeps);
+// ferramentas opensource de dados: Papa Parse, JSONata, sql.js, Fuse.js, js-yaml
+registerDataTools(registry, registryDeps);
 
 function getConfig() {
 	const { aiBaseUrl, aiApiKey, aiModel } = appSettings.value;

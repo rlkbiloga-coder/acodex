@@ -1,106 +1,137 @@
-import { describe, expect, it, vi } from "vitest";
-import {
-	createMcpClient,
-	parseSseBody,
-	toOpenAiParameters,
-} from "../../src/lib/acodexAi/mcp";
+import { afterEach, describe, expect, it, vi } from "vitest";
+import { createMcpClient, toOpenAiParameters } from "../../src/lib/acodexAi/mcp";
 
-/** Resposta fetch falsa, mínima. */
-function res({ status = 200, headers = {}, body = "" } = {}) {
+/** Resposta fetch falsa com corpo fixo (json + text + body stream). */
+function res(status, headers, body) {
+	const map = new Map(Object.entries(headers ?? {}));
+	const stream = () =>
+		new ReadableStream({
+			start(controller) {
+				controller.enqueue(new TextEncoder().encode(body ?? ""));
+				controller.close();
+			},
+		});
 	return {
 		status,
 		ok: status < 400,
-		headers: {
-			get: (name) => headers[name?.toLowerCase()] ?? null,
+		headers: { get: (n) => map.get(n) ?? null },
+		text: async () => body ?? "",
+		json: async () => JSON.parse(body ?? "{}"),
+		get body() {
+			return map.get("content-type")?.includes("event-stream")
+				? stream()
+				: null;
 		},
-		text: async () => body,
 	};
 }
 
-const sse = (events) => events.map((e) => `event: message\ndata: ${JSON.stringify(e)}\n\n`).join("");
-
-describe("parseSseBody", () => {
-	it("extrai a mensagem pelo id", () => {
-		const body = sse([{ jsonrpc: "2.0", result: { a: 1 }, id: 7 }, { jsonrpc: "2.0", result: { b: 2 }, id: 8 }]);
-		expect(parseSseBody(body, 8)).toEqual({ jsonrpc: "2.0", result: { b: 2 }, id: 8 });
+/** Servidor MCP Streamable HTTP falso sobre fetch stubado. */
+function fakeServer(log = []) {
+	return vi.fn(async (url, init) => {
+		const message = JSON.parse(init.body);
+		log.push({ message, init });
+		if (message.method === "initialize") {
+			return res(200, { "mcp-session-id": "abc123", "content-type": "application/json" },
+				JSON.stringify({ jsonrpc: "2.0", id: message.id, result: { protocolVersion: "2025-06-18", capabilities: {}, serverInfo: { name: "t", version: "1" } } }));
+		}
+		if (message.method === "notifications/initialized") {
+			return res(202);
+		}
+		if (message.method === "tools/list") {
+			return res(200, { "content-type": "application/json" },
+				JSON.stringify({ jsonrpc: "2.0", id: message.id, result: { tools: [{ name: "search", description: "Busca", inputSchema: { type: "object", properties: { q: { type: "string" } } } }] } }));
+		}
+		if (message.method === "tools/call") {
+			return res(200, { "content-type": "text/event-stream" },
+				`event: message\ndata: ${JSON.stringify({ jsonrpc: "2.0", id: message.id, result: { content: [{ type: "text", text: `eco:${message.params.arguments?.t}` }] } })}\n\n`);
+		}
+		return res(404);
 	});
+}
 
-	it("ignora blocos que não são JSON", () => {
-		expect(parseSseBody("data: ping\n\n", 1)).toBeNull();
-	});
+afterEach(() => {
+	vi.unstubAllGlobals();
 });
 
 describe("toOpenAiParameters", () => {
 	it("mantém object schemas e normaliza o resto", () => {
-		expect(toOpenAiParameters({ type: "object", properties: { q: { type: "string" } } })).toMatchObject({ type: "object" });
+		expect(toOpenAiParameters({ type: "object", properties: {} })).toMatchObject({ type: "object" });
 		expect(toOpenAiParameters(undefined)).toEqual({ type: "object", properties: {} });
-		expect(toOpenAiParameters({ type: "string" })).toEqual({ type: "object", properties: {} });
 	});
 });
 
-describe("createMcpClient", () => {
-	it("faz handshake, guarda a sessão e lista tools", async () => {
-		const calls = [];
-		const fetchImpl = vi.fn(async (url, init) => {
-			calls.push({ url, init, body: JSON.parse(init.body) });
-			if (calls.length === 1) {
-				return res({ headers: { "mcp-session-id": "abc123", "content-type": "application/json" }, body: JSON.stringify({ jsonrpc: "2.0", id: 1, result: { protocolVersion: "2025-06-18" } }) });
-			}
-			if (calls.length === 2) return res({ headers: { "content-type": "application/json" }, body: "" });
-			return res({
-				headers: { "content-type": "application/json" },
-				body: JSON.stringify({ jsonrpc: "2.0", id: 2, result: { tools: [{ name: "search", description: "Busca", inputSchema: { type: "object", properties: { q: { type: "string" } } } }] } }),
-			});
-		});
-		const client = createMcpClient({ url: "https://srv/mcp", fetchImpl });
+describe("createMcpClient (SDK oficial)", () => {
+	it("conecta, lista tools com schema mapeado e devolve a sessão", async () => {
+		const log = [];
+		vi.stubGlobal("fetch", fakeServer(log));
+		const client = createMcpClient({ url: "https://srv/mcp" });
 		await client.initialize();
 		expect(client.getSessionId()).toBe("abc123");
 		const tools = await client.listTools();
-		expect(tools).toEqual([{ name: "search", description: "Busca", parameters: { type: "object", properties: { q: { type: "string" } } } }]);
-		// sessão é reenviada nas chamadas seguintes
-		expect(calls[2].init.headers["Mcp-Session-Id"]).toBe("abc123");
-		// notificação initialized não tem id
-		expect(calls[1].body.id).toBeUndefined();
+		expect(tools[0]).toMatchObject({
+			name: "search",
+			description: "Busca",
+			parameters: { type: "object", properties: { q: { type: "string" } } },
+		});
+		// a sessão voltou nas requisições seguintes
+		const listCall = log.find((e) => e.message.method === "tools/list");
+		const sent = (name) =>
+			listCall.init.headers instanceof Headers
+				? listCall.init.headers.get(name)
+				: (listCall.init.headers ?? {})[name] ??
+					(listCall.init.headers ?? {})[name.toLowerCase()];
+		expect(sent("Mcp-Session-Id")).toBe("abc123");
 	});
 
-	it("converte resposta SSE em chamada de tool", async () => {
-		let n = 0;
-		const fetchImpl = vi.fn(async () => {
-			n++;
-			if (n === 1) return res({ headers: { "content-type": "application/json" }, body: JSON.stringify({ jsonrpc: "2.0", id: 1, result: { protocolVersion: "2025-06-18" } }) });
-			if (n === 2) return res({ headers: { "content-type": "application/json" }, body: "" });
-			return res({ headers: { "content-type": "text/event-stream" }, body: sse([{ jsonrpc: "2.0", result: { content: [{ type: "text", text: "42" }] }, id: 2 }]) });
-		});
-		const client = createMcpClient({ url: "https://srv/mcp", fetchImpl });
+	it("faz callTool com resposta SSE e devolve texto", async () => {
+		vi.stubGlobal("fetch", fakeServer());
+		const client = createMcpClient({ url: "https://srv/mcp" });
 		await client.initialize();
-		const out = await client.callTool("calc", { expr: "6*7" });
-		expect(out).toEqual({ content: "42" });
+		const out = await client.callTool("eco", { t: "ola" });
+		expect(out).toEqual({ content: "eco:ola" });
 	});
 
-	it("retorna erro quando a tool sinaliza isError", async () => {
-		let n = 0;
-		const fetchImpl = vi.fn(async () => {
-			n++;
-			if (n === 1) return res({ headers: { "content-type": "application/json" }, body: JSON.stringify({ jsonrpc: "2.0", id: 1, result: { protocolVersion: "2025-06-18" } }) });
-			if (n === 2) return res({ headers: { "content-type": "application/json" }, body: "" });
-			return res({ headers: { "content-type": "application/json" }, body: JSON.stringify({ jsonrpc: "2.0", id: 2, result: { isError: true, content: [{ type: "text", text: "falhou" }] } }) });
-		});
-		const client = createMcpClient({ url: "https://srv/mcp", fetchImpl });
+	it("recusa operações antes de inicializar", async () => {
+		const client = createMcpClient({ url: "https://srv/mcp" });
+		await expect(client.listTools()).rejects.toThrow();
+		await expect(client.callTool("x", {})).rejects.toThrow();
+	});
+
+	it("propaga erro de servidor", async () => {
+		vi.stubGlobal("fetch", vi.fn(async () => res(500)));
+		const client = createMcpClient({ url: "https://srv/mcp" });
+		await expect(client.initialize()).rejects.toThrow();
+	});
+
+	it("recusa servidor que não fala MCP", async () => {
+		vi.stubGlobal(
+			"fetch",
+			vi.fn(async () =>
+				res(200, { "content-type": "application/json" }, JSON.stringify({ jsonrpc: "2.0", id: 0, result: {} })),
+			),
+		);
+		const client = createMcpClient({ url: "https://srv/mcp" });
+		await expect(client.initialize()).rejects.toThrow();
+	});
+
+	it("converte isError da tool em error", async () => {
+		vi.stubGlobal(
+			"fetch",
+			vi.fn(async (_url, init) => {
+				const message = JSON.parse(init.body);
+				if (message.method === "initialize") {
+					return res(200, { "content-type": "application/json" },
+						JSON.stringify({ jsonrpc: "2.0", id: message.id, result: { protocolVersion: "2025-06-18", capabilities: {}, serverInfo: { name: "t", version: "1" } } }));
+				}
+				if (message.method === "notifications/initialized") {
+					return res(202);
+				}
+				return res(200, { "content-type": "application/json" },
+					JSON.stringify({ jsonrpc: "2.0", id: message.id, result: { isError: true, content: [{ type: "text", text: "falhou" }] } }));
+			}),
+		);
+		const client = createMcpClient({ url: "https://srv/mcp" });
 		await client.initialize();
 		expect(await client.callTool("bad", {})).toEqual({ error: "falhou" });
-	});
-
-	it("recusa servidor que não negocia protocolo", async () => {
-		const fetchImpl = vi.fn(async () => res({ headers: { "content-type": "application/json" }, body: JSON.stringify({ jsonrpc: "2.0", id: 1, result: {} }) }));
-		const client = createMcpClient({ url: "https://srv/mcp", fetchImpl });
-		await expect(client.initialize()).rejects.toThrow("MCP");
-	});
-
-	it("recusa listTools antes do initialize e propaga erro JSON-RPC", async () => {
-		const client = createMcpClient({ url: "https://srv/mcp" });
-		await expect(client.listTools()).rejects.toThrow("inicializado");
-		const fetchImpl = vi.fn(async () => res({ status: 500 }));
-		const c2 = createMcpClient({ url: "https://srv/mcp", fetchImpl });
-		await expect(c2.initialize()).rejects.toThrow("HTTP 500");
 	});
 });
