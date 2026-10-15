@@ -5,7 +5,11 @@ import confirm from "dialogs/confirm";
 import multiPrompt from "dialogs/multiPrompt";
 import { runAgent } from "lib/acodexAi/agent";
 import { BUILTIN_SKILLS } from "lib/acodexAi/builtinSkills";
-import { validateAiConfig, withBuiltinKey } from "lib/acodexAi/client";
+import {
+	createChatCompletion,
+	validateAiConfig,
+	withBuiltinKey,
+} from "lib/acodexAi/client";
 import { registerDataTools } from "lib/acodexAi/dataTools";
 import { createMcpClient } from "lib/acodexAi/mcp";
 import { getProviderForBaseUrl } from "lib/acodexAi/models";
@@ -26,6 +30,8 @@ import {
 	DEFAULT_IMAGE_PROMPT,
 } from "./imageInput";
 import { createModelSwitcher } from "./modelSwitcher";
+import { describePowerModeChange, getPowerMode } from "./powerMode";
+import { createTokenMeter, createTokenMeterView } from "./tokenMeter";
 import { createAgentTracer, createTraceBus } from "./traceEvents";
 import { createVoiceInput, isVoiceSupported } from "./voiceInput";
 
@@ -56,6 +62,8 @@ let $counter;
 let $composerProvider;
 /** @type {HTMLElement|undefined} */
 let $composerProviderName;
+let tokenMeter = null;
+let tokenMeterView = null;
 
 function updateCounter() {
 	if (!$counter) return;
@@ -264,6 +272,7 @@ function initApp(el) {
 		);
 	}
 
+	const previousMode = () => appSettings.value.aiPowerMode;
 	const switcher = createModelSwitcher({
 		getConfig,
 		onSelect: async (modelId, baseUrl) => {
@@ -272,6 +281,12 @@ function initApp(el) {
 				patch.aiBaseUrl = baseUrl;
 			}
 			await appSettings.update(patch, false);
+		},
+		getActiveMode: () => getPowerMode(appSettings.value.aiPowerMode).id,
+		onSelectMode: async (modeId) => {
+			const from = appSettings.value.aiPowerMode;
+			await appSettings.update({ aiPowerMode: modeId }, false);
+			toast(describePowerModeChange(from, modeId));
 		},
 	});
 	switcherApi = switcher;
@@ -293,6 +308,15 @@ function initApp(el) {
 				</span>
 				{switcher.$toggle}
 				<span className="actions">
+					<button
+						type="button"
+						className="icon-button ai-fullscreen-toggle"
+						title="Tela cheia"
+						aria-label="Abrir em tela cheia"
+						onclick={toggleFullscreen}
+					>
+						<span className="icon fullscreen" />
+					</button>
 					<button
 						type="button"
 						className="icon-button"
@@ -332,6 +356,32 @@ function initApp(el) {
 	$composerProviderName = <span></span>;
 	$composerProvider.append($composerProviderName);
 	updateComposerProvider();
+
+	const isNimEndpoint = () => {
+		try {
+			return (
+				new URL(getConfig().baseUrl).hostname === "integrate.api.nvidia.com"
+			);
+		} catch {
+			return false;
+		}
+	};
+	tokenMeter = createTokenMeter({
+		rpmLimit: isNimEndpoint() ? 40 : null,
+	});
+	const meterView = createTokenMeterView(tokenMeter);
+	meterView.$el.addEventListener("click", () => meterView.update());
+	tokenMeterView = meterView;
+	el.querySelector(".ai-composer-bottom")?.append(meterView.$el);
+
+	function toggleFullscreen() {
+		const active = el.classList.toggle("ai-fullscreen");
+		document.documentElement.classList.toggle("ai-chat-fullscreen", active);
+		const $btn = el.querySelector(".ai-fullscreen-toggle .icon");
+		if ($btn)
+			$btn.className = `icon ${active ? "fullscreen_exit" : "fullscreen"}`;
+		$input.focus();
+	}
 	const $tools = <span className="ai-composer-tools"></span>;
 	$tools.append(imageInput.$btn);
 	const $adjust = (
@@ -828,7 +878,10 @@ async function send(rawText) {
 	tracer.start(text.length > 80 ? `${text.slice(0, 80)}…` : text);
 	// etapa real: montar o contexto do editor enviado no prompt do sistema
 	const contextStartedAt = Date.now();
-	const systemContext = buildSystemContext();
+	const powerMode = getPowerMode(appSettings.value.aiPowerMode);
+	const systemContext = [buildSystemContext(), powerMode.nudge]
+		.filter(Boolean)
+		.join("\n\n");
 	tracer.progress("context", "Preparando contexto do editor", "done", {
 		duration_ms: Date.now() - contextStartedAt,
 		metadata: { kind: "context", command: systemContext || undefined },
@@ -854,6 +907,7 @@ async function send(rawText) {
 		}
 	}
 
+	tokenMeter?.begin(text.length);
 	try {
 		await runAgent({
 			history,
@@ -862,6 +916,13 @@ async function send(rawText) {
 			signal: controller.signal,
 			systemContext,
 			skillCatalog,
+			complete: powerMode.maxTokens
+				? (params) =>
+						createChatCompletion({
+							...params,
+							max_tokens: powerMode.maxTokens,
+						})
+				: undefined,
 			onEvent(event) {
 				// toda atividade do agente vira evento tipado no bus (nada simulado)
 				tracer.handleAgentEvent(event);
@@ -870,6 +931,7 @@ async function send(rawText) {
 					tracer.beginModel("Analisando resultado da ferramenta");
 				} else if (event.type === "assistant-delta") {
 					liveBuffer += event.text;
+					tokenMeter?.trackOutput(event.text.length);
 					renderLive();
 				} else if (event.content !== undefined) {
 					$liveMsg?.remove();
@@ -895,6 +957,7 @@ async function send(rawText) {
 		$liveMsg = null;
 		controller = null;
 		setBusy(false);
+		tokenMeterView?.update();
 	}
 }
 

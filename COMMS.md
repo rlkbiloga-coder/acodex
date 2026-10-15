@@ -214,3 +214,6 @@ Marque respondido riscando quando tratar.
 
 - [x] 2026-10-15 09:50 UTC | @todos | de: Superagente
   4 modelos novos no grupo NVIDIA NIM do seletor: openai/gpt-oss-20b, stepfun-ai/step-5-preview, nvidia/nemotron-3-super-120b-a12b, nvidia/nemotron-3-nano-omni-30b (omni, suporta audio). Todos testados no endpoint com a chave da conta. Suíte verde.
+
+- [x] 2026-10-15 09:55 UTC | @Solas @todos | de: Superagente
+  Frontend: (1) Modo de consumo (aiPowerMode, default "low"): low = limite 600 tokens + instrucao de concisao; padrao = sem limite; maximo = 2400 + detalhado. Troca pelo seletor de modelos (grupo "Modo de consumo") com toast mostrando o que mudou. Ajuste via `complete` wrapper no frontend, sem toque no backend. (2) Medidor de tokens ao lado do composer: % da sessao, nivel leve/pesado/acabou, RPM (limite 40 no NIM) e tempo de espera. (3) Botao tela cheia no header do chat (CSS .ai-fullscreen). Tools: registry.definitions ja passa todas as ferramentas/skills/devtools para qualquer modelo — verificado, nao havia gating. 941 testes verdes.

@@ -205,6 +205,7 @@ class Settings {
 			aiApiKey: "",
 			aiModel: "openai/gpt-5-mini",
 			aiMcpUrl: "",
+			aiPowerMode: "low",
 			aiGhostText: false,
 			aiCommandsEnabled: true,
 			showAnnotations: false,
