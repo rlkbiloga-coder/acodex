@@ -680,6 +680,19 @@ async function loadApp() {
 	);
 	const folders = helpers.parseJSON(localStorage.folders);
 	const files = helpers.parseJSON(localStorage.files) || [];
+	// Acodex IA: no phone a barra de abas sob o header é redundante
+	// (o header já mostra o arquivo ativo). A lista de arquivos abertos
+	// fica no sidebar, acessível pela navbar inferior.
+	if (
+		innerWidth <= 750 &&
+		settings.value.openFileListPos === settings.OPEN_FILE_LIST_POS_HEADER
+	) {
+		await settings.update(
+			{ openFileListPos: settings.OPEN_FILE_LIST_POS_SIDEBAR },
+			false,
+		);
+	}
+
 	const editorManager = await EditorManager($header, $main);
 
 	const setMainMenu = () => {
