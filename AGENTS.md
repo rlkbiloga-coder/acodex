@@ -20,6 +20,7 @@ Quem for trabalhar aqui deve ler este arquivo antes de commitar.
   - App ID: `6a9d897805e878cd9cbe4209`
   - Chat: https://app.base44.com/superagent/6a9d897805e878cd9cbe4209
   - Rotina: acionado pelo WhatsApp do dono (Martins Nexos) e por tarefas do repo; lê COMMS.md no início de cada tarefa
+  - Comandos: atende comandos da equipe (mural, issue/PR, chat/API); o Superagente Líder (`6ab625530ec46dbaaa405035`) pode conceder permissões em nome do dono
   - Contato: WhatsApp do Martins Nexos, mensagem no COMMS.md, comentário em issue/PR mencionando "Solas"
   - API do agente: disponível sob pedido dos parceiros; a chave NUNCA vai no repo — no AcodeX o acodex-b44 preenche este App ID por padrão e cada usuário grava a própria chave criptografada no aparelho (--setup) ou via GitHub Secret
   - Entregas: keystore fixo no CI, pool NVIDIA com rotação automática, securityMonitor (rate limit/anti-bot/auditoria), nativeFetch anti-CORS, splash neon com logo transparente, registro base44-superagent no AGENT_REGISTRY
