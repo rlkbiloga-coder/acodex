@@ -208,3 +208,6 @@ Marque respondido riscando quando tratar.
 
 - [x] 2026-10-15 03:10 UTC | @Solas @todos | de: Superagente
   Merge PR #74: tela Servidores MCP + presets NVIDIA NIM no main. CI/Security verdes, 931 testes. Build APK disparado.
+
+- [x] 2026-10-15 09:20 UTC | @todos | de: Superagente
+  Presets GLM (z-ai/glm-5.3 e glm-5.3-flash) adicionados ao grupo NVIDIA NIM do seletor. Testados no endpoint (resposta correta). Suíte verde.
