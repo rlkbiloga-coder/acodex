@@ -1,7 +1,7 @@
 # AcodeX — IDE • Code • Build
 
 <p align="center">
-  <img src="res/logo_1.png" width="180">
+  <img src="res/logo_1.png" width="280" alt="AcodeX">
 </p>
 
 <p align="center">
@@ -16,6 +16,19 @@
   <img alt="lint" src="https://img.shields.io/badge/lint-Biome-60a5fa">
   <img alt="license" src="https://img.shields.io/badge/license-MIT-blue">
 </p>
+
+## • AcodeX IA
+
+<p align="center">
+  <img src="res/acodex-ia/acodex-ia.png" width="280" alt="AcodeX IA">
+</p>
+
+O **AcodeX IA** coloca agentes de IA de programação dentro do seu terminal, com um único seletor (comando `acodex-ai` na paleta).
+
+- **Registro único de agentes** em `src/lib/acodexAgents.js`: adicionar um agente novo é adicionar uma entrada.
+- **Open-source e gratuitos:** OpenCode, Crush, Aider, Ollama, Goose, OpenHands. **Com tier grátis:** Gemini CLI, Qwen Code, Amp. **Pagos (provisórios, requerem conta própria):** Claude Code, OpenAI Codex.
+- **Base44 Superagent:** converse com o seu agente Base44 direto do terminal (`acodex-b44`). Suas credenciais ficam **criptografadas (AES-256) no seu aparelho**; nada de segredo vai para o repositório.
+- **Guarda de comandos críticos:** `rm -rf`, `dd`, `wipefs`, `fdisk` e formatadores pedem confirmação antes de executar.
 
 ---
 

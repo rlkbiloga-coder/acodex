@@ -7,11 +7,8 @@
  */
 
 import select from "dialogs/select";
-import {
-	AGENT_REGISTRY,
-	buildApiHelperInstall,
-	TIER_LABEL,
-} from "lib/acodexAgents";
+import iaThumb from "./acodexAi/acodex-ia-thumb.jpg?inline";
+import { AGENT_REGISTRY, TIER_LABEL, buildApiHelperInstall } from "lib/acodexAgents";
 
 /**
  * AcodeX IA — AI coding agent launcher.
@@ -38,7 +35,8 @@ export function buildAgentCommand(agent) {
  * @returns {string}
  */
 export function buildApiAgentCommand(agent) {
-	const hint = `echo '${agent.script} pronto: ${agent.script} "sua mensagem para o agente"'`;
+	const hint =
+		`echo '${agent.script} pronto: ${agent.script} "sua mensagem para o agente"'`;
 	return `${buildApiHelperInstall(agent)}; ${hint}`;
 }
 
@@ -92,9 +90,12 @@ export default async function acodexAI() {
 	const agents = Object.values(AGENT_REGISTRY);
 	const agentName = await select(
 		strings["acodex ia agent"] || "AcodeX IA: choose an AI agent",
-		agents.map((agent) => ({
+		agents.map((agent, index) => ({
 			value: agent.name,
-			text: agent.name,
+			text:
+				index === 0
+					? `<img src="${iaThumb}" width="28" height="28" style="vertical-align:middle;border-radius:6px;margin-right:8px" alt="">${agent.name}`
+					: agent.name,
 			subText: `${agent.description} [${TIER_LABEL[agent.tier]}]`,
 		})),
 		{ hideOnSelect: true },
