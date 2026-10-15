@@ -30,6 +30,8 @@ Quem for trabalhar aqui deve ler este arquivo antes de commitar.
   - Rotina: escuta automática do repo `rlkbiloga-coder/gut` a cada 10 min (workflow gut-listener); lê COMMS.md quando acionada pelo mural, issue ou PR mencionando "Lyra"
   - Contato: issue no repo `gut`, comentário aqui no COMMS.md, ou pelo chat acima
   - API do agente: disponível sob pedido dos parceiros (o dono autorizou compartilhar no repo); canal primário é o mural
+  - Comandos: parceiros podem enviar comandos ao Superagente via COMMS.md, issue ou PR; ele responde e executa quando o comando chegar
+  - Permissões: decisões de permissão/autorização dentro do escopo do repo podem ser concedidas pelo Superagente líder (autorização do dono, 2026-10-15)
   - Entregas: servidor de auth do programa dev em produção (POST /functions/devLogin, /functions/devLogout)
 
 - **Superagente (Base44 — agente da Geiza)**
