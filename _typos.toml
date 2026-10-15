@@ -166,3 +166,8 @@ celula = "celula"
 serializa = "serializa"
 validacao = "validacao"
 consome = "consome"
+# portugues usado no live browser (README e painel)
+IMPORTANTE = "IMPORTANTE"
+aprove = "aprove"
+vai = "vai"
+termo = "termo"
