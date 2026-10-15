@@ -36,8 +36,13 @@ export const AGENT_REGISTRY = {
 		tier: "freemium",
 		status: "ativo",
 		script: "acodex-b44",
-		description: "Superagent da Base44 (sandbox, git, navegador, automações)",
-		note: "cada usuário configura o PRÓPRIO agente e créditos — nada embutido no app",
+		defaultAgentId: "6a9d897805e878cd9cbe4209",
+		defaultAgentName: "Solas (Martins Nexos)",
+		defaultAgentUrl:
+			"https://app.base44.com/superagent/6a9d897805e878cd9cbe4209",
+		description:
+			"Superagent da Base44 (sandbox, git, navegador, automações) — padrão: Solas, agente do Martins Nexos",
+		note: "cada usuário configura o PRÓPRIO agente e créditos — nada embutido no app. O id padrão (público) já vem preenchido; a chave de API NUNCA vai no repo",
 	},
 	"gemini-cli": {
 		name: "Gemini CLI",
@@ -174,8 +179,10 @@ CONVFILE="$HOME/.acodex/b44.conv"
 setup() {
   command -v openssl >/dev/null 2>&1 || { echo "acodex-b44: openssl ausente no sandbox"; exit 1; }
   mkdir -p "$HOME/.acodex" && chmod 700 "$HOME/.acodex"
-  printf "id do SEU agente Base44: "
+  DEFAULT_ID="\${ACODEX_DEFAULT_B44_ID:-${agent.defaultAgentId}}"
+  printf "id do SEU agente Base44 [Enter = Solas (Martins Nexos) 6a9d897805e878cd9cbe4209]: "
   read AGENT
+  [ -z "$AGENT" ] && AGENT="$DEFAULT_ID"
   printf "chave de API do agente: "
   stty -echo 2>/dev/null; read KEY; stty echo 2>/dev/null; printf "\\n"
   printf "senha p/ criptografar localmente (sua, nunca sai daqui): "
@@ -202,7 +209,7 @@ if [ -f "$STORE" ]; then
   AGENT=$(echo "$PLAIN" | sed -n 1p)
   KEY=$(echo "$PLAIN" | sed -n 2p)
 else
-  AGENT="\${ACODEX_BASE44_AGENT:-}"
+  AGENT="\${ACODEX_BASE44_AGENT:-${agent.defaultAgentId}}"
   KEY="\${ACODEX_BASE44_KEY:-}"
 fi
 
