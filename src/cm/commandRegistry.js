@@ -528,6 +528,7 @@ function registerCoreCommands() {
 	addCommand({
 		name: "openCommandPalette",
 		description: "Open command palette",
+		key: "Ctrl-K",
 		readOnly: true,
 		requiresView: false,
 		run() {
