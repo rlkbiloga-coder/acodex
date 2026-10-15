@@ -1,0 +1,18 @@
+{
+	"name": "acodex-live-browser",
+	"version": "0.2.0",
+	"description": "Backend open source do navegador controlado do AcodeX IA (Playwright + Chromium, self-hosted)",
+	"license": "MIT",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"start": "node src/server.js",
+		"test": "node --test"
+	},
+	"dependencies": {
+		"cors": "^2.8.5",
+		"express": "^4.21.2",
+		"playwright": "1.55.0",
+		"ws": "^8.18.0"
+	}
+}

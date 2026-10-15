@@ -7,6 +7,7 @@ import { runAgent } from "lib/acodexAi/agent";
 import { BUILTIN_SKILLS } from "lib/acodexAi/builtinSkills";
 import { validateAiConfig, withBuiltinKey } from "lib/acodexAi/client";
 import { registerDataTools } from "lib/acodexAi/dataTools";
+import { registerLiveBrowserTools } from "lib/acodexAi/liveBrowserTools";
 import { createMcpClient } from "lib/acodexAi/mcp";
 import { getProviderForBaseUrl } from "lib/acodexAi/models";
 import { createSkillRegistry } from "lib/acodexAi/skills";
@@ -18,6 +19,7 @@ import openFile from "lib/openFile";
 import appSettings from "lib/settings";
 import { upgradeAssistantMessage } from "./advancedRender";
 import { createAgentActivity } from "./agentActivity";
+import { createBrowserPanel } from "./browserPanel";
 import { renderAssistantMessage } from "./format";
 import { createAiHome, createIcon } from "./homeScreen";
 import {
@@ -43,6 +45,12 @@ const TOOL_LABELS = {
 	run_command: "Executando comando",
 	list_skills: "Listando skills",
 	load_skill: "Carregando skill",
+	browser_create_session: "Abrindo navegador remoto",
+	browser_navigate: "Navegando no site",
+	browser_get_state: "Lendo a página",
+	browser_screenshot: "Capturando screenshot",
+	browser_click: "Clicando no site",
+	browser_fill: "Preenchendo campo",
 };
 
 const FENCE = "```";
@@ -204,6 +212,9 @@ const registry = createToolRegistry(registryDeps);
 // ferramentas opensource de dados: Papa Parse, JSONata, sql.js, Fuse.js, js-yaml
 registerDataTools(registry, registryDeps);
 
+// navegador remoto controlado pelo agente (server/live-browser, open source)
+registerLiveBrowserTools(registry, { appSettings });
+
 function getConfig() {
 	const { aiBaseUrl, aiApiKey, aiModel } = appSettings.value;
 	return withBuiltinKey({
@@ -345,6 +356,8 @@ function initApp(el) {
 	);
 	$adjust.append(createIcon("sliders", 16));
 	$tools.append($adjust);
+	const browserPanel = createBrowserPanel();
+	$tools.append(browserPanel.$btn);
 	if ($micBtn) $tools.append($micBtn);
 	el.append(
 		$messages,

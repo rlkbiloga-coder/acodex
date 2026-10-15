@@ -1839,3 +1839,154 @@
     }
   }
 }
+
+/* ===== Live Browser (navegador remoto open source) ===== */
+.lb-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 130;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(0, 0, 0, 0.5);
+  animation: mask-enter 160ms ease-out both;
+}
+
+.lb-panel {
+  width: 100%;
+  max-width: 420px;
+  max-height: 86vh;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px;
+  border-radius: var(--radius-lg, 14px);
+  background-color: var(--popup-background-color);
+  color: var(--popup-text-color);
+  border: 1px solid var(--popup-border-color, var(--border-color));
+  box-shadow: var(--elevation-3, 0 8px 24px rgba(0, 0, 0, 0.35));
+  overflow-y: auto;
+  animation: prompt-enter 180ms var(--ease-out-soft, ease-out) both;
+}
+
+.lb-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.lb-title {
+  flex: 1;
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.lb-close {
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  transform: rotate(90deg);
+  padding: 4px;
+}
+
+.lb-config {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+
+  input {
+    flex: 1 1 100%;
+    padding: 9px 12px;
+    border-radius: var(--radius-md, 10px);
+    border: 1px solid var(--border-color);
+    background-color: var(--secondary-color);
+    color: var(--secondary-text-color);
+    font-size: 13px;
+    box-sizing: border-box;
+  }
+
+  .lb-action {
+    flex: 0 0 auto;
+  }
+}
+
+.lb-bar {
+  display: flex;
+  gap: 8px;
+
+  input {
+    flex: 1;
+    padding: 9px 12px;
+    border-radius: var(--radius-md, 10px);
+    border: 1px solid var(--border-color);
+    background-color: var(--secondary-color);
+    color: var(--secondary-text-color);
+    font-size: 14px;
+    box-sizing: border-box;
+  }
+}
+
+.lb-shot-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 180px;
+  border-radius: var(--radius-md, 10px);
+  background-color: var(--border-color);
+  overflow: hidden;
+}
+
+.lb-shot {
+  max-width: 100%;
+  max-height: 44vh;
+  object-fit: contain;
+
+  &.empty {
+    display: none;
+  }
+}
+
+.lb-shot-container:has(.lb-shot.empty)::after {
+  content: "Sem screenshot. Configure o servidor e abra um endereço.";
+  padding: 24px;
+  font-size: 12px;
+  opacity: 0.7;
+  text-align: center;
+}
+
+.lb-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+}
+
+.lb-status {
+  flex: 1;
+  opacity: 0.85;
+  min-width: 120px;
+}
+
+.lb-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.lb-action {
+  padding: 8px 12px;
+  font-size: 13px;
+  border-radius: var(--radius-md, 10px);
+  border: 1px solid var(--border-color);
+  background-color: var(--secondary-color);
+  color: var(--secondary-text-color);
+  cursor: pointer;
+
+  &.primary {
+    background-color: var(--active-color);
+    color: var(--active-text-color, #fff);
+    border-color: transparent;
+  }
+}

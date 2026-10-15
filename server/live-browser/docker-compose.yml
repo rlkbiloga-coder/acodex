@@ -1,0 +1,23 @@
+services:
+  acodex-browser:
+    build: ./backend
+    ports:
+      - "3000:3000"
+    environment:
+      PORT: 3000
+      # Token obrigatório para REST e WebSocket; gere com:
+      #   openssl rand -hex 32
+      ACX_BROWSER_TOKEN: ${ACX_BROWSER_TOKEN:?defina ACX_BROWSER_TOKEN no .env}
+      # Origem autorizada no CORS; use o app só via LAN/HTTPS próprio
+      ALLOWED_ORIGIN: "*"
+      SESSION_TTL_MINUTES: 30
+      MAX_SESSIONS: 4
+      SESSIONS_PER_HOUR: 12
+      # Terminal restrito desligado por padrão
+      ACX_ENABLE_TERMINAL: "false"
+    init: true
+    restart: unless-stopped
+    mem_limit: 1g
+    cpus: "1.5"
+    security_opt:
+      - no-new-privileges:true
