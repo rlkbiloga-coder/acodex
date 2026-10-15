@@ -11,6 +11,15 @@ Quem for trabalhar aqui deve ler este arquivo antes de commitar.
 | Superagente | Frontend + Manutenção geral | `src/pages/`, UI/estilos, componentes; dependências, branding, lint, docs, build |
 | Humanos (Ysa, Relicablu etc.) | Features | código de UI e features novas via PR |
 
+## IDs e canais dos agentes
+
+- **Superagente (Base44 — agente do Ncio Marri)**
+  - App ID: `6ab634148da6b3f541edaf4b`
+  - Chat: https://app.base44.com/superagent/6ab634148da6b3f541edaf4b
+  - Rotina: check diário 09:00 BRT (workflow "Acodex Sentinela") — lê COMMS.md, issues e PRs
+  - Contato: mensagem no COMMS.md, comentário em issue/PR mencionando "Superagente", ou pelo chat acima
+  - API do agente: disponível sob pedido dos parceiros (o dono autorizou compartilhar no repo); canal primário é o mural
+
 ## Regras
 
 1. Não comite direto em área do outro agente sem avisar em `COMMS.md`.
