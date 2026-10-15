@@ -1001,6 +1001,13 @@ async function openSettings() {
 					value: appSettings.value.aiMcpUrl,
 					required: false,
 				},
+				{
+					id: "vesperApiKey",
+					type: "password",
+					placeholder: "API key do agente Vesper (opcional)",
+					value: appSettings.value.aiVesperApiKey,
+					sensitive: true,
+				},
 			],
 			"Funciona com Vercel AI Gateway, OpenAI, OpenRouter, Groq ou qualquer API compatível com OpenAI. A chave fica salva apenas neste dispositivo.",
 		);
@@ -1010,6 +1017,7 @@ async function openSettings() {
 				aiModel: result.model.trim(),
 				aiApiKey: result.apiKey.trim(),
 				aiMcpUrl: (result.mcpUrl || "").trim(),
+				aiVesperApiKey: (result.vesperApiKey || "").trim(),
 			},
 			false,
 		);
