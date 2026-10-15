@@ -24,6 +24,14 @@ const app = express();
 const server = http.createServer(app);
 const wss = new WebSocketServer({ server, path: "/ws" });
 
+/**
+ * Origem padrão autorizada no CORS: o WebView do app Cordova serve em
+ * https://localhost. Nunca usamos "*" — defina ALLOWED_ORIGIN para liberar
+ * outra origem (ex.: um front web próprio com HTTPS).
+ */
+const DEFAULT_CORS_ORIGIN = "https://localhost";
+const CORS_ORIGIN = process.env.ALLOWED_ORIGIN || DEFAULT_CORS_ORIGIN;
+
 const PORT = Number(process.env.PORT || 3000);
 const TOKEN = (process.env.ACX_BROWSER_TOKEN || "").trim();
 const AUTH_REQUIRED = TOKEN.length > 0;
@@ -34,8 +42,9 @@ const TTL_MS = Number(process.env.SESSION_TTL_MINUTES || 30) * 60_000;
 
 const sessions = new Map();
 const sessionCreations = new Map(); // ip -> timestamps
+const rateWindows = new Map(); // chave arbitrária -> timestamps
 
-app.use(cors({ origin: process.env.ALLOWED_ORIGIN || "*" }));
+app.use(cors({ origin: CORS_ORIGIN }));
 app.use(express.json({ limit: "32kb" }));
 
 function sendEvent(event) {
@@ -129,6 +138,20 @@ function approvalGate(body) {
 		e.code = "APPROVAL_REQUIRED";
 		throw e;
 	}
+}
+
+/**
+ * Janela deslizante por IP para endpoints sensíveis.
+ * @param {string} key
+ * @param {number} limit
+ * @param {number} windowMs
+ */
+function rateLimited(key, limit, windowMs) {
+	const now = Date.now();
+	const recent = (rateWindows.get(key) || []).filter((t) => now - t < windowMs);
+	recent.push(now);
+	rateWindows.set(key, recent);
+	return recent.length > limit;
 }
 
 function tooManySessions(ip) {
@@ -319,6 +342,12 @@ if (TERMINAL_ENABLED) {
 		res.json({ commands: Object.keys(ALLOWED_COMMANDS) }),
 	);
 	app.post("/api/terminal/run", (req, res) => {
+		if (rateLimited(`terminal:${req.ip || "unknown"}`, 20, 60_000)) {
+			return res.status(429).json({
+				error: "Muitas execuções; aguarde um minuto.",
+				code: "RATE_LIMITED",
+			});
+		}
 		const command = String(req.body?.command || "");
 		const entry = ALLOWED_COMMANDS[command];
 		if (!entry) {
