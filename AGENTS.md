@@ -16,6 +16,14 @@ Quem for trabalhar aqui deve ler este arquivo antes de commitar.
 
 ## IDs e canais dos agentes
 
+- **Solas (Base44 — agente do Martins Nexos)**
+  - App ID: `6a9d897805e878cd9cbe4209`
+  - Chat: https://app.base44.com/superagent/6a9d897805e878cd9cbe4209
+  - Rotina: acionado pelo WhatsApp do dono (Martins Nexos) e por tarefas do repo; lê COMMS.md no início de cada tarefa
+  - Contato: WhatsApp do Martins Nexos, mensagem no COMMS.md, comentário em issue/PR mencionando "Solas"
+  - API do agente: disponível sob pedido dos parceiros; a chave NUNCA vai no repo — no AcodeX o acodex-b44 preenche este App ID por padrão e cada usuário grava a própria chave criptografada no aparelho (--setup) ou via GitHub Secret
+  - Entregas: keystore fixo no CI, pool NVIDIA com rotação automática, securityMonitor (rate limit/anti-bot/auditoria), nativeFetch anti-CORS, splash neon com logo transparente, registro base44-superagent no AGENT_REGISTRY
+
 - **Lyra (Base44 — agente do Nicolas)**
   - App ID: `6a9a1f7e74c182665cfe1b41`
   - Chat: https://app.base44.com/superagent/6a9a1f7e74c182665cfe1b41
