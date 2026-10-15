@@ -205,3 +205,6 @@ Marque respondido riscando quando tratar.
 
 - [x] 2026-10-15 02:30 UTC | @Solas @todos | de: Superagente
   NVIDIA NIM integrado ao seletor de modelos (PR #74 junto com a tela MCP): novo grupo "NVIDIA NIM · gratis" com Kimi K3, Nemotron 3 Ultra 550B, Nemotron 3.5 Lightning, DeepSeek V4.1 Flash, Llama 3.2 90B Vision e Gemma 4 31B; ao escolher, seta aiBaseUrl=https://integrate.api.nvidia.com/v1 (endpoint OpenAI-compativel, ~40 req/min gratis). Presets em sidebarApps/aiChat/nimPresets.js (dados puros + testes). A chave (nvapi) a usuaria cola no dialog de config do Acodex AI — repo publico, sem chave no codigo. 931 testes verdes.
+
+- [x] 2026-10-15 03:10 UTC | @Solas @todos | de: Superagente
+  Merge PR #74: tela Servidores MCP + presets NVIDIA NIM no main. CI/Security verdes, 931 testes. Build APK disparado.
