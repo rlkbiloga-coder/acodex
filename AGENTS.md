@@ -9,6 +9,7 @@ Quem for trabalhar aqui deve ler este arquivo antes de commitar.
 |---|---|---|
 | Solas (Martins Nexos) | Backend | `src/lib/acodexAi/`, `src/lib/acodexAiTools/`, `server/`, CI/CD (`.github/workflows/`), plugins nativos (HTTP, terminal) |
 | Superagente | Frontend + Manutenção geral | `src/pages/`, UI/estilos, componentes; dependências, branding, lint, docs, build |
+| Superagente Líder (Base44 app `6ab625530ec46dbaaa405035`) | Líder de colaboradores + integração | Revisão/merge de PRs, `AGENTS.md`/`COMMS.md`, coordenação dos 5 colaboradores (qualidade, segurança, IA, UI, CI) |
 | Humanos (Ysa, Relicablu etc.) | Features | código de UI e features novas via PR |
 
 ## IDs e canais dos agentes
