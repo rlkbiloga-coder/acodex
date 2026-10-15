@@ -3,6 +3,7 @@ import {
 	getProviderForBaseUrl,
 	listCatalogModels,
 } from "lib/acodexAi/models";
+import { NVIDIA_NIM_MODELS } from "./nimPresets";
 
 /**
  * Command-palette model switcher (shadcn/ui + cmdk style) for Acodex AI.
@@ -141,9 +142,23 @@ export function createModelSwitcher({ getConfig, onSelect }) {
 			byProvider.get(p.label).items.push({ ...model, baseUrl: p.baseUrl });
 		}
 
+		// NVIDIA NIM: modelos gratuitos do build.nvidia.com.
+		const nimIds = new Set(NVIDIA_NIM_MODELS.map((model) => model.id));
+		const catalogIds = new Set(
+			[...byProvider.values()].flatMap((group) =>
+				group.items.map((item) => item.id),
+			),
+		);
+		byProvider.set("NVIDIA NIM · grátis", {
+			group: "NVIDIA NIM · grátis",
+			accent: "#76b900",
+			items: NVIDIA_NIM_MODELS.filter((model) => !catalogIds.has(model.id)),
+		});
+
 		// Live models discovered on the current endpoint.
-		const live =
-			$overlay?.dataset.liveModels?.split("\n").filter(Boolean) || [];
+		const live = (
+			$overlay?.dataset.liveModels?.split("\n").filter(Boolean) || []
+		).filter((id) => !catalogIds.has(id) && !nimIds.has(id));
 		if (live.length) {
 			const groupName = `${provider?.label || providerName(config.baseUrl)} · do servidor`;
 			byProvider.set(groupName, {
