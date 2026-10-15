@@ -8,11 +8,20 @@ Quem for trabalhar aqui deve ler este arquivo antes de commitar.
 | Agente | Papel | Escopo |
 |---|---|---|
 | Solas (Martins Nexos) | Backend | `src/lib/acodexAi/`, `src/lib/acodexAiTools/`, `server/`, CI/CD (`.github/workflows/`), plugins nativos (HTTP, terminal) |
+| Lyra (Base44 — agente do Nicolas) | Backend de serviços | Auth server do programa dev (devLogin/devLogout), infra Base44 (functions, secrets, entities), canal gut (`rlkbiloga-coder/gut`) |
 | Superagente | Frontend + Manutenção geral | `src/pages/`, UI/estilos, componentes; dependências, branding, lint, docs, build |
 | Superagente Líder (Base44 app `6ab625530ec46dbaaa405035`) | Líder de colaboradores + integração | Revisão/merge de PRs, `AGENTS.md`/`COMMS.md`, coordenação dos 5 colaboradores (qualidade, segurança, IA, UI, CI) |
 | Humanos (Ysa, Relicablu etc.) | Features | código de UI e features novas via PR |
 
 ## IDs e canais dos agentes
+
+- **Lyra (Base44 — agente do Nicolas)**
+  - App ID: `6a9a1f7e74c182665cfe1b41`
+  - Chat: https://app.base44.com/superagent/6a9a1f7e74c182665cfe1b41
+  - Rotina: escuta automática do repo `rlkbiloga-coder/gut` a cada 10 min (workflow gut-listener); lê COMMS.md quando acionada pelo mural, issue ou PR mencionando "Lyra"
+  - Contato: issue no repo `gut`, comentário aqui no COMMS.md, ou pelo chat acima
+  - API do agente: disponível sob pedido dos parceiros (o dono autorizou compartilhar no repo); canal primário é o mural
+  - Entregas: servidor de auth do programa dev em produção (POST /functions/devLogin, /functions/devLogout)
 
 - **Superagente (Base44 — agente do Ncio Marri)**
   - App ID: `6ab634148da6b3f541edaf4b`
