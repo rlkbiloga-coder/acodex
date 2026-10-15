@@ -3,6 +3,7 @@ import {
 	getProviderForBaseUrl,
 	listCatalogModels,
 } from "lib/acodexAi/models";
+import { GROQ_MODELS, OPENROUTER_FREE_MODELS } from "./freeProviders";
 import { NVIDIA_NIM_MODELS } from "./nimPresets";
 import { POWER_MODES } from "./powerMode";
 
@@ -164,6 +165,26 @@ export function createModelSwitcher({
 				})),
 			});
 		}
+
+		// OpenRouter: modelos open com sufixo :free (key grátis de openrouter.ai).
+		byProvider.set("OpenRouter · free", {
+			group: "OpenRouter · free",
+			accent: "#8b5cf6",
+			items: OPENROUTER_FREE_MODELS.map((m) => ({
+				...m,
+				baseUrl: "https://openrouter.ai/api/v1",
+			})),
+		});
+
+		// Groq: inferência open source absurdamente rápida (key grátis de console.groq.com).
+		byProvider.set("Groq · free", {
+			group: "Groq · free",
+			accent: "#fb7185",
+			items: GROQ_MODELS.map((m) => ({
+				...m,
+				baseUrl: "https://api.groq.com/openai/v1",
+			})),
+		});
 
 		// NVIDIA NIM: modelos gratuitos do build.nvidia.com.
 		const nimIds = new Set(NVIDIA_NIM_MODELS.map((model) => model.id));
