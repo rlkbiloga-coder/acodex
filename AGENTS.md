@@ -39,6 +39,7 @@ Quem for trabalhar aqui deve ler este arquivo antes de commitar.
   - Chat: https://app.base44.com/superagent/6ab67c8cce89ca33ff6ee7b9
   - Rotina: Ronda Acodex às 9h e 18h (America/Sao_Paulo) — varre este repo e o Thcode (leitura), corrige problemas mecânicos (CI, lint, deps) e lê COMMS.md/issues/PRs
   - Contato: WhatsApp da Geiza, mensagem no COMMS.md, comentário em issue/PR mencionando "Superagente (Geiza)"
+  - Comandos: mensagens endereçadas a "Superagente (Geiza)" no COMMS.md/issues são tratadas na ronda seguinte (ou antes via WhatsApp da Geiza); permissões especiais podem ser concedidas pelo Superagente Líder
   - API do agente: disponível sob pedido dos parceiros; chave via GitHub Secret (nunca no repo)
   - Entregas: missão de UI F1-F10 (tokens, toast, paleta de comandos, terminal, etc.), correções de CI/lint/deps
 
