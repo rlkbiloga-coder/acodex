@@ -357,7 +357,15 @@ function initApp(el) {
 	$composerProvider.append($composerProviderName);
 	updateComposerProvider();
 
-	const isNimEndpoint = () => getConfig().baseUrl.includes("api.nvidia.com");
+	const isNimEndpoint = () => {
+		try {
+			return (
+				new URL(getConfig().baseUrl).hostname === "integrate.api.nvidia.com"
+			);
+		} catch {
+			return false;
+		}
+	};
 	tokenMeter = createTokenMeter({
 		rpmLimit: isNimEndpoint() ? 40 : null,
 	});
