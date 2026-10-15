@@ -42,7 +42,6 @@ const TTL_MS = Number(process.env.SESSION_TTL_MINUTES || 30) * 60_000;
 
 const sessions = new Map();
 const sessionCreations = new Map(); // ip -> timestamps
-const rateWindows = new Map(); // chave arbitrária -> timestamps
 
 app.use(cors({ origin: CORS_ORIGIN }));
 app.use(express.json({ limit: "32kb" }));
@@ -138,20 +137,6 @@ function approvalGate(body) {
 		e.code = "APPROVAL_REQUIRED";
 		throw e;
 	}
-}
-
-/**
- * Janela deslizante por IP para endpoints sensíveis.
- * @param {string} key
- * @param {number} limit
- * @param {number} windowMs
- */
-function rateLimited(key, limit, windowMs) {
-	const now = Date.now();
-	const recent = (rateWindows.get(key) || []).filter((t) => now - t < windowMs);
-	recent.push(now);
-	rateWindows.set(key, recent);
-	return recent.length > limit;
 }
 
 function tooManySessions(ip) {
@@ -341,14 +326,16 @@ if (TERMINAL_ENABLED) {
 	app.get("/api/terminal/commands", (_req, res) =>
 		res.json({ commands: Object.keys(ALLOWED_COMMANDS) }),
 	);
-	app.post("/api/terminal/run", (req, res) => {
-		if (rateLimited(`terminal:${req.ip || "unknown"}`, 20, 60_000)) {
-			return res.status(429).json({
-				error: "Muitas execuções; aguarde um minuto.",
-				code: "RATE_LIMITED",
-			});
-		}
-		const command = String(req.body?.command || "");
+		// comandos de sistema sempre atrás de rate limit (express-rate-limit)
+		const terminalLimiter = rateLimit({
+			windowMs: 60_000,
+			limit: 20,
+			standardHeaders: true,
+			legacyHeaders: false,
+			message: { error: "Muitas execuções; aguarde um minuto.", code: "RATE_LIMITED" },
+		});
+		app.post("/api/terminal/run", terminalLimiter, (req, res) => {
+			const command = String(req.body?.command || "");
 		const entry = ALLOWED_COMMANDS[command];
 		if (!entry) {
 			return res.status(403).json({
