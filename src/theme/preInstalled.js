@@ -549,8 +549,40 @@ blossom.preferredTerminalTheme = "light";
 const custom = createBuiltInTheme("Custom");
 custom.autoDarkened = true;
 
+/**
+ * Acodex Dark — tema identidade do AcodexAI.
+ * Dark elegante com destaque neon roxo/ciano, mesmo idioma visual do
+ * redesenho do chat de IA (glass + accent #8b5cf6 / #22d3ee).
+ */
+const acodex = createBuiltInTheme("Acodex", "dark", "free");
+acodex.darkenedPrimaryColor = "rgb(10, 12, 20)";
+acodex.primaryColor = "rgb(15, 17, 28)";
+acodex.primaryTextColor = "rgb(232, 233, 244)";
+acodex.secondaryColor = "rgb(24, 26, 42)";
+acodex.secondaryTextColor = "rgb(168, 172, 196)";
+acodex.activeColor = "rgb(139, 92, 246)";
+acodex.activeIconColor = "rgba(34, 211, 238, 0.85)";
+acodex.linkTextColor = "rgb(34, 211, 238)";
+acodex.borderColor = "rgba(139, 92, 246, 0.22)";
+acodex.popupIconColor = "rgb(232, 233, 244)";
+acodex.popupBackgroundColor = "rgb(20, 22, 36)";
+acodex.popupTextColor = "rgb(232, 233, 244)";
+acodex.popupActiveColor = "rgb(139, 92, 246)";
+acodex.popupBorderColor = "rgba(139, 92, 246, 0.25)";
+acodex.buttonBackgroundColor = "rgb(139, 92, 246)";
+acodex.buttonTextColor = "rgb(255, 255, 255)";
+acodex.buttonActiveColor = "rgb(124, 58, 237)";
+acodex.boxShadowColor = "rgba(0, 0, 0, 0.5)";
+acodex.activeTextColor = "rgb(255, 255, 255)";
+acodex.errorTextColor = "rgb(252, 165, 165)";
+acodex.dangerColor = "rgb(220, 38, 38)";
+acodex.scrollbarColor = "rgba(139, 92, 246, 0.35)";
+acodex.preferredEditorTheme = "tokyoNight";
+acodex.preferredTerminalTheme = "tokyoNight";
+
 export default [
 	system,
+	acodex,
 	createBuiltInTheme("Legacy", "dark", "free"),
 	dark,
 	light,

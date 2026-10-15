@@ -55,6 +55,11 @@ export const AI_PROVIDERS = [
 				badges: ["visão", "raciocínio"],
 			},
 			{
+				id: "z-ai/glm-5.3",
+				label: "GLM 5.3 (Z.AI)",
+				badges: ["raciocínio", "premium"],
+			},
+			{
 				id: "z-ai/glm-5.3-flash",
 				label: "GLM 5.3 Flash (Z.AI)",
 				badges: ["raciocínio", "rápido"],

@@ -234,7 +234,7 @@ class Settings {
 		if (this.#initialized) return;
 		this.settingsFile = Url.join(DATA_STORAGE, "settings.json");
 
-		this.#defaultSettings.appTheme = "system";
+		this.#defaultSettings.appTheme = "acodex";
 		this.#defaultSettings.editorTheme = getSystemEditorTheme(
 			isDeviceDarkTheme(),
 		);
