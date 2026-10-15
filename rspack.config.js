@@ -186,6 +186,11 @@ module.exports = (env, options) => {
       fallback: {
         path: require.resolve('path-browserify'),
         crypto: false,
+        // sql.js (build asm, sem arquivo wasm) referencia builtins do node no UMD
+        fs: false,
+        'node:fs': false,
+        'node:crypto': false,
+        'node:path': false,
       },
       modules: ['node_modules', 'src'],
       roots: [],
