@@ -159,7 +159,7 @@ async function closeTabs(files, options = {}) {
 
 /**
  * Abre um app do sidebar (files, extensions, notification, acodex-ai, ...)
- * garantindo que a sidebar fique visível antes de ativar o ícone correspondente.
+ * garantindo que a sidebar fique visível antes de ativar o ícone do app.
  * @param {string} id id do app registrado em sidebarApps
  * @returns {boolean} true se o app foi ativado
  */
