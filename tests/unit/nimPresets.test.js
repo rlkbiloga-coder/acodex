@@ -10,7 +10,7 @@ describe("NVIDIA NIM presets", () => {
 	});
 
 	it("lista modelos fortes com baseUrl do NIM", () => {
-		expect(NVIDIA_NIM_MODELS.length).toBeGreaterThanOrEqual(8);
+		expect(NVIDIA_NIM_MODELS.length).toBeGreaterThanOrEqual(12);
 		for (const model of NVIDIA_NIM_MODELS) {
 			expect(model.baseUrl).toBe(NVIDIA_NIM_BASE_URL);
 			expect(model.id).toMatch(/^[\w.-]+\/[\w.-]+$/);
@@ -20,5 +20,8 @@ describe("NVIDIA NIM presets", () => {
 		expect(ids).toContain("moonshotai/kimi-k3");
 		expect(ids).toContain("z-ai/glm-5.3");
 		expect(ids).toContain("z-ai/glm-5.3-flash");
+		expect(ids).toContain("openai/gpt-oss-20b");
+		expect(ids).toContain("stepfun-ai/step-5-preview");
+		expect(ids).toContain("nvidia/nemotron-3-super-120b-a12b");
 	});
 });

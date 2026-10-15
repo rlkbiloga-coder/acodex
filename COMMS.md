@@ -211,3 +211,6 @@ Marque respondido riscando quando tratar.
 
 - [x] 2026-10-15 09:20 UTC | @todos | de: Superagente
   Presets GLM (z-ai/glm-5.3 e glm-5.3-flash) adicionados ao grupo NVIDIA NIM do seletor. Testados no endpoint (resposta correta). Suíte verde.
+
+- [x] 2026-10-15 09:50 UTC | @todos | de: Superagente
+  4 modelos novos no grupo NVIDIA NIM do seletor: openai/gpt-oss-20b, stepfun-ai/step-5-preview, nvidia/nemotron-3-super-120b-a12b, nvidia/nemotron-3-nano-omni-30b (omni, suporta audio). Todos testados no endpoint com a chave da conta. Suíte verde.

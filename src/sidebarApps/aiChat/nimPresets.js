@@ -9,6 +9,26 @@ export const NVIDIA_NIM_BASE_URL = "https://integrate.api.nvidia.com/v1";
 /** Seleção de modelos fortes do NIM (gratuitos, ~40 req/min por conta). */
 export const NVIDIA_NIM_MODELS = [
 	{
+		id: "openai/gpt-oss-20b",
+		label: "GPT-OSS 20B (NIM)",
+		badges: ["NIM grátis", "OpenAI open"],
+	},
+	{
+		id: "stepfun-ai/step-5-preview",
+		label: "Step 5 Preview (NIM)",
+		badges: ["NIM grátis", "flagship"],
+	},
+	{
+		id: "nvidia/nemotron-3-super-120b-a12b",
+		label: "Nemotron 3 Super 120B (NIM)",
+		badges: ["NIM grátis", "agente"],
+	},
+	{
+		id: "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning",
+		label: "Nemotron 3 Nano Omni 30B (NIM)",
+		badges: ["NIM grátis", "omni/áudio"],
+	},
+	{
 		id: "z-ai/glm-5.3",
 		label: "GLM 5.3 (NIM)",
 		badges: ["NIM grátis", "raciocínio"],
