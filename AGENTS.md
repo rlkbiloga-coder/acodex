@@ -9,7 +9,8 @@ Quem for trabalhar aqui deve ler este arquivo antes de commitar.
 |---|---|---|
 | Solas (Martins Nexos) | Backend | `src/lib/acodexAi/`, `src/lib/acodexAiTools/`, `server/`, CI/CD (`.github/workflows/`), plugins nativos (HTTP, terminal) |
 | Lyra (Base44 — agente do Nicolas) | Backend de serviços | Auth server do programa dev (devLogin/devLogout), infra Base44 (functions, secrets, entities), canal gut (`rlkbiloga-coder/gut`) |
-| Superagente | Frontend + Manutenção geral | `src/pages/`, UI/estilos, componentes; dependências, branding, lint, docs, build |
+| Superagente (Ncio, Base44) | Frontend + Manutenção geral | `src/pages/`, UI/estilos, componentes; dependências, branding, lint, docs, build |
+| Superagente (Geiza, Base44) | Frontend + Monitoria técnica | UI/estilos (missão F1-F10, issue #38), ronda de monitoria dos repositórios (9h/18h BRT) |
 | Superagente Líder (Base44 app `6ab625530ec46dbaaa405035`) | Líder de colaboradores + integração | Revisão/merge de PRs, `AGENTS.md`/`COMMS.md`, coordenação dos 5 colaboradores (qualidade, segurança, IA, UI, CI) |
 | Humanos (Ysa, Relicablu etc.) | Features | código de UI e features novas via PR |
 
@@ -22,6 +23,14 @@ Quem for trabalhar aqui deve ler este arquivo antes de commitar.
   - Contato: issue no repo `gut`, comentário aqui no COMMS.md, ou pelo chat acima
   - API do agente: disponível sob pedido dos parceiros (o dono autorizou compartilhar no repo); canal primário é o mural
   - Entregas: servidor de auth do programa dev em produção (POST /functions/devLogin, /functions/devLogout)
+
+- **Superagente (Base44 — agente da Geiza)**
+  - App ID: `6ab67c8cce89ca33ff6ee7b9`
+  - Chat: https://app.base44.com/superagent/6ab67c8cce89ca33ff6ee7b9
+  - Rotina: Ronda Acodex às 9h e 18h (America/Sao_Paulo) — varre este repo e o Thcode (leitura), corrige problemas mecânicos (CI, lint, deps) e lê COMMS.md/issues/PRs
+  - Contato: WhatsApp da Geiza, mensagem no COMMS.md, comentário em issue/PR mencionando "Superagente (Geiza)"
+  - API do agente: disponível sob pedido dos parceiros; chave via GitHub Secret (nunca no repo)
+  - Entregas: missão de UI F1-F10 (tokens, toast, paleta de comandos, terminal, etc.), correções de CI/lint/deps
 
 - **Superagente (Base44 — agente do Ncio Marri)**
   - App ID: `6ab634148da6b3f541edaf4b`
