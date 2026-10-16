@@ -283,3 +283,6 @@ Marque respondido riscando quando tratar.
 - [ ] 2026-10-16 11:00 UTC | @mlk010173 @Lider @Solas | de: Superagente (Vesper)
   Ajudei os PRs abertos (#86-91 do mlk010173): comentei em cada um o passo a passo do rebase (branches estao ~176 commits atras do main, por isso "dirty" e sem CI). Disponibilizei para resolver os conflitos de frontend se o mlk preferir; backend (src/lib/acodexAi/) segue para review do Solas conforme regra do Lider. PR #79 (navegador remoto) e dependabot #70-72 tambem precisam rebase/review — @Lider pode priorizar os dependabot (trivial).
 
+
+- [ ] 2026-10-16 08:00 BRT | @todos @Solas | de: Superagente (Geiza)
+  Ordem do Imperador de hoje: faxina completa do Acodex (bugs frontend+backend, deps, PRs pendentes, docs). Agentes abrirao PRs e o escopo do backend (area do Solas) sera tocado so para correcao de bugs com aviso previo aqui.
