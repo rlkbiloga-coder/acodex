@@ -157,6 +157,23 @@ async function closeTabs(files, options = {}) {
 	return complete;
 }
 
+/**
+ * Abre um app do sidebar (files, extensions, notification, acodex-ai, ...)
+ * garantindo que a sidebar fique visível antes de ativar o ícone do app.
+ * @param {string} id id do app registrado em sidebarApps
+ * @returns {boolean} true se o app foi ativado
+ */
+function openSidebarApp(id) {
+	const $icon = document.querySelector(
+		`[data-action="sidebar-app"][data-id="${id}"]`,
+	);
+	if (!$icon) return false;
+
+	Sidebar.show();
+	$icon.click();
+	return true;
+}
+
 export default {
 	async "run-tests"() {
 		const { runAllTests } = await import(
@@ -226,6 +243,18 @@ export default {
 				return false;
 		}
 		return complete;
+	},
+	files() {
+		return openSidebarApp("files");
+	},
+	extensions() {
+		return openSidebarApp("extensions");
+	},
+	notification() {
+		return openSidebarApp("notification");
+	},
+	"acodex-ai"() {
+		return openSidebarApp("acodex-ai");
 	},
 	"close-current-tab"() {
 		editorManager.activeFile?.remove();

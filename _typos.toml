@@ -61,6 +61,7 @@ nativo = "nativo"
 nativos = "nativos"
 caminho = "caminho"
 caminhos = "caminhos"
+vai = "vai"
 problemas = "problemas"
 ferramenta = "ferramenta"
 ferramentas = "ferramentas"
@@ -166,8 +167,23 @@ celula = "celula"
 serializa = "serializa"
 validacao = "validacao"
 consome = "consome"
+
 # portugues usado no live browser (README e painel)
 IMPORTANTE = "IMPORTANTE"
 aprove = "aprove"
-vai = "vai"
 termo = "termo"
+
+# portugues (sem acento) usado no medidor de tokens
+leve = "leve"
+aprox = "aprox"
+
+# portugues (curadoria awesome)
+editores = "editores"
+
+# portugues (fallback + vesper tool)
+alternativos = "alternativos"
+candidata = "candidata"
+candidatas = "candidatas"
+varios = "varios"
+repete = "repete"
+itens = "itens"

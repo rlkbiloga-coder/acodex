@@ -21,7 +21,7 @@ $sheet-h: 62vh;
     --acodex-nav-h: #{$nav-h};
   }
 
-  #sidebar.phone {
+  body #sidebar.phone {
     top: auto;
     bottom: 0;
     left: 0;

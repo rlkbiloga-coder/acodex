@@ -3,6 +3,9 @@ import {
 	getProviderForBaseUrl,
 	listCatalogModels,
 } from "lib/acodexAi/models";
+import { GROQ_MODELS, OPENROUTER_FREE_MODELS } from "./freeProviders";
+import { NVIDIA_NIM_MODELS } from "./nimPresets";
+import { POWER_MODES } from "./powerMode";
 
 /**
  * Command-palette model switcher (shadcn/ui + cmdk style) for Acodex AI.
@@ -16,9 +19,16 @@ import {
  * @param {object} options
  * @param {() => { baseUrl: string, apiKey: string, model: string }} options.getConfig
  * @param {(modelId: string, baseUrl?: string) => void} options.onSelect
+ * @param {(modeId: string) => void} [options.onSelectMode] Seleção do modo de consumo.
+ * @param {() => string} [options.getActiveMode] Modo de consumo atual ("low"/"padrao"/"maximo").
  * @returns {{ $toggle: HTMLButtonElement, open: () => void }}
  */
-export function createModelSwitcher({ getConfig, onSelect }) {
+export function createModelSwitcher({
+	getConfig,
+	onSelect,
+	onSelectMode,
+	getActiveMode,
+}) {
 	/** @type {HTMLDivElement} */
 	let $overlay;
 	/** @type {HTMLInputElement} */
@@ -141,9 +151,58 @@ export function createModelSwitcher({ getConfig, onSelect }) {
 			byProvider.get(p.label).items.push({ ...model, baseUrl: p.baseUrl });
 		}
 
+		// Modo de consumo (low é o padrão).
+		const activeMode = getActiveMode?.() || "low";
+		if (onSelectMode) {
+			byProvider.set("Modo de consumo", {
+				group: "Modo de consumo",
+				accent: "#f59e0b",
+				items: Object.entries(POWER_MODES).map(([id, mode]) => ({
+					id: `mode:${id}`,
+					label: mode.label,
+					badges: [id === activeMode ? "ativo" : mode.hint],
+					onSelectMode: () => onSelectMode(id),
+				})),
+			});
+		}
+
+		// OpenRouter: modelos open com sufixo :free (key grátis de openrouter.ai).
+		byProvider.set("OpenRouter · free", {
+			group: "OpenRouter · free",
+			accent: "#8b5cf6",
+			items: OPENROUTER_FREE_MODELS.map((m) => ({
+				...m,
+				baseUrl: "https://openrouter.ai/api/v1",
+			})),
+		});
+
+		// Groq: inferência open source absurdamente rápida (key grátis de console.groq.com).
+		byProvider.set("Groq · free", {
+			group: "Groq · free",
+			accent: "#fb7185",
+			items: GROQ_MODELS.map((m) => ({
+				...m,
+				baseUrl: "https://api.groq.com/openai/v1",
+			})),
+		});
+
+		// NVIDIA NIM: modelos gratuitos do build.nvidia.com.
+		const nimIds = new Set(NVIDIA_NIM_MODELS.map((model) => model.id));
+		const catalogIds = new Set(
+			[...byProvider.values()].flatMap((group) =>
+				group.items.map((item) => item.id),
+			),
+		);
+		byProvider.set("NVIDIA NIM · grátis", {
+			group: "NVIDIA NIM · grátis",
+			accent: "#76b900",
+			items: NVIDIA_NIM_MODELS.filter((model) => !catalogIds.has(model.id)),
+		});
+
 		// Live models discovered on the current endpoint.
-		const live =
-			$overlay?.dataset.liveModels?.split("\n").filter(Boolean) || [];
+		const live = (
+			$overlay?.dataset.liveModels?.split("\n").filter(Boolean) || []
+		).filter((id) => !catalogIds.has(id) && !nimIds.has(id));
 		if (live.length) {
 			const groupName = `${provider?.label || providerName(config.baseUrl)} · do servidor`;
 			byProvider.set(groupName, {
@@ -203,7 +262,8 @@ export function createModelSwitcher({ getConfig, onSelect }) {
 			);
 			for (const item of group.items) {
 				const index = flatItems.length;
-				const selected = item.id === currentModel();
+				const isModeItem = item.id?.startsWith("mode:");
+				const selected = !isModeItem && item.id === currentModel();
 				const $item = (
 					<button
 						type="button"
@@ -278,6 +338,11 @@ export function createModelSwitcher({ getConfig, onSelect }) {
 	}
 
 	function choose(item) {
+		if (item.id?.startsWith("mode:") && item.onSelectMode) {
+			item.onSelectMode();
+			close();
+			return;
+		}
 		onSelect(item.id, item.baseUrl);
 		updateToggleLabel();
 		close();

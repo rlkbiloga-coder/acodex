@@ -136,12 +136,47 @@ export function buildCompletionsUrl(baseUrl) {
  * @param {AbortSignal} [params.signal]
  * @param {(delta: string) => void} [params.onDelta]
  * @param {typeof fetch} [params.fetchImpl]
+ * @param {string[]} [params.fallbackModels] Modelos alternativos do mesmo
+ *   endpoint usados quando o principal cai (429/5xx/rede).
  * @returns {Promise<ChatMessage>}
  */
-export async function createChatCompletion({
+export async function createChatCompletion(params) {
+	const { fallbackModels = [], max_tokens, ...baseParams } = params;
+	if (max_tokens) baseParams.maxTokens = max_tokens;
+	// candidata 1: a config original; demais: mesmo endpoint, outro modelo
+	const candidates = [
+		baseParams.config,
+		...fallbackModels.map((model) => ({ ...baseParams.config, model })),
+	];
+	let lastError = null;
+	for (const config of candidates) {
+		try {
+			return await performChatCompletion({ ...baseParams, config });
+		} catch (error) {
+			lastError = error;
+			if (params.signal?.aborted) throw error;
+			const status = Number(error?.status ?? 0);
+			const retriable =
+				status === 429 ||
+				status >= 500 ||
+				status === 0 ||
+				!Number.isFinite(status);
+			if (!retriable) throw error;
+			// tenta a próxima candidata (fallback de modelo)
+		}
+	}
+	throw lastError;
+}
+
+/**
+ * Uma requisição completa (com retry/pool de chaves embutidas).
+ * @param {object} params
+ */
+async function performChatCompletion({
 	config,
 	messages,
 	tools,
+	maxTokens,
 	signal: signalParam,
 	onDelta,
 	fetchImpl = nativeFetch,
@@ -166,6 +201,7 @@ export async function createChatCompletion({
 	const body = { model: config.model, messages };
 	if (tools?.length) body.tools = tools;
 	if (onDelta) body.stream = true;
+	if (maxTokens) body.max_tokens = maxTokens;
 
 	const send = (timeoutMs = 30_000) => {
 		// combina o sinal do usuário com o timeout por requisição

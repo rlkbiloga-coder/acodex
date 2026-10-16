@@ -207,6 +207,8 @@ class Settings {
 			liveBrowserUrl: "",
 			liveBrowserToken: "",
 			aiMcpUrl: "",
+			aiPowerMode: "low",
+			aiVesperApiKey: "",
 			aiGhostText: false,
 			aiCommandsEnabled: true,
 			showAnnotations: false,
