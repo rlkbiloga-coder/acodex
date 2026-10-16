@@ -187,7 +187,7 @@
     "fuse.js": "^7.5.0",
     "html-tag-js": "^2.4.16",
     "isomorphic-git": "^1.43.0",
-    "js-yaml": "^5.4.3",
+    "js-yaml": "^5.5.0",
     "jsonata": "^2.2.2",
     "jszip": "^3.10.1",
     "katex": "^0.18.2",
