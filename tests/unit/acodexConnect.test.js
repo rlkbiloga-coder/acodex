@@ -1,4 +1,9 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
+
+// dialogs/select e lib/acodexAI usam JSX/DOM do app; o teste só valida o
+// registro e o helper shell, então mockamos a camada de UI.
+vi.mock("dialogs/select", () => ({ default: vi.fn() }));
+vi.mock("lib/acodexAI", () => ({ launchShellInTerminal: vi.fn() }));
 import {
 	CONNECTORS,
 	CONNECT_HELPER_INSTALL,
@@ -20,12 +25,17 @@ describe("acodexConnect registry", () => {
 	});
 
 	it("não embute nenhum segredo no helper", () => {
+		// Formatos reais de credenciais (a palavra "token" aparece legitimamente
+		// no fluxo OAuth, então procuramos valores, não nomes).
 		const suspicious = [
-			/token/i,
-			/api[_-]?key/i,
-			/-----BEGIN/,
-			/gsk_[A-Za-z0-9]/,
-			/sk-[A-Za-z0-9]/,
+			/-----BEGIN [A-Z ]*PRIVATE KEY/,
+			/gh[pousr]_[A-Za-z0-9]{30,}/,
+			/github_pat_[A-Za-z0-9_]{20,}/,
+			/gsk_[A-Za-z0-9]{20,}/,
+			/sk-[A-Za-z0-9]{20,}/,
+			/AIza[0-9A-Za-z_-]{30,}/,
+			/GOCSPX-[0-9A-Za-z_-]{20,}/,
+			/\d{6,}-[a-z0-9]{20,}\.apps\.googleusercontent\.com/,
 		];
 		for (const pattern of suspicious) {
 			expect(CONNECT_HELPER_INSTALL).not.toMatch(pattern);
@@ -42,15 +52,13 @@ describe("acodexConnect registry", () => {
 
 	it("helper cobre todos os conectores do registro", () => {
 		for (const connector of CONNECTORS) {
-			const fn = `acodex-connect ${connector.cmd}`;
-			const caseBranch = new RegExp(
-				`case.*\\$1|${connector.cmd}\\) connect`,
-			);
-			expect(CONNECT_HELPER_INSTALL).toMatch(caseBranch);
-			expect(buildConnectCommand(connector)).toContain(
-				`acodex-connect ${connector.cmd}`,
-			);
-			expect(buildConnectCommand(connector)).not.toContain(fn); // helper só é instalado uma vez
+			// o helper trata o comando (case) e define a função connect_<cmd>
+			expect(CONNECT_HELPER_INSTALL).toContain(`${connector.cmd}) connect_${connector.cmd}`);
+			expect(CONNECT_HELPER_INSTALL).toContain(`connect_${connector.cmd}()`);
+			// o comando final instala o helper e depois o executa com o conector
+			const cmd = buildConnectCommand(connector);
+			expect(cmd.startsWith(CONNECT_HELPER_INSTALL)).toBe(true);
+			expect(cmd.endsWith(`; acodex-connect ${connector.cmd}`)).toBe(true);
 		}
 	});
 
