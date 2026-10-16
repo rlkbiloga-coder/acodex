@@ -3,7 +3,12 @@ import {
 	getProviderForBaseUrl,
 	listCatalogModels,
 } from "lib/acodexAi/models";
-import { GROQ_MODELS, OPENROUTER_FREE_MODELS } from "./freeProviders";
+import {
+	GROQ_MODELS,
+	OPENCODE_ZEN_BASE_URL,
+	OPENCODE_ZEN_FREE_MODELS,
+	OPENROUTER_FREE_MODELS,
+} from "./freeProviders";
 import { NVIDIA_NIM_MODELS } from "./nimPresets";
 import { POWER_MODES } from "./powerMode";
 
@@ -183,6 +188,17 @@ export function createModelSwitcher({
 			items: GROQ_MODELS.map((m) => ({
 				...m,
 				baseUrl: "https://api.groq.com/openai/v1",
+			})),
+		});
+
+		// OpenCode Zen: modelos free do console do OpenCode (key do login
+		// em opencode.ai/auth, a mesma do CLI `opencode`).
+		byProvider.set("OpenCode Zen · free", {
+			group: "OpenCode Zen · free",
+			accent: "#0ea5e9",
+			items: OPENCODE_ZEN_FREE_MODELS.map((m) => ({
+				...m,
+				baseUrl: OPENCODE_ZEN_BASE_URL,
 			})),
 		});
 
