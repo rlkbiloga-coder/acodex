@@ -47,7 +47,31 @@ export function nativeFetch(url, init = {}) {
 
 	return new Promise((resolve, reject) => {
 		let settled = false;
-		const requestId = http.sendRequest(
+		let onAbort = null;
+		let requestId = null;
+
+		const cleanup = () => {
+			if (onAbort && signal?.removeEventListener) {
+				signal.removeEventListener("abort", onAbort);
+			}
+		};
+
+		if (signal) {
+			onAbort = () => {
+				if (settled) return;
+				settled = true;
+				cleanup();
+				try {
+					if (requestId != null) http.abort(requestId);
+				} catch {
+					// ignore abort failures
+				}
+				reject(new DOMException("Aborted", "AbortError"));
+			};
+			signal.addEventListener("abort", onAbort);
+		}
+
+		requestId = http.sendRequest(
 			url,
 			{
 				method: (init.method || "GET").toLowerCase(),
@@ -58,12 +82,16 @@ export function nativeFetch(url, init = {}) {
 				timeout: 120,
 			},
 			(res) => {
+				if (settled) return;
 				settled = true;
+				cleanup();
 				const body = res.data ?? "";
 				resolve(buildResponse(body, res.status, res.headers, init.signal));
 			},
 			(err) => {
+				if (settled) return;
 				settled = true;
+				cleanup();
 				// HTTP error codes still carry a body we want to surface.
 				if (err && typeof err.status === "number" && err.status > 0) {
 					resolve(buildResponse(err.error ?? "", err.status, err.headers));
@@ -72,17 +100,6 @@ export function nativeFetch(url, init = {}) {
 				reject(new TypeError(err?.error || "Failed to fetch"));
 			},
 		);
-
-		signal?.addEventListener("abort", () => {
-			if (settled) return;
-			settled = true;
-			try {
-				if (requestId != null) http.abort(requestId);
-			} catch {
-				// ignore abort failures
-			}
-			reject(new DOMException("Aborted", "AbortError"));
-		});
 	});
 }
 

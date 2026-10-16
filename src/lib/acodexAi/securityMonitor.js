@@ -96,7 +96,8 @@ function providerOf(baseUrl) {
 	try {
 		return new URL(baseUrl).hostname;
 	} catch {
-		return String(baseUrl || "unknown");
+		const str = String(baseUrl || "unknown");
+		return str.replace(/:\/\/[^@]+@/, "://[REDACTED]@").split("?")[0];
 	}
 }
 

@@ -29,12 +29,13 @@ function load() {
 	try {
 		const raw = localStorage?.getItem?.(STORAGE_KEY);
 		const entries = raw ? JSON.parse(raw) : [];
+		if (!Array.isArray(entries)) return;
 		const now = Date.now();
 		for (const [key, entry] of entries) {
-			if (now - entry.at < TTL_MS) cache.set(key, entry);
+			if (entry && now - entry.at < TTL_MS) cache.set(key, entry);
 		}
 	} catch {
-		// sem localStorage (testes): cache só em memória
+		// sem localStorage (testes) ou JSON corrompido: cache só em memória
 	}
 }
 
@@ -71,10 +72,11 @@ export function cacheKey(config, messages, tools) {
  */
 export function getCachedResponse(config, messages, tools) {
 	load();
-	const entry = cache.get(cacheKey(config, messages, tools));
+	const key = cacheKey(config, messages, tools);
+	const entry = cache.get(key);
 	if (!entry) return null;
 	if (Date.now() - entry.at >= TTL_MS) {
-		cache.delete(entry && cacheKey(config, messages, tools));
+		cache.delete(key);
 		persist();
 		return null;
 	}

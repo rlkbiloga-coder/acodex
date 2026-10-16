@@ -60,6 +60,16 @@ describe("checkRequest (defesa de entrada)", () => {
 		expect(v.allowed).toBe(false);
 		expect(v.reasons.join()).toContain("payload-too-large");
 	});
+
+	it("oculta credenciais e tokens em baseUrl inválidas nos logs de auditoria", () => {
+		checkRequest({
+			config: { baseUrl: "invalid_url://user:secretpass@host/v1?token=12345" },
+			messages: [],
+		});
+		const log = getSecurityAuditLog().at(-1);
+		expect(log.provider).not.toContain("secretpass");
+		expect(log.provider).not.toContain("12345");
+	});
 });
 
 describe("inspectResponse (defesa de saída)", () => {
