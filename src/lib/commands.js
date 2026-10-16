@@ -846,6 +846,19 @@ Additional Info:
 			window.toast("Failed to create terminal");
 		}
 	},
+	// AcodeX IA Conexões: GitHub/Gmail/WhatsApp com autorização no site oficial.
+	async "acodex-connect"() {
+		try {
+			const { default: acodexConnect } = await import(
+				/* webpackChunkName: "acodexConnect" */ "lib/acodexConnect"
+			);
+			await acodexConnect();
+		} catch (error) {
+			console.error("Failed to launch AcodeX connect:", error);
+			window.toast("Failed to open AcodeX connect");
+		}
+	},
+
 	// AcodeX IA (c) 2026 mlk010173 — AcodeX IA License, see LICENSE-ACODEX-IA.
 	async "acodex-pc"() {
 		try {
