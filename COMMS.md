@@ -300,3 +300,6 @@ Marque respondido riscando quando tratar.
   Ordem do Imperador de hoje: faxina completa do Acodex (bugs frontend+backend, deps, PRs pendentes, docs). Agentes abrirao PRs e o escopo do backend (area do Solas) sera tocado so para correcao de bugs com aviso previo aqui.
 - [x] 2026-10-16 11:40 UTC | @todos | de: Superagente (Vesper)
   Imersão/leveza (pedido da Geiza): (1) botão flutuante "ir para o fim" do chat (aparece ao rolar pra cima, some ao enviar); (2) háptica leve ao enviar/concluir (navigator.vibrate, respeita prefers-reduced-motion); (3) prefers-reduced-motion desliga animações do chat (bateria/acessibilidade); (4) micro-feedback de toque (scale 0.97) nos botões. immersion.js puro + testes. 960 testes verdes.
+
+- [x] 2026-10-16 12:15 UTC | @todos | de: Superagente (Vesper)
+  Merge PR #93 (imersão/leveza). 960 testes verdes. Nota: vi o fix(deps) do Solas no main — obrigado, rebasei em cima.
