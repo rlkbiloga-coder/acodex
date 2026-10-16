@@ -8,6 +8,7 @@ import { Prec, StateEffect, StateField } from "@codemirror/state";
 import { Decoration, EditorView, keymap, WidgetType } from "@codemirror/view";
 import { createChatCompletion, withBuiltinKey } from "lib/acodexAi/client";
 import appSettings from "lib/settings";
+import { getFallbackModels } from "sidebarApps/aiChat/fallbackModels";
 
 const TRIGGER_IDLE_MS = 900;
 const MAX_CONTEXT_CHARS = 1500;
@@ -135,6 +136,8 @@ export async function requestCompletion(before, filename) {
 			messages: [
 				{ role: "user", content: buildCompletionPrompt(before, filename) },
 			],
+			max_tokens: 120,
+			fallbackModels: getFallbackModels(config),
 		});
 		return extractGhostText(message.content || "");
 	} catch (error) {

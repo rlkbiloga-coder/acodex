@@ -32,6 +32,8 @@ import {
 import { createModelSwitcher } from "./modelSwitcher";
 import { describePowerModeChange, getPowerMode } from "./powerMode";
 import { createTokenMeter, createTokenMeterView } from "./tokenMeter";
+import { syncVesperTool } from "./vesperTool";
+import { getFallbackModels } from "./fallbackModels";
 import { createAgentTracer, createTraceBus } from "./traceEvents";
 import { createVoiceInput, isVoiceSupported } from "./voiceInput";
 
@@ -460,6 +462,8 @@ function onShortcut(id) {
  * Reconecta quando a URL muda e remove tools de sessões anteriores.
  */
 async function syncMcpTools() {
+	// tool do agente Vesper não depende de MCP; sincroniza sempre
+	syncVesperTool(registry);
 	for (const name of mcpToolNames) registry.removeTool(name);
 	mcpToolNames = [];
 	mcpClient = null;
@@ -916,13 +920,12 @@ async function send(rawText) {
 			signal: controller.signal,
 			systemContext,
 			skillCatalog,
-			complete: powerMode.maxTokens
-				? (params) =>
-						createChatCompletion({
-							...params,
-							max_tokens: powerMode.maxTokens,
-						})
-				: undefined,
+			complete: (params) =>
+				createChatCompletion({
+					...params,
+					...(powerMode.maxTokens ? { max_tokens: powerMode.maxTokens } : {}),
+					fallbackModels: getFallbackModels(config),
+				}),
 			onEvent(event) {
 				// toda atividade do agente vira evento tipado no bus (nada simulado)
 				tracer.handleAgentEvent(event);
@@ -1022,6 +1025,7 @@ async function openSettings() {
 			false,
 		);
 		await syncMcpTools();
+		syncVesperTool(registry);
 	} catch {
 		// Dialog dismissed.
 	}
