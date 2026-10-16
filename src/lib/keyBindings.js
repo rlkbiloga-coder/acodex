@@ -420,10 +420,10 @@ const APP_BINDING_CONFIG = [
 		readOnly: true,
 	},
 	{
-		name: "acodexIA",
-		description: "AcodeX IA: Launch AI agent",
+		name: "acodexPC",
+		description: "AcodeX PC: Sandbox PC tools (GUI, OpenCL, cloud SDK)",
 		key: null,
-		action: "acodex-ai",
+		action: "acodex-pc",
 		readOnly: true,
 	},
 	{

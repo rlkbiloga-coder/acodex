@@ -26,7 +26,7 @@ import { AGENT_REGISTRY, TIER_LABEL, buildApiHelperInstall } from "lib/acodexAge
  * @returns {string}
  */
 export function buildAgentCommand(agent) {
-	return `command -v ${agent.bin} >/dev/null 2>&1 || { ${agent.install}; }; ${agent.bin}`;
+	return `command -v ${agent.bin} >/dev/null 2>&1 || { ${agent.install}; }; ${agent.bin}${agent.args ? ` ${agent.args}` : ""}`;
 }
 
 /**

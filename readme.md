@@ -26,9 +26,18 @@
 O **AcodeX IA** coloca agentes de IA de programação dentro do seu terminal, com um único seletor (comando `acodex-ai` na paleta).
 
 - **Registro único de agentes** em `src/lib/acodexAgents.js`: adicionar um agente novo é adicionar uma entrada.
-- **Open-source e gratuitos:** OpenCode, Crush, Aider, Ollama, Goose, OpenHands. **Com tier grátis:** Gemini CLI, Qwen Code, Amp. **Pagos (provisórios, requerem conta própria):** Claude Code, OpenAI Codex.
+- **17 agentes no catálogo.** Open-source e gratuitos: OpenCode, Crush, Aider, Ollama, Goose, OpenHands, **NVIDIA NIM (Nemotron)**, **OpenCode Zen (modelos free)**, **Groq**, **OpenRouter (:free)** e **Nous Hermes local**. Com tier grátis: Gemini CLI, Qwen Code, Amp, Base44 Superagent. Pagos (provisórios): Claude Code, OpenAI Codex.
+- **Modelos free verificados:** NVIDIA Nemotron direto da NVIDIA (build.nvidia.com), nemotron/deepseek/mimo hospedados grátis pelo OpenCode Zen, `gpt-oss-120b` no Groq e 15+ modelos `:free` no OpenRouter. Chaves grátis conectadas com `/connect` dentro do OpenCode.
 - **Base44 Superagent:** converse com o seu agente Base44 direto do terminal (`acodex-b44`). Suas credenciais ficam **criptografadas (AES-256) no seu aparelho**; nada de segredo vai para o repositório.
 - **Guarda de comandos críticos:** `rm -rf`, `dd`, `wipefs`, `fdisk` e formatadores pedem confirmação antes de executar.
+
+### AcodeX PC (comando `acodex-pc`)
+
+Capacidades de PC na nuvem no sandbox do terminal, tudo open-source:
+
+- **Programas de janela:** display virtual (Xvfb) + VNC (`acodex-gui start`) — rode apps gráficos e veja do celular.
+- **Processamento paralelo:** OpenCL via POCL — kernels OpenCL rodando em CPU, sem GPU.
+- **SDK Android na nuvem:** build do APK em CI grátis (GitHub Actions) — veja `.github/workflows/build-acodex.yml`.
 
 ---
 
