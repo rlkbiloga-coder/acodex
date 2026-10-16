@@ -1883,6 +1883,18 @@
 }
 
 /* ===== Tela cheia ===== */
+
+/*
+ * Corrige a tela cheia: a sidebar aberta mantém `transform: translate(0,0)`,
+ * e QUALQUER transform em um ancestral cria um containing block que prende o
+ * `position: fixed` do chat dentro da caixa da sidebar — o chat "em tela
+ * cheia" ficava do tamanho da sidebar. Com o transform neutralizado enquanto
+ * o chat está em tela cheia, o fixed volta a se referir ao viewport.
+ */
+html.ai-chat-fullscreen #sidebar.show {
+  transform: none;
+}
+
 .ai-fullscreen {
   position: fixed;
   inset: 0;

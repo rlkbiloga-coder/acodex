@@ -859,7 +859,11 @@ Additional Info:
 		}
 	},
 
-	async "acodex-ai"() {
+	// Seletor de agentes CLI no sandbox (o chat em si é o app "acodex-ai" do sidebar).
+	// Antes esta função também se chamava "acodex-ai" e, por ser a ÚLTIMA
+	// definição da chave no objeto, sobrescrevia silenciosamente a que abre
+	// o app do sidebar — o item do menu de 3 pontos nunca abria o chat.
+	async "ai-agents"() {
 		try {
 			const { default: acodexAI } = await import(
 				/* webpackChunkName: "acodexAI" */ "lib/acodexAI"

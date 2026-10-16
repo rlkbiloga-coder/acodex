@@ -1,11 +1,13 @@
 /**
- * Entrada de imagem do Acodex AI (frontend).
+ * Entrada de anexos do Acodex AI (frontend).
  *
- * Permite anexar uma imagem à mensagem. A imagem é reduzida no app
- * (canvas) para um tamanho compatível com APIs de visão e convertida em
- * data URL. O conteúdo da mensagem segue o formato OpenAI (array de
- * partes text/image_url), compatível com Vercel AI Gateway, OpenRouter,
- * OpenAI e afins.
+ * Permite anexar QUALQUER arquivo à mensagem:
+ *  - imagens: reduzidas no app (canvas) para um tamanho compatível com
+ *    APIs de visão e convertidas em data URL (formato OpenAI de partes
+ *    text/image_url);
+ *  - arquivos de texto/código (js, py, md, json, log...): lidos no
+ *    aparelho e anexados à mensagem como bloco de código com o nome do
+ *    arquivo — o modelo recebe o conteúdo real, não um aviso genérico.
  */
 
 /** Maior dimensão da imagem reduzida antes do envio. */
@@ -13,6 +15,65 @@ export const MAX_IMAGE_DIM = 1024;
 
 /** Qualidade JPEG da redução. */
 export const IMAGE_QUALITY = 0.85;
+
+/** Tamanho máximo de arquivo de texto aceito como anexo (256 KB). */
+export const MAX_TEXT_FILE_BYTES = 256 * 1024;
+
+/** Limite de caracteres do conteúdo anexado (corte seguro p/ prompt). */
+export const MAX_TEXT_FILE_CHARS = 60000;
+
+/** Extensões reconhecidas como texto/código (além de MIME text/* e JSON). */
+const TEXT_FILE_EXTENSIONS = [
+	".js", ".mjs", ".cjs", ".ts", ".jsx", ".tsx", ".json", ".md", ".markdown",
+	".txt", ".log", ".csv", ".tsv", ".py", ".rb", ".php", ".java", ".kt",
+	".swift", ".c", ".h", ".cpp", ".hpp", ".cs", ".go", ".rs", ".sql",
+	".sh", ".bash", ".zsh", ".yml", ".yaml", ".toml", ".ini", ".conf",
+	".env", ".xml", ".html", ".htm", ".css", ".scss", ".less", ".vue",
+	".gradle", ".properties", ".bat", ".ps1", ".lua", ".r", ".dart",
+];
+
+/**
+ * Verifica se um arquivo pode ser lido como texto/código.
+ * @param {File} file arquivo escolhido
+ * @returns {boolean}
+ */
+export function isTextFile(file) {
+	const name = String(file?.name || "").toLowerCase();
+	const ext = name.slice(name.lastIndexOf("."));
+	if (TEXT_FILE_EXTENSIONS.includes(ext)) return true;
+	const type = String(file?.type || "");
+	return type.startsWith("text/") || type === "application/json";
+}
+
+/**
+ * Lê um arquivo de texto/código como string (com limite de caracteres).
+ * @param {File} file arquivo
+ * @returns {Promise<string>} conteúdo do arquivo
+ */
+export function readTextFile(file) {
+	return new Promise((resolve, reject) => {
+		if (file.size > MAX_TEXT_FILE_BYTES) {
+			reject(
+				new Error(
+					`Arquivo grande demais (${Math.round(file.size / 1024)} KB). Limite: ${MAX_TEXT_FILE_BYTES / 1024} KB.`,
+				),
+			);
+			return;
+		}
+		const reader = new FileReader();
+		reader.onerror = () => reject(new Error("Não foi possível ler o arquivo."));
+		reader.onload = () => {
+			const text = String(reader.result || "");
+			resolve(
+				text.length > MAX_TEXT_FILE_CHARS
+					? `${text.slice(0, MAX_TEXT_FILE_CHARS)}
+… [arquivo cortado em ${MAX_TEXT_FILE_CHARS} caracteres]`
+					: text,
+			);
+		};
+		reader.readAsText(file);
+	});
+}
 
 /**
  * Prompt padrão quando a usuária envia só a imagem, sem texto.
@@ -78,19 +139,21 @@ function loadImage(src) {
 }
 
 /**
- * Cria a UI de anexo de imagem: botão de anexo, input de arquivo oculto e
+ * Cria a UI de anexo: botão, input de arquivo oculto (qualquer tipo) e
  * chip de pré-visualização.
- * @param {{ onChange: () => void }} callbacks
+ * O anexo pendente tem a forma:
+ *  - {kind: "image", dataUrl, name} para imagens (envio de visão)
+ *  - {kind: "text", content, name} para arquivos de texto/código
+ * @param {{ onChange: () => void, beforePick?: () => void }} callbacks
  */
 export function createImageInput({ onChange, beforePick } = {}) {
-	/** @type {{dataUrl: string, name: string} | null} */
+	/** @type {{kind: string, dataUrl?: string, content?: string, name: string} | null} */
 	let pending = null;
 
 	const $chip = <span className="ai-attach-chip" hidden></span>;
 	const $fileInput = (
 		<input
 			type="file"
-			accept="image/*"
 			className="ai-attach-input"
 			aria-hidden="true"
 			tabindex="-1"
@@ -101,8 +164,8 @@ export function createImageInput({ onChange, beforePick } = {}) {
 		<button
 			type="button"
 			className="ai-send ai-attach"
-			aria-label="Anexar imagem"
-			title="Anexar imagem para análise"
+			aria-label="Anexar arquivo"
+			title="Anexar imagem ou arquivo de texto/código"
 			onclick={async () => {
 				await beforePick?.();
 				$fileInput.click();
@@ -117,15 +180,23 @@ export function createImageInput({ onChange, beforePick } = {}) {
 		$fileInput.value = "";
 		if (!file) return;
 		try {
-			const dataUrl = await fileToScaledDataUrl(file);
-			pending = { dataUrl, name: file.name || "imagem" };
-			renderChip();
-			onChange?.();
+			if (file.type.startsWith("image/")) {
+				const dataUrl = await fileToScaledDataUrl(file);
+				pending = { kind: "image", dataUrl, name: file.name || "imagem" };
+			} else if (isTextFile(file)) {
+				const content = await readTextFile(file);
+				pending = { kind: "text", content, name: file.name || "arquivo" };
+			} else {
+				throw new Error(
+					"Tipo de arquivo não suportado. Anexe uma imagem ou um arquivo de texto/código.",
+				);
+			}
 		} catch (error) {
 			pending = null;
-			renderChip();
 			alert(String(error?.message || error));
 		}
+		renderChip();
+		onChange?.();
 	}
 
 	function renderChip() {
@@ -134,26 +205,31 @@ export function createImageInput({ onChange, beforePick } = {}) {
 			$chip.replaceChildren();
 			return;
 		}
-		const $thumb = (
-			<img
-				src={pending.dataUrl}
-				alt={pending.name}
-				className="ai-attach-thumb"
-			/>
-		);
 		const $name = <span className="ai-attach-name">{pending.name}</span>;
 		const $remove = (
 			<button
 				type="button"
 				className="ai-attach-remove"
-				aria-label="Remover imagem"
+				aria-label="Remover anexo"
 				onclick={() => clear()}
 			>
 				<span className="icon clearclose" />
 			</button>
 		);
+		let $visual;
+		if (pending.kind === "image") {
+			$visual = (
+				<img
+					src={pending.dataUrl}
+					alt={pending.name}
+					className="ai-attach-thumb"
+				/>
+			);
+		} else {
+			$visual = <span className="icon description ai-attach-thumb" />;
+		}
 		$chip.hidden = false;
-		$chip.replaceChildren($thumb, $name, $remove);
+		$chip.replaceChildren($visual, $name, $remove);
 	}
 
 	function clear() {
@@ -166,7 +242,7 @@ export function createImageInput({ onChange, beforePick } = {}) {
 		$btn,
 		$chip,
 		$fileInput,
-		/** Imagem pendente (data URL + nome) ou null. */
+		/** Anexo pendente ({kind: "image"|"text", name, dataUrl?|content?}) ou null. */
 		get pending() {
 			return pending;
 		},

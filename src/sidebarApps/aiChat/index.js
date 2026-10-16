@@ -838,10 +838,18 @@ function setBusy(busy) {
  * @param {string} rawText
  */
 async function send(rawText) {
-	const image = imageInput?.pending;
+	const attachment = imageInput?.pending;
+	const image = attachment?.kind === "image" ? attachment : null;
+	const textFile = attachment?.kind === "text" ? attachment : null;
 	let text = rawText.trim();
 	if (!text && image) text = DEFAULT_IMAGE_PROMPT;
-	if ((!text && !image) || controller) return;
+	if (!text && textFile)
+		text = "Analise o arquivo anexado: identifique a linguagem/estrutura, aponte erros e dê recomendações.";
+	if ((!text && !attachment) || controller) return;
+	if (textFile) {
+		const fence = textFile.content.includes(FENCE) ? "````" : FENCE;
+		text = `${text}\n\nArquivo anexado: ${textFile.name}\n${fence}\n${textFile.content}\n${fence}`;
+	}
 	if (text.startsWith("/")) {
 		if (handleSlashCommand(text)) return;
 	}

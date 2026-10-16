@@ -53,6 +53,18 @@ export const AGENT_REGISTRY = {
 		install: "npm install -g @google/gemini-cli",
 		description: "Google AI coding agent (tem tier grátis)",
 	},
+	openclaw: {
+		name: "OpenClaw",
+		kind: "cli",
+		tier: "free",
+		status: "ativo",
+		bin: "openclaw",
+		install:
+			"npm install -g openclaw@latest || curl -fsSL https://openclaw.ai/install.sh | bash",
+		description:
+			"Assistente open-source que atende WhatsApp, Telegram, Discord, Slack e 20+ canais (Gateway + CLI)",
+		note: "primeira vez: openclaw onboard --install-daemon; na nuvem: Docker/Fly/Render oficiais no repo openclaw/openclaw",
+	},
 	opencode: {
 		name: "OpenCode",
 		kind: "cli",

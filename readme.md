@@ -145,6 +145,22 @@ npm run dev:android  # device/emulador Android
 - **`tests/`** — suíte unitária/integração rodada pelo **Vitest** (`npm test`). Espelha a resolução de módulos do bundler (aliases `utils/…`, `lib/…` → `src/…`).
 - **`src/test/`** — harness de testes *runtime* que roda on-device dentro do WebView (lançado pelos comandos do app). Depende de globais do Cordova/editorManager e é **excluído** da coleta do Vitest por design.
 
+## 🤖 AcodeX IA
+
+Assistente de IA embutido no app (app de sidebar `acodex-ai`, item do menu de 3 pontos), com chat, anexos, ferramentas do editor, MCP e seletor de agentes CLI no sandbox.
+
+- **Anexo universal:** envie *qualquer* arquivo de texto/código (js, py, md, json, log...) junto com a mensagem — o conteúdo real vai para o modelo em bloco de código com o nome do arquivo, além de imagens (visão).
+- **Tela cheia:** o chat abre em tela cheia real (antes ficava preso na largura da sidebar).
+- **Menu de 3 pontos:** itens consertados — `Acodex IA`, `Notificações`, `Plugins` e `Files` abrem os apps corretos; menus nunca mais saem da tela.
+- **Seletor de agentes (`ai-agents`):** Base44 Superagent, Gemini CLI, OpenCode, Crush, Aider, Ollama, Qwen Code, Goose, OpenHands, Amp, Claude Code, OpenAI Codex e **OpenClaw**.
+
+### OpenClaw na nuvem
+
+O [OpenClaw](https://github.com/openclaw/openclaw) é um assistente open-source (MIT) que roda um Gateway próprio e atende WhatsApp, Telegram, Discord, Slack, iMessage, Teams e 20+ canais. No AcodeX:
+
+- No sandbox do terminal: `openclaw onboard --install-daemon` (primeira vez), depois `openclaw gateway status` e `openclaw dashboard`.
+- Na nuvem: deploy oficial com `Dockerfile`, `docker-compose.yml`, `fly.toml` (Fly.io) e `render.yaml` (Render) do próprio repo `openclaw/openclaw` — seu assistente disponível 24/7 nos seus chats, sem serviço pago (o projeto não tem tier hospedado; a instância é sua).
+
 ## 🌍 Multi-language support
 
 Adicione novos idiomas criando um arquivo com o código do idioma (ex.: `en-us` para inglês) em `src/lang/` e registrando-o em `src/lib/lang.js`. Gerencie strings com a CLI:
