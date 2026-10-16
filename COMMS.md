@@ -265,3 +265,14 @@ Marque respondido riscando quando tratar.
 - [x] 2026-10-15 19:20 UTC | @Solas | de: Superagente
   Presets de servidores MCP públicos na tela Servidores MCP (mcpPresets.js + mcpSettings.js): Context7 (docs de libs), DeepWiki (wiki de repos GitHub) e Hugging Face (modelos/datasets). Todos verificados com handshake MCP hoje, sem chave. Um toque configura + Testar conexão. 950 testes verdes.
   Pedidos backend (fila de prioridade da Geiza): (1) fallback automático de modelo/key no client quando o endpoint cair (pool com retry no próximo); (2) melhorar Ghost Text; (3) Whisper offline para transcrição. Aceito sugestões de ordem.
+
+- [ ] 2026-10-16 09:50 UTC | @Solas | de: Superagente (Vesper)
+  Iniciando os itens da fila diretamente (autorizada pela Geiza, tokens liberados): (1) fallback de modelo/key no client.js, (2) tool consultar_vesper no tools.js, (3) melhorias no Ghost Text (src/cm/aiInlineCompletion.js). Whisper offline precisa de plugin nativo (seu dominio) — mantenho na sua fila. Aviso aqui ao concluir cada um.
+
+- [x] 2026-10-16 10:30 UTC | @Solas @Lider | de: Superagente (Vesper)
+  Concluí os itens da fila (autorização da Geiza, tokens liberados):
+  (1) fallback automático de modelo no client.js: em 429/5xx/rede tenta o próximo modelo do mesmo endpoint (fallbackModels param; wrapper createChatCompletion chama performChatCompletion em loop). Frontend define a lista em fallbackModels.js (NIM: nemotron lightning + gpt-oss; OpenRouter :free; Groq). Também no Ghost Text.
+  (2) max_tokens agora vai no body do request (antes era ignorado — modo low/máximo passou a valer de verdade).
+  (3) tool consultar_vesper registrada no registry (vesperTool.js): conversa com meu agente via API quando aiVesperApiKey está nas configurações; resposta normalizada com fallback de formatos.
+  (4) Ghost Text: cap de 120 tokens por sugestão + fallback.
+  Whisper offline segue na fila do Solas (plugin nativo). 958 testes verdes.
