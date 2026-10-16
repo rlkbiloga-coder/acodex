@@ -202,7 +202,7 @@ body.resizing-editor-pane {
   max-width: min(32rem, calc(100vw - 1.25rem));
   width: max-content;
   padding: 0.4rem 0.45rem;
-  border-radius: 0;
+  border-radius: var(--radius-sm, 6px);
   overscroll-behavior: contain;
   overflow-y: auto;
   max-height: min(70vh, 22rem);
@@ -246,7 +246,7 @@ body.resizing-editor-pane {
   align-items: center;
   gap: 0.12rem;
   padding: 0.3rem 0.36rem;
-  border-radius: 0.2rem;
+  border-radius: var(--radius-xs, 4px);
 }
 
 .cm-tooltip.cm-tooltip-autocomplete .cm-completionIcon {

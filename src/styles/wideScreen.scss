@@ -35,7 +35,7 @@
     font-size: 2rem;
     top: 15px;
     right: 15px;
-    box-shadow: 0 0 2px 4px rgba(0, 0, 0, 0.2);
+    box-shadow: var(--elevation-2);
   }
 
   .context-menu {
@@ -68,7 +68,7 @@
 
     input {
       margin: 8px;
-      border-radius: 6px;
+      border-radius: var(--radius-sm, 6px);
       font-size: 1.1em;
       padding: 0 12px;
     }
@@ -173,7 +173,7 @@
     .list-item {
       margin: 0 1rem 0.75rem 1rem;
       padding: 1.25rem;
-      border-radius: 16px;
+      border-radius: var(--radius-lg, 16px);
 
       .plugin-header {
         gap: 1.25rem;
@@ -182,7 +182,7 @@
         .plugin-icon {
           width: 56px;
           height: 56px;
-          border-radius: 14px;
+          border-radius: var(--radius-lg, 14px);
         }
 
         .plugin-info {
@@ -224,7 +224,7 @@
           .plugin-price {
             padding: 0.5rem 1rem;
             font-size: 0.95rem;
-            border-radius: 10px;
+            border-radius: var(--radius-md, 10px);
           }
         }
       }
@@ -236,7 +236,7 @@
         .plugin-toggle-track {
           width: 2.8rem;
           height: 1.65rem;
-          border-radius: 999px;
+          border-radius: var(--radius-full, 999px);
         }
 
         .plugin-toggle-thumb {
@@ -282,7 +282,7 @@
             .icon-button {
               padding: 0.5rem;
               margin-left: 0.5rem;
-              border-radius: 8px;
+              border-radius: var(--radius-md, 8px);
               min-width: 36px;
               min-height: 36px;
               font-size: 1.1em;

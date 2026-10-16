@@ -34,7 +34,7 @@ $sheet-h: 62vh;
     border-right: none;
     border-top: 1px solid var(--border-color);
     border-radius: var(--radius-lg, 14px) var(--radius-lg, 14px) 0 0;
-    box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.35);
+    box-shadow: var(--elevation-3);
     transform: translate(0, calc(100% - #{$nav-h}));
     padding-bottom: env(safe-area-inset-bottom, 0);
     backdrop-filter: blur(14px);
