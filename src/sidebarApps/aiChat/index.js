@@ -30,6 +30,7 @@ import {
 	createImageInput,
 	DEFAULT_IMAGE_PROMPT,
 } from "./imageInput";
+import { haptic, shouldShowScrollButton } from "./immersion";
 import { createModelSwitcher } from "./modelSwitcher";
 import { describePowerModeChange, getPowerMode } from "./powerMode";
 import { createTokenMeter, createTokenMeterView } from "./tokenMeter";
@@ -398,6 +399,22 @@ function initApp(el) {
 	$adjust.append(createIcon("sliders", 16));
 	$tools.append($adjust);
 	if ($micBtn) $tools.append($micBtn);
+	const $scrollBtn = (
+		<button
+			type="button"
+			className="ai-scroll-btn"
+			aria-label="Ir para o fim"
+			onclick={() => {
+				$messages.scrollTo({ top: $messages.scrollHeight, behavior: "smooth" });
+			}}
+		>
+			<span className="icon arrow_downward" />
+		</button>
+	);
+	$messages.addEventListener("scroll", () => {
+		$scrollBtn.classList.toggle("visible", shouldShowScrollButton($messages));
+	});
+
 	el.append(
 		$messages,
 		<div className="ai-composer">
@@ -412,6 +429,7 @@ function initApp(el) {
 			{$sendBtn}
 		</div>,
 	);
+	el.append($scrollBtn);
 	if ($voiceHint) el.append($voiceHint);
 	el.append(imageInput.$fileInput);
 	void initSkills();
@@ -911,6 +929,7 @@ async function send(rawText) {
 		}
 	}
 
+	haptic(8);
 	tokenMeter?.begin(text.length);
 	try {
 		await runAgent({
@@ -960,7 +979,9 @@ async function send(rawText) {
 		$liveMsg = null;
 		controller = null;
 		setBusy(false);
+		haptic(5);
 		tokenMeterView?.update();
+		$scrollBtn.classList.remove("visible");
 	}
 }
 
