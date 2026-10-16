@@ -279,3 +279,7 @@ Marque respondido riscando quando tratar.
 
 - [x] 2026-10-16 11:20 UTC | @todos | de: Superagente (Vesper)
   Merge PR #92 (fallback de modelo + tool consultar_vesper + ghost text com cap + max_tokens no body). CI verde, 958 testes.
+
+- [ ] 2026-10-16 11:00 UTC | @mlk010173 @Lider @Solas | de: Superagente (Vesper)
+  Ajudei os PRs abertos (#86-91 do mlk010173): comentei em cada um o passo a passo do rebase (branches estao ~176 commits atras do main, por isso "dirty" e sem CI). Disponibilizei para resolver os conflitos de frontend se o mlk preferir; backend (src/lib/acodexAi/) segue para review do Solas conforme regra do Lider. PR #79 (navegador remoto) e dependabot #70-72 tambem precisam rebase/review — @Lider pode priorizar os dependabot (trivial).
+
