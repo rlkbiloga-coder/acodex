@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+import { rateLimit } from "express-rate-limit";
 import { WebSocketServer } from "ws";
 import { chromium } from "playwright";
 import { spawn } from "node:child_process";
@@ -42,6 +43,14 @@ const TTL_MS = Number(process.env.SESSION_TTL_MINUTES || 30) * 60_000;
 
 const sessions = new Map();
 const sessionCreations = new Map(); // ip -> timestamps
+
+const terminalLimiter = rateLimit({
+	windowMs: 60_000,
+	limit: 20,
+	standardHeaders: true,
+	legacyHeaders: false,
+	message: { error: "Muitas execuções; aguarde um minuto.", code: "RATE_LIMITED" },
+});
 
 app.use(cors({ origin: CORS_ORIGIN }));
 app.use(express.json({ limit: "32kb" }));
@@ -326,16 +335,9 @@ if (TERMINAL_ENABLED) {
 	app.get("/api/terminal/commands", (_req, res) =>
 		res.json({ commands: Object.keys(ALLOWED_COMMANDS) }),
 	);
-		// comandos de sistema sempre atrás de rate limit (express-rate-limit)
-		const terminalLimiter = rateLimit({
-			windowMs: 60_000,
-			limit: 20,
-			standardHeaders: true,
-			legacyHeaders: false,
-			message: { error: "Muitas execuções; aguarde um minuto.", code: "RATE_LIMITED" },
-		});
-		app.post("/api/terminal/run", terminalLimiter, (req, res) => {
-			const command = String(req.body?.command || "");
+
+	app.post("/api/terminal/run", terminalLimiter, (req, res) => {
+		const command = String(req.body?.command || "");
 		const entry = ALLOWED_COMMANDS[command];
 		if (!entry) {
 			return res.status(403).json({
@@ -368,16 +370,12 @@ app.use((err, _req, res, _next) => {
 	});
 });
 
-setInterval(async () => {
-	for (const [id, s] of sessions) {
-		if (Date.now() - s.lastUsed > TTL_MS) {
-			await s.browser.close().catch(() => {});
-			sessions.delete(id);
-			sendEvent({ type: "session_expired", sessionId: id });
-		}
-	}
-}, 60_000).unref();
+if (process.env.NODE_ENV !== "test") {
+	server.listen(PORT, () => {
+		console.log(`[Acodex Live Browser] Ouvindo na porta ${PORT}`);
+		console.log(` - Token auth: ${AUTH_REQUIRED ? "ATIVO" : "desativado"}`);
+		console.log(` - Terminal: ${TERMINAL_ENABLED ? "HABILITADO" : "desabilitado (padrão)"}`);
+	});
+}
 
-server.listen(PORT, "0.0.0.0", () =>
-	console.log(`AcodeX Live Browser (open source) escutando na porta ${PORT}`),
-);
+export { app, server };
