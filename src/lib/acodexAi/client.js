@@ -157,7 +157,10 @@ export async function createChatCompletion(params) {
 			if (params.signal?.aborted) throw error;
 			const status = Number(error?.status ?? 0);
 			const retriable =
-				status === 429 || status >= 500 || status === 0 || !Number.isFinite(status);
+				status === 429 ||
+				status >= 500 ||
+				status === 0 ||
+				!Number.isFinite(status);
 			if (!retriable) throw error;
 			// tenta a próxima candidata (fallback de modelo)
 		}

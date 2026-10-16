@@ -96,11 +96,14 @@ export async function askVesper(message, options = {}) {
 		if (!conversationId) {
 			return { ok: false, error: "id de conversa não encontrado" };
 		}
-		response = await fetchImpl(`${base}/conversations/${conversationId}/messages`, {
-			method: "POST",
-			headers,
-			body: JSON.stringify({ content: message, message: message }),
-		});
+		response = await fetchImpl(
+			`${base}/conversations/${conversationId}/messages`,
+			{
+				method: "POST",
+				headers,
+				body: JSON.stringify({ content: message, message: message }),
+			},
+		);
 		if (!response.ok) {
 			return { ok: false, error: `mensagem: HTTP ${response.status}` };
 		}
@@ -117,9 +120,7 @@ export async function askVesper(message, options = {}) {
  * @param {{registerTool: Function, removeTool: Function}} registry
  */
 export function syncVesperTool(registry) {
-	const hasKey = Boolean(
-		(appSettings.value.aiVesperApiKey || "").trim(),
-	);
+	const hasKey = Boolean((appSettings.value.aiVesperApiKey || "").trim());
 	if (!hasKey) {
 		registry.removeTool(VESPER_TOOL_NAME);
 		return false;

@@ -22,6 +22,7 @@ import openFile from "lib/openFile";
 import appSettings from "lib/settings";
 import { upgradeAssistantMessage } from "./advancedRender";
 import { createAgentActivity } from "./agentActivity";
+import { getFallbackModels } from "./fallbackModels";
 import { renderAssistantMessage } from "./format";
 import { createAiHome, createIcon } from "./homeScreen";
 import {
@@ -32,9 +33,8 @@ import {
 import { createModelSwitcher } from "./modelSwitcher";
 import { describePowerModeChange, getPowerMode } from "./powerMode";
 import { createTokenMeter, createTokenMeterView } from "./tokenMeter";
-import { syncVesperTool } from "./vesperTool";
-import { getFallbackModels } from "./fallbackModels";
 import { createAgentTracer, createTraceBus } from "./traceEvents";
+import { syncVesperTool } from "./vesperTool";
 import { createVoiceInput, isVoiceSupported } from "./voiceInput";
 
 const TOOL_LABELS = {

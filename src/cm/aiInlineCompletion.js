@@ -4,11 +4,12 @@
  *
  * Pure helpers are exported for unit tests; the CM6 wiring is below.
  */
+
+import { getFallbackModels } from "sidebarApps/aiChat/fallbackModels";
 import { Prec, StateEffect, StateField } from "@codemirror/state";
 import { Decoration, EditorView, keymap, WidgetType } from "@codemirror/view";
 import { createChatCompletion, withBuiltinKey } from "lib/acodexAi/client";
 import appSettings from "lib/settings";
-import { getFallbackModels } from "sidebarApps/aiChat/fallbackModels";
 
 const TRIGGER_IDLE_MS = 900;
 const MAX_CONTEXT_CHARS = 1500;
