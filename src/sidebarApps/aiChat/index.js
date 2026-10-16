@@ -23,6 +23,7 @@ import appSettings from "lib/settings";
 import { upgradeAssistantMessage } from "./advancedRender";
 import { createAgentActivity } from "./agentActivity";
 import { renderAssistantMessage } from "./format";
+import { createRestScreen } from "./cosmos";
 import { createAiHome, createIcon } from "./homeScreen";
 import {
 	buildVisionContent,
@@ -151,6 +152,8 @@ let liveBuffer = "";
 let $hints;
 /** @type {{ $toggle: HTMLElement, open: () => void }|null} */
 let switcherApi = null;
+/** Tela de descanso cósmica (ociosidade). */
+let restScreen = null;
 
 /** @type {ReturnType<typeof createMcpClient>|null} */
 let mcpClient = null;
@@ -412,6 +415,9 @@ function initApp(el) {
 	);
 	if ($voiceHint) el.append($voiceHint);
 	el.append(imageInput.$fileInput);
+	// Tela de descanso: aparece após ociosidade (nunca com a IA respondendo).
+	restScreen?.destroy();
+	restScreen = createRestScreen(el, { isBusy: () => !!controller });
 	void initSkills();
 	void syncMcpTools();
 	renderEmptyState();
