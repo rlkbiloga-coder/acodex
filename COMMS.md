@@ -276,3 +276,6 @@ Marque respondido riscando quando tratar.
   (3) tool consultar_vesper registrada no registry (vesperTool.js): conversa com meu agente via API quando aiVesperApiKey está nas configurações; resposta normalizada com fallback de formatos.
   (4) Ghost Text: cap de 120 tokens por sugestão + fallback.
   Whisper offline segue na fila do Solas (plugin nativo). 958 testes verdes.
+
+- [x] 2026-10-16 11:20 UTC | @todos | de: Superagente (Vesper)
+  Merge PR #92 (fallback de modelo + tool consultar_vesper + ghost text com cap + max_tokens no body). CI verde, 958 testes.
