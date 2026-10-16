@@ -95,7 +95,7 @@ c-console[standalone] {
   min-height: 32px;
   padding: 5px 8px;
   border: 0;
-  border-radius: 3px;
+  border-radius: var(--radius-xs, 3px);
   background: transparent;
   color: var(--console-surface-text);
   font: inherit;
@@ -118,7 +118,7 @@ c-console[standalone] {
   min-height: 32px;
   padding: 4px 20px 4px 6px;
   border: 0;
-  border-radius: 3px;
+  border-radius: var(--radius-xs, 3px);
   outline: none;
   background: var(--console-control);
   color: var(--console-control-text);
@@ -273,7 +273,7 @@ c-code::after {
   top: 1px;
   right: 1px;
   padding: 1px 6px;
-  border-radius: 3px;
+  border-radius: var(--radius-xs, 3px);
   background: var(--console-active);
   color: var(--console-active-text);
   font: 0.62rem/1.4 var(--app-font-family, sans-serif);
@@ -414,7 +414,7 @@ c-toggler {
   background-position: center;
   background-repeat: no-repeat;
   background-size: 24px;
-  box-shadow: -2px 2px 8px rgba(0, 0, 0, 0.4);
+  box-shadow: var(--elevation-2);
   touch-action: none;
 }
 

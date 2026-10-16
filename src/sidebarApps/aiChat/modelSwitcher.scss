@@ -7,7 +7,7 @@
 	max-width: 160px;
 	padding: 4px 8px;
 	border: 1px solid var(--border-color);
-	border-radius: 8px;
+	border-radius: var(--radius-md, 8px);
 	background: color-mix(in srgb, var(--active-color) 8%, transparent);
 	color: var(--primary-text-color);
 	font-size: 0.75rem;
@@ -59,7 +59,7 @@
 	width: min(560px, 100%);
 	max-height: 70vh;
 	border: 1px solid color-mix(in srgb, var(--active-color) 30%, var(--border-color));
-	border-radius: 14px;
+	border-radius: var(--radius-lg, 14px);
 	background: var(--secondary-color);
 	box-shadow:
 		0 0 0 1px rgba(255, 255, 255, 0.04),
@@ -87,7 +87,7 @@
 	min-width: 0;
 	padding: 8px 10px;
 	border: 1px solid transparent;
-	border-radius: 10px;
+	border-radius: var(--radius-md, 10px);
 	background: var(--primary-color);
 	color: var(--primary-text-color);
 	font: inherit;
@@ -146,7 +146,7 @@
 	width: 100%;
 	padding: 8px 10px;
 	border: none;
-	border-radius: 10px;
+	border-radius: var(--radius-md, 10px);
 	background: transparent;
 	color: var(--primary-text-color);
 	font-size: 0.85rem;
@@ -191,7 +191,7 @@
 .ai-model-badge {
 	padding: 1px 6px;
 	border: 1px solid var(--border-color);
-	border-radius: 999px;
+	border-radius: var(--radius-full, 999px);
 	background: var(--primary-color);
 	color: var(--secondary-text-color);
 	font-size: 0.62rem;
