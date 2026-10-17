@@ -98,6 +98,14 @@ Não óbvio, e o resto dos manifests não diz:
 - **Plugins nativos não existem no navegador** (terminal, filesystem, SMB/FTP,
   advanced-http, ads): `www/cordova.js` é o stub de browser gerado pelo shim, então
   esses recursos falham do jeito deles — a UI do editor carrega normalmente.
+- **O shim é passo de boot, não do watcher.** `www/cordova.js` só é gerado quando o
+  serviço `builder` sobe; depois de editar `utils/scripts/web-cordova-shim.js` rode
+  `docker compose -f docker-compose.base44.yml restart builder`, senão o preview
+  serve o stub antigo e o app morre no boot com `<global> is not defined`.
+- **Ruído esperado no console do preview** (não é bug do app): 404 de
+  `/_vercel/insights/script.js` (o analytics da Vercel não existe fora da Vercel) e
+  `fetch` bloqueado por CORS para `acode.app/api/login` e `acode.app/api/promotions`
+  (login/promoções não têm back-end aqui). O boot segue normal.
 - **Verificar / testar:**
   ```sh
   curl -sfI http://localhost:3000/            # index.html

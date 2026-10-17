@@ -28,6 +28,9 @@ const stub = `/*
 
   var VERSION = "${pkg.version}";
   var PACKAGE_NAME = "${pkg.name}";
+  // espelha src/utils/installSource.js: no navegador não há Play Store, mas o
+  // contrato de system.getInstaller precisa responder algo.
+  var INSTALL_SOURCE_PLAY = "com.android.vending";
 
   function unavailableExec(success, fail) {
     if (typeof fail === "function") {
@@ -539,9 +542,19 @@ const stub = `/*
   // cordova-plugin-system: só o que o boot usa responde de verdade. O resto
   // segue sendo um plugin ausente (navegador não tem permissões, cache nem
   // intents do Android).
+  // Os métodos do plugin chegam de dois jeitos: com argumentos antes dos
+  // callbacks (helpers.promisify -> (..., resolve, reject)) ou só com os
+  // callbacks (success, error). Responder sempre ao PRIMEIRO callback resolve
+  // os dois casos; quem só chama sem callback não trava.
   function answer(value) {
-    return function (success) {
-      if (typeof success === "function") success(value);
+    return function () {
+      var success = Array.prototype.filter.call(arguments, function (arg) {
+        return typeof arg === "function";
+      })[0];
+      if (!success) return;
+      setTimeout(function () {
+        success(value);
+      }, 0);
     };
   }
 
