@@ -1,0 +1,29 @@
+services:
+  web:
+    image: node:22
+    working_dir: /app
+    restart: on-failure
+    ports:
+      - "3000:3000"
+    environment:
+      # sandbox flag — ativa o polling do watch no wrapper .base44/rspack.base44.config.js
+      - BASE44_PREVIEW_MODE
+    command:
+      - sh
+      - -ec
+      - |
+        if [ ! -x node_modules/.bin/rspack ]; then
+          npm ci --no-audit --no-fund --legacy-peer-deps || npm install --no-audit --no-fund --legacy-peer-deps
+        fi
+        node ./utils/config.js d paid
+        node ./utils/scripts/web-cordova-shim.js
+        node .base44/serve.js &
+        exec node node_modules/@rspack/cli/bin/rspack.js --watch --mode development -c .base44/rspack.base44.config.js
+    volumes:
+      - .:/app
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('node:http').get('http://127.0.0.1:3000/',r=>process.exit(r.statusCode===200?0:1)).on('error',()=>process.exit(1))"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 600s

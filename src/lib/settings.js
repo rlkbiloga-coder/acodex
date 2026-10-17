@@ -296,7 +296,13 @@ class Settings {
 			await fs.writeFile(settingsText);
 			this.#oldSettings = structuredClone(this.value);
 		} catch (error) {
-			toast(strings["settings save failed"] || "Settings save failed");
+			// Guard: strings may not be loaded yet (lang.set runs after
+			// settings.init on first boot), and this catch must never throw —
+			// on the web build the native FS is unavailable and failing here
+			// crashed startup with "strings is not defined".
+			toast(
+				window.strings?.["settings save failed"] || "Settings save failed",
+			);
 			console.error("Settings save failed:", error);
 		}
 	}
