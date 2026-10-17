@@ -32,6 +32,7 @@ import {
 	DEFAULT_IMAGE_PROMPT,
 } from "./imageInput";
 import { haptic, shouldShowScrollButton } from "./immersion";
+import { attachRipples, spawnParticles } from "./magicFx";
 import { createModelSwitcher } from "./modelSwitcher";
 import { describePowerModeChange, getPowerMode } from "./powerMode";
 import { createTokenMeter, createTokenMeterView } from "./tokenMeter";
@@ -233,7 +234,9 @@ function getConfig() {
 function initApp(el) {
 	el.classList.add("acodex-ai");
 
-	$messages = <div className="ai-messages scroll" aria-live="polite"></div>;
+	$messages = (
+		<div className="ai-messages scroll mu-dots" aria-live="polite"></div>
+	);
 	$input = (
 		<textarea
 			className="ai-input"
@@ -252,7 +255,7 @@ function initApp(el) {
 	$sendBtn = (
 		<button
 			type="button"
-			className="ai-send"
+			className="ai-send mu-shimmer"
 			aria-label="Enviar"
 			onclick={onSendClick}
 		>
@@ -306,7 +309,7 @@ function initApp(el) {
 			<div className="title">
 				{$brand}
 				<span className="ai-brand-text">
-					<span className="ai-brand-name">Acodex AI</span>
+					<span className="ai-brand-name mu-gradient-text">Acodex AI</span>
 					<span className="ai-brand-status">
 						<i className="ai-home-dot" />
 						Online
@@ -420,7 +423,7 @@ function initApp(el) {
 
 	el.append(
 		$messages,
-		<div className="ai-composer">
+		<div className="ai-composer mu-border-beam">
 			{imageInput.$chip}
 			{$hints}
 			<div className="ai-composer-top">{$tools}</div>
@@ -438,6 +441,10 @@ function initApp(el) {
 	// Tela de descanso: aparece após ociosidade (nunca com a IA respondendo).
 	restScreen?.destroy();
 	restScreen = createRestScreen(el, { isBusy: () => !!controller });
+
+	// Magic UI: ripple nos botões e partículas de fundo do chat.
+	attachRipples(el);
+	spawnParticles(el, 12);
 	void initSkills();
 	void syncMcpTools();
 	renderEmptyState();
