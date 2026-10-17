@@ -219,10 +219,7 @@
     "serialize-javascript": "^7.1.2",
     "mermaid": {
       "katex": "^0.18.10"
-    },
-    "braces": ">=3.0.3",
-    "fast-glob": ">=3.3.2",
-    "@marijn/testtool": "0.1.3"
+    }
   },
   "browserslist": "cover 100%",
   "allowScripts": {
