@@ -60,7 +60,7 @@ export const AGENT_REGISTRY = {
 		status: "ativo",
 		bin: "openclaw",
 		install:
-			"npm install -g openclaw@latest || curl -fsSL https://openclaw.ai/install.sh | bash",
+			"npm install -g openclaw@latest",
 		description:
 			"Assistente open-source que atende WhatsApp, Telegram, Discord, Slack e 20+ canais (Gateway + CLI)",
 		note: "primeira vez: openclaw onboard --install-daemon; na nuvem: Docker/Fly/Render oficiais no repo openclaw/openclaw",
