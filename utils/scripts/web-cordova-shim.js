@@ -1,103 +1,67 @@
-// web-cordova-shim.js — gera www/cordova.js para o build web (Vercel).
+// web-cordova-shim.js — gera www/cordova.js para o build web (Vercel/preview).
 // No Android o cordova.js real é gerado pelo Cordova; este stub só existe
 // no deploy web, para a página dar boot (deviceready) no navegador.
+// O runtime fica em utils/scripts/web-cordova-runtime.js; os módulos JS dos
+// plugins nativos são embutidos aqui (mesmo contrato do pluginloader).
 // www/cordova.js está no .gitignore — nunca comitar.
 
 const fs = require("node:fs");
 const path = require("node:path");
 
 const pkg = require("../../package.json");
+const runtimePath = path.join(__dirname, "web-cordova-runtime.js");
 const dest = path.join(__dirname, "..", "..", "www", "cordova.js");
 
-const stub = `/*
- * cordova.js (stub web) — gerado por utils/scripts/web-cordova-shim.js
- * Plataforma: browser (deploy Vercel). Plugins nativos indisponíveis.
- */
-(function () {
-  "use strict";
+// JS de plugin embutido no stub, como o pluginloader do Cordova faria:
+// cada arquivo é um módulo CommonJS que expõe o global do plugin.xml.
+const WEB_PLUGINS = [
+	{ file: "src/plugins/system/www/plugin.js", global: "system" },
+	{ file: "src/plugins/iap/www/plugin.js", global: "iap" },
+	{ file: "src/plugins/sdcard/www/plugin.js", global: "sdcard" },
+];
 
-  function unavailableExec(success, fail) {
-    if (typeof fail === "function") {
-      fail("Plugin nativo indisponivel no navegador");
-    }
-  }
+const isFree = process.env.APP_VARIANT === "free";
+const packageName = isFree ? "com.foxdebug.acodefree" : "com.foxdebug.acode";
 
-  // Modulos internos que o app pede via cordova.require (ex: cordova/exec).
-  // Qualquer outro modulo devolve um objeto vazio para o boot nao quebrar.
-  var modules = { "cordova/exec": unavailableExec };
+/** android-versionCode do config.xml (mesma fonte do build Android). */
+function readVersionCode(root) {
+	try {
+		const config = fs.readFileSync(path.join(root, "config.xml"), "utf8");
+		const match = config.match(/android-versionCode="(\d+)"/);
+		return match ? Number(match[1]) : 1;
+	} catch (error) {
+		return 1;
+	}
+}
 
-  window.cordova = window.cordova || {
-    platformId: "browser",
-    version: "${pkg.version}",
-    plugins: {},
-    exec: unavailableExec,
-    require: function (name) {
-      return Object.prototype.hasOwnProperty.call(modules, name)
-        ? modules[name]
-        : {};
-    },
-    define: function (name, factory) {
-      modules[name] =
-        typeof factory === "function" ? factory(window.cordova.require, {}, {}) : factory;
-    },
-  };
-  if (typeof window.cordova.require !== "function") {
-    window.cordova.require = function (name) {
-      return name === "cordova/exec" ? unavailableExec : {};
-    };
-  }
+function pluginModule(root, plugin) {
+	const source = fs.readFileSync(path.join(root, plugin.file), "utf8");
 
-  // Globais que o boot do app espera dos plugins
-  window.BuildInfo = window.BuildInfo || {
-    packageName: "${pkg.name}",
-    version: "${pkg.version}",
-    versionCode: 1,
-  };
+	return [
+		`\t// ${plugin.file} -> window.${plugin.global}`,
+		"\twindow." + plugin.global + " = (function () {",
+		"\t\tvar module = { exports: {} };",
+		"\t\tvar exports = module.exports;",
+		source,
+		"\t\treturn module.exports;",
+		"\t})();",
+	].join("\n");
+}
 
-  var memFS = {
-    // caminhos ficticios em memoria para o boot
-    applicationDirectory: "file:///app/",
-    externalDataDirectory: "file:///data/",
-    externalCacheDirectory: "file:///cache/external/",
-    dataDirectory: "file:///data/",
-    cacheDirectory: "file:///cache/",
-  };
-  window.cordova.file = memFS;
-  window.resolveLocalFileSystemURL =
-    window.resolveLocalFileSystemURL ||
-    function (url, success, fail) {
-      // Entrada de diretorio vazia em memoria
-      if (typeof success === "function") {
-        success({
-          isFile: false,
-          isDirectory: true,
-          name: String(url).split("/").filter(Boolean).pop() || "root",
-          fullPath: url,
-          toURL: function () { return url; },
-          toInternalURL: function () { return url; },
-        });
-      }
-    };
+function buildStub(root) {
+	return fs
+		.readFileSync(runtimePath, "utf8")
+		.replaceAll("__ACODEX_VERSION__", pkg.version)
+		.replaceAll("__ACODEX_VERSION_CODE__", String(readVersionCode(root)))
+		.replaceAll("__ACODEX_PACKAGE_NAME__", packageName)
+		.replace(
+			"// __ACODEX_WEB_PLUGINS__",
+			WEB_PLUGINS.map((plugin) => pluginModule(root, plugin)).join("\n\n"),
+		);
+}
 
-  // dispara deviceready como o Cordova faria
-  function fireReady() {
-    var evt;
-    try {
-      evt = new Event("deviceready");
-    } catch (e) {
-      evt = document.createEvent("Events");
-      evt.initEvent("deviceready", true, false);
-    }
-    document.dispatchEvent(evt);
-  }
-  if (document.readyState === "complete") {
-    setTimeout(fireReady, 50);
-  } else {
-    window.addEventListener("load", function () { setTimeout(fireReady, 50); });
-  }
-})();
-`;
+const root = path.join(__dirname, "..", "..");
 
 fs.mkdirSync(path.dirname(dest), { recursive: true });
-fs.writeFileSync(dest, stub);
+fs.writeFileSync(dest, buildStub(root));
 console.log("web-cordova-shim: www/cordova.js gerado (stub browser)");
