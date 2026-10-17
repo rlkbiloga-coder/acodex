@@ -34,6 +34,7 @@ export default function CustomThemeInclude() {
 
 	$page.onhide = () => {
 		actionStack.remove("custom-theme");
+		$page.removeEventListener("click", handleClick);
 	};
 
 	$page.addEventListener("click", handleClick);

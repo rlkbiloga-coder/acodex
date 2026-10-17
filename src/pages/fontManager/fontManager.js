@@ -38,11 +38,11 @@ export default function fontManager() {
 		id: "fontManager",
 		action: () => {
 			$page.hide();
-			$page.removeEventListener("click", clickHandler);
 		},
 	});
 
 	$page.onhide = () => {
+		$page.removeEventListener("click", clickHandler);
 		actionStack.remove("fontManager");
 	};
 
