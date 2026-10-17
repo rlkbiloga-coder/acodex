@@ -102,10 +102,11 @@ Não óbvio, e o resto dos manifests não diz:
   serviço `builder` sobe; depois de editar `utils/scripts/web-cordova-shim.js` rode
   `docker compose -f docker-compose.base44.yml restart builder`, senão o preview
   serve o stub antigo e o app morre no boot com `<global> is not defined`.
-- **Ruído esperado no console do preview** (não é bug do app): 404 de
-  `/_vercel/insights/script.js` (o analytics da Vercel não existe fora da Vercel) e
-  `fetch` bloqueado por CORS para `acode.app/api/login` e `acode.app/api/promotions`
-  (login/promoções não têm back-end aqui). O boot segue normal.
+- **Serviços remotos são isolados no preview.** O shim marca
+  `window.__ACODE_BROWSER_PREVIEW__`; o app usa esse sinal para não injetar a
+  telemetria da Vercel nem consultar login/promoções de `acode.app`, que não
+  permitem CORS para o host do sandbox. O comportamento dos deploys web e APK
+  continua inalterado.
 - **Verificar / testar:**
   ```sh
   curl -sfI http://localhost:3000/            # index.html

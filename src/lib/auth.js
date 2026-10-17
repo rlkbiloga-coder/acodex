@@ -1,4 +1,5 @@
 import config from "./config";
+import { isBrowserPreview } from "./webAnalytics";
 
 /**
  * @typedef {object} User
@@ -105,6 +106,7 @@ class AuthService {
 	 * @returns {Promise<User>}
 	 */
 	async getLoggedInUser(forceFetch = false) {
+		if (isBrowserPreview()) return null;
 		if (loggedInUser && !forceFetch) return loggedInUser;
 
 		try {

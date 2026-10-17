@@ -31,6 +31,9 @@ const stub = `/*
   // espelha src/utils/installSource.js: no navegador não há Play Store, mas o
   // contrato de system.getInstaller precisa responder algo.
   var INSTALL_SOURCE_PLAY = "com.android.vending";
+  // Marcador exclusivo do stub gerado para o preview web. O app usa isto para
+  // não chamar serviços remotos que só existem no app/website em produção.
+  window.__ACODE_BROWSER_PREVIEW__ = true;
 
   function unavailableExec(success, fail) {
     if (typeof fail === "function") {

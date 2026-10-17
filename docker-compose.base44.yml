@@ -31,9 +31,9 @@ services:
         npm ci --no-audit --no-fund
         node utils/scripts/web-cordova-shim.js
         rm -f /tmp/bundle-ready
-        npx rspack --mode development
+        ./node_modules/.bin/rspack --mode development
         touch /tmp/bundle-ready
-        exec npx rspack --watch --mode development
+        exec ./node_modules/.bin/rspack --watch --mode development
     healthcheck:
       # Proves the first build emitted the app bundle and the watcher is up.
       test:

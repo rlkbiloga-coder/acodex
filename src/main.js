@@ -11,7 +11,7 @@ import "pages/welcome/welcome.scss";
 import "pages/sandbox/sandbox.scss";
 
 import "lib/polyfill";
-import { initWebAnalytics } from "lib/webAnalytics";
+import { initWebAnalytics, isBrowserPreview } from "lib/webAnalytics";
 import "cm/supportedModes";
 import "components/WebComponents";
 import "handlers/editorWorkaround";
@@ -555,6 +555,8 @@ async function onLogin() {
 }
 
 async function fetchPromotions() {
+	if (isBrowserPreview()) return;
+
 	try {
 		const res = await fetch(`${config.API_BASE}/promotions`);
 		if (res.ok) {

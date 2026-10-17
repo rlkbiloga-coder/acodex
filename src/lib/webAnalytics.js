@@ -5,9 +5,14 @@
  * funciona offline e não deve fazer requisições de telemetria.
  */
 
+/** @returns {boolean} true no stub de navegador usado pelo preview local */
+export function isBrowserPreview() {
+	return window.__ACODE_BROWSER_PREVIEW__ === true;
+}
+
 /** @returns {boolean} true quando rodando no navegador (deploy Vercel) */
 export function isWebDeploy() {
-	return window.cordova?.platformId === "browser";
+	return window.cordova?.platformId === "browser" && !isBrowserPreview();
 }
 
 /**
