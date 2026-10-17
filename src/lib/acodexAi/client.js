@@ -265,10 +265,7 @@ async function performChatCompletion({
 			// Non-JSON error body; fall back to the status text.
 		}
 		const rawMsg = detail || response.statusText || `HTTP ${response.status}`;
-		throw new AiRequestError(
-			sanitizeSecrets(rawMsg),
-			response.status,
-		);
+		throw new AiRequestError(sanitizeSecrets(rawMsg), response.status);
 	}
 
 	if (!onDelta || !response.body?.getReader) {
