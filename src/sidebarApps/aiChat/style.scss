@@ -2057,3 +2057,36 @@ html.ai-chat-fullscreen body {
     font-size: 1.2rem;
   }
 }
+
+/* ================= Magic UI — integração (ver src/styles/magicui.scss) ================= */
+.acodex-ai {
+	/* Meteoros/partículas ficam atrás do conteúdo */
+	> *:not(.mu-meteors):not(.mu-particles) {
+		position: relative;
+	}
+
+	.ai-home {
+		position: relative;
+
+		> *:not(.mu-meteors):not(.mu-particles) {
+			position: relative;
+		}
+	}
+
+	/* Neon Gradient Card no banner do provedor */
+	.ai-provider-card.mu-neon {
+		border-color: transparent;
+		background:
+			linear-gradient(var(--ai-card), var(--ai-card)) padding-box,
+			linear-gradient(60deg, #8b5cf6, #22d3ee, #8b5cf6) border-box;
+		background-size:
+			100% 100%,
+			300% 100%;
+		animation: mu-neon-pan 5s linear infinite;
+	}
+
+	/* Feixe do compositor por cima da borda fria */
+	.ai-composer.mu-border-beam {
+		border-color: var(--ai-card-line);
+	}
+}

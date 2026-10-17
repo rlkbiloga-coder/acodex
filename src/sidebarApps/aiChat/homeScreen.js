@@ -201,6 +201,8 @@ export function buildContextRows(context = {}) {
  * @param {{getContext: () => object, onAction: (prompt: string) => void, onSuggestion: (text: string) => void, suggestions?: string[], getProvider?: () => {label?: string, model?: string}|null, onProviderClick?: () => void, onShortcut?: (id: string) => void, onSettings?: () => void}} options
  * @returns {{el: HTMLElement, showTab: (id: string) => void, getContextRows: () => Array<{label: string, value: string}>}}
  */
+import { spawnMeteors, spawnParticles } from "./magicFx";
+
 export function createAiHome(options) {
 	const {
 		getContext,
@@ -236,7 +238,9 @@ export function createAiHome(options) {
 		return el;
 	}
 
-	const $el = h("div", { className: "ai-home" });
+	const $el = h("div", { className: "ai-home mu-grid-pattern" });
+	spawnMeteors($el, 7);
+	spawnParticles($el, 16);
 
 	// ---------- Hero: logo, nome, status ----------
 	const $logo = h("span", { className: "ai-home-logo" }, [
@@ -245,7 +249,10 @@ export function createAiHome(options) {
 	const $hero = h("div", { className: "ai-home-hero" }, [
 		$logo,
 		h("div", { className: "ai-home-hero-text" }, [
-			h("strong", { className: "ai-home-name", text: "Acodex AI" }),
+			h("strong", {
+				className: "ai-home-name mu-gradient-text",
+				text: "Acodex AI",
+			}),
 			h("span", { className: "ai-home-status" }, [
 				h("i", { className: "ai-home-dot" }),
 				"Online",
@@ -267,7 +274,7 @@ export function createAiHome(options) {
 		);
 	}
 	const $lead = h("p", {
-		className: "ai-home-lead",
+		className: "ai-home-lead mu-shiny-text",
 		text: "Seu assistente de IA integrado ao editor. Mais produtividade, menos esforço.",
 	});
 
@@ -301,7 +308,7 @@ export function createAiHome(options) {
 		"button",
 		{
 			type: "button",
-			className: "ai-provider-card",
+			className: "ai-provider-card mu-neon",
 			"aria-label": "Trocar provedor e modelo",
 			onclick: onProviderClick,
 		},
