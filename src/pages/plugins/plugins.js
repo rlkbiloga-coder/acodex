@@ -677,15 +677,19 @@ export default function PluginsInclude(updates) {
 			iapPurchases = await helpers.promisify(iap.getPurchases);
 			const disabledMap = settings.value.pluginsDisabled || {};
 
-			iapPurchases.forEach(async ({ productIds }) => {
-				const [sku] = productIds;
-				const url = Url.join(config.API_BASE, "plugin/owned", sku);
-				const plugin = await fsOperation(url).readFile("json");
-
-				plugins.owned.push(plugin);
-			});
+			await Promise.all(
+				iapPurchases.map(async ({ productIds }) => {
+					try {
+						const [sku] = productIds;
+						const url = Url.join(config.API_BASE, "plugin/owned", sku);
+						const plugin = await fsOperation(url).readFile("json");
+						plugins.owned.push(plugin);
+					} catch (err) {
+						console.error("Failed to read purchased plugin:", err);
+					}
+				}),
+			);
 		} else if (!(await auth.getLoggedInUser())) {
-			console.log("Not logged in");
 			$list.owned.setAttribute("empty-msg", strings["login-to-view"]);
 			return;
 		}

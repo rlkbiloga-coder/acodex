@@ -650,7 +650,7 @@ function FileBrowserInclude(mode, info, doesOpenLast = true) {
 			actionStack.clearFromMark();
 			actionStack.remove("filebrowser");
 			$content.removeEventListener("click", handleClick);
-			$content.removeEventListener("contextmenu", handleContextMenu);
+			$content.removeEventListener("contextmenu", handleContextMenu, true);
 			document.removeEventListener("resume", reload);
 		};
 

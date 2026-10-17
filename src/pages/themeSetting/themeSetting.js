@@ -66,11 +66,11 @@ export default function () {
 		action: () => {
 			destroyPreview("close");
 			$page.hide();
-			$page.removeEventListener("click", clickHandler);
 		},
 	});
 
 	$page.onhide = () => {
+		$page.removeEventListener("click", clickHandler);
 		actionStack.remove("appTheme");
 	};
 

@@ -95,7 +95,9 @@ export default class SidebarApp {
 		if (this.#active === nextValue) return;
 
 		this.#active = nextValue;
-		this.#icon.classList.toggle("active", this.#active);
+		if (this.#icon) {
+			this.#icon.classList.toggle("active", this.#active);
+		}
 		if (this.#active) {
 			const oldContainer = getContainer(this.#container);
 			// Try to replace the old container, or append if it's not in the DOM
