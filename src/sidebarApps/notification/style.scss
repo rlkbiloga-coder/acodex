@@ -23,7 +23,7 @@
                 cursor: pointer;
                 color: var(--primary-text-color);
                 margin-left: 0.4rem;
-                border-radius: 6px;
+                border-radius: var(--radius-sm, 6px);
                 transition: all 0.2s ease;
                 display: flex;
                 align-items: center;

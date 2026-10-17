@@ -45,7 +45,7 @@
         border: none;
         cursor: pointer;
         color: var(--primary-text-color);
-        border-radius: 6px;
+        border-radius: var(--radius-sm, 6px);
         transition: all 0.2s ease;
         display: flex;
         align-items: center;
@@ -125,7 +125,7 @@
         font-size: 1.2rem;
         cursor: pointer;
         padding: 4px;
-        border-radius: 4px;
+        border-radius: var(--radius-xs, 4px);
         transition: background-color 0.2s;
 
         &:hover {
@@ -312,7 +312,7 @@
       background: var(--secondary-color);
       background: color-mix(in srgb, var(--secondary-color) 60%, transparent);
       border: 1px solid var(--border-color);
-      border-radius: 4px;
+      border-radius: var(--radius-xs, 4px);
     }
 
     .cm-match {
@@ -320,7 +320,7 @@
       background: color-mix(in srgb, var(--active-color) 60%, transparent);
       color: var(--secondary-text-color);
       outline: 1px solid var(--border-color);
-      border-radius: 2px;
+      border-radius: var(--radius-xs, 2px);
       font-weight: 500;
     }
 

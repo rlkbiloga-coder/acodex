@@ -2,7 +2,7 @@
 
 .notification-item {
   position: relative;
-  border-radius: 6px;
+  border-radius: var(--radius-sm, 6px);
   background: var(--popup-background-color);
   display: flex;
   flex-direction: column;
@@ -86,7 +86,7 @@
     max-width: 100%;
     padding: 0 9px;
     border: 1px solid color-mix(in srgb, var(--button-background-color) 45%, transparent);
-    border-radius: 5px;
+    border-radius: var(--radius-xs, 5px);
     color: var(--button-background-color);
     background: color-mix(in srgb, var(--button-background-color) 9%, transparent);
     font-size: 12px;
@@ -123,7 +123,7 @@
 
   &.success {
     .notification-icon {
-      color: #48c158;
+      color: var(--success-text-color, #48c158);
     }
   }
 
