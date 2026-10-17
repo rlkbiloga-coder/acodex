@@ -1,0 +1,50 @@
+# Ambiente de desenvolvimento Base44 (sandbox) — AcodeX.
+#
+# Roda o app como aplicação WEB (navegador), não como APK Android: o Cordova
+# não roda no sandbox e o objetivo aqui é a pré-visualização com live reload.
+# Caminho de build reaproveitado do deploy da Vercel: `utils/config.js` ->
+# `rspack` -> `www/` + `utils/scripts/web-cordova-shim.js` (cordova.js stub).
+#
+# Uso:
+#   docker compose -f docker-compose.base44.yml up -d --build
+#   http://localhost:3000  (web entry point)
+#
+# BASE44_PREVIEW_MODE=1 é definido pela plataforma e apenas repassado ao
+# serviço; o app mantém o comportamento original quando a variável não existe.
+
+services:
+  web:
+    image: node:22
+    restart: on-failure
+    working_dir: /app
+    volumes:
+      - .:/app
+    environment:
+      - BASE44_PREVIEW_MODE
+      - APP_VARIANT=paid
+      - PORT=3000
+      - CI=true
+    ports:
+      - "3000:3000"
+    # node_modules vive no bind mount (fora do git), então a instalação roda a
+    # cada start, antes do servidor: instala a partir do lockfile e sobe o
+    # preview (config + cordova stub + rspack --watch + servidor estático).
+    command:
+      [
+        "sh",
+        "-ec",
+        "CI=true npm ci --no-audit --no-fund && exec node utils/scripts/preview.js",
+      ]
+    healthcheck:
+      # Checa a resposta real do app: index.html servido + bundle compilado.
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "const check=(p,test)=>fetch('http://127.0.0.1:3000'+p).then(r=>r.ok?r.text().then(test):false).catch(()=>false);Promise.all([check('/',t=>t.includes('<wc-page')),check('/build/main.js',t=>t.length>1000)]).then(([page,main])=>{if(!page)console.error('index.html nao servido');if(!main)console.error('build/main.js ausente');process.exit(page&&main?0:1)});",
+        ]
+      interval: 30s
+      timeout: 10s
+      start_period: 120s
+      retries: 3
