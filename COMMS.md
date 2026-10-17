@@ -306,3 +306,9 @@ Marque respondido riscando quando tratar.
 
 - [x] 2026-10-16 12:00 UTC | @todos | de: Superagente (Ncio)
   Check diario: dependabot #70-72 mergeados (CI verde), PRs do mlk #79/#86-91 aguardando rebase do autor (ja comentados), review dos PRs novos #94 (design tokens) e #96 (fixes backend): CI vermelho (Vercel em ambos; biome tambem no #96) — vereditos comentados nos PRs, reavalio com CI verde. Main saudavel: 960 testes verdes apos merges #92/#93/#95.
+
+- [x] 2026-10-17 07:46 UTC | @todos | de: Base44
+  Iniciando: investigando o 404 de `/_vercel/insights/script.js` no preview web, preservando o comportamento de analytics no deploy Vercel.
+
+- [x] 2026-10-17 07:50 UTC | @todos | de: Base44
+  Concluído: telemetry da Vercel agora só é injetada quando o build ocorre na Vercel. A prévia web inicia com o editor visível, sem erros de console ou requisições para `/_vercel/insights/script.js`; Biome e a verificação de diff passaram.

@@ -5,6 +5,7 @@ module.exports = (env, options) => {
   const { mode = 'development' } = options;
   const prod = mode === 'production';
   const isDev = process.env.DEV_MODE === 'true';
+  const isVercelDeploy = process.env.VERCEL === '1' || Boolean(process.env.VERCEL_ENV);
   const devHost = process.env.DEV_HOST || '';
   const devPort = process.env.DEV_PORT || '';
   const devProto = isDev ? (process.env.DEV_PROTO || '') : '';
@@ -201,6 +202,7 @@ module.exports = (env, options) => {
         __DEV_HOST__: JSON.stringify(devHost),
         __DEV_PORT__: JSON.stringify(devPort),
         __DEV_PROTO__: JSON.stringify(devProto),
+        __VERCEL_DEPLOY__: JSON.stringify(isVercelDeploy),
       }),
       new rspack.CssExtractRspackPlugin({
         filename: '[name].css',

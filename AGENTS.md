@@ -67,3 +67,9 @@ Quem for trabalhar aqui deve ler este arquivo antes de commitar.
 - 2026-10-10: Keystore debug persistente via actions/cache — assinatura fixa entre builds.
 - 2026-10-10: Chave NVIDIA embutida via secret `NVAPI_BUILTIN` no build; chave local do usuário sempre tem prioridade.
 - 2026-10-10: Solas é o dono do backend. Mudanças de contrato em `src/lib/acodexAi/` precisam de mensagem prévia em COMMS.md.
+
+## Preview web Base44
+
+- Suba com `docker compose -f docker-compose.base44.yml up -d`; a prévia web fica em `http://localhost:3000` e executa `utils/scripts/preview.js` com recompilação automática.
+- O browser preview usa `utils/scripts/web-cordova-runtime.js` para emular Cordova e armazenamento em memória. Recursos nativos (terminal, SD card e permissões Android) não funcionam neste modo.
+- Analytics da Vercel só é ativada em builds executados pela Vercel; a prévia local não deve solicitar `/_vercel/insights/script.js`.

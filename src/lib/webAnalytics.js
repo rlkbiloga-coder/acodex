@@ -5,9 +5,13 @@
  * funciona offline e não deve fazer requisições de telemetria.
  */
 
-/** @returns {boolean} true quando rodando no navegador (deploy Vercel) */
+/** @returns {boolean} true somente para builds publicados na Vercel */
 export function isWebDeploy() {
-	return window.cordova?.platformId === "browser";
+	return (
+		window.cordova?.platformId === "browser" &&
+		typeof __VERCEL_DEPLOY__ !== "undefined" &&
+		__VERCEL_DEPLOY__
+	);
 }
 
 /**
