@@ -12,6 +12,7 @@ import {
 	buildApiHelperInstall,
 	TIER_LABEL,
 } from "lib/acodexAgents";
+import iaThumb from "./acodexAi/acodex-ia-thumb.jpg?inline";
 
 /**
  * AcodeX IA — AI coding agent launcher.
@@ -29,7 +30,7 @@ import {
  * @returns {string}
  */
 export function buildAgentCommand(agent) {
-	return `command -v ${agent.bin} >/dev/null 2>&1 || { ${agent.install}; }; ${agent.bin}`;
+	return `command -v ${agent.bin} >/dev/null 2>&1 || { ${agent.install}; }; ${agent.bin}${agent.args ? ` ${agent.args}` : ""}`;
 }
 
 /**
@@ -58,17 +59,16 @@ async function waitForConnection(component, timeout = 15000) {
 }
 
 /**
- * Launches an agent in a new terminal session.
- * @param {object} agent Entrada do registro (qualquer kind)
+ * Opens a new terminal session and runs a shell command in the sandbox.
+ * @param {string} name Título da sessão de terminal
+ * @param {string} cmd Comando shell a executar
  * @returns {Promise<void>}
  */
-export async function launchAiAgent(agent) {
+export async function launchShellInTerminal(name, cmd) {
 	const { TerminalManager } = await import(
 		/* webpackChunkName: "terminal" */ "components/terminal"
 	);
-	const instance = await TerminalManager.createServerTerminal({
-		name: agent.name,
-	});
+	const instance = await TerminalManager.createServerTerminal({ name });
 	const component = instance?.component;
 	if (!component) {
 		throw new Error("Terminal component is not available");
@@ -77,11 +77,20 @@ export async function launchAiAgent(agent) {
 	if (!connected) {
 		throw new Error("Terminal session did not connect in time");
 	}
+	component.write(`${cmd}\r`);
+}
+
+/**
+ * Launches an agent in a new terminal session.
+ * @param {object} agent Entrada do registro (qualquer kind)
+ * @returns {Promise<void>}
+ */
+export async function launchAiAgent(agent) {
 	const cmd =
 		agent.kind === "api"
 			? buildApiAgentCommand(agent)
 			: buildAgentCommand(agent);
-	component.write(`${cmd}\r`);
+	await launchShellInTerminal(agent.name, cmd);
 }
 
 /**
@@ -92,9 +101,12 @@ export default async function acodexAI() {
 	const agents = Object.values(AGENT_REGISTRY);
 	const agentName = await select(
 		strings["acodex ia agent"] || "AcodeX IA: choose an AI agent",
-		agents.map((agent) => ({
+		agents.map((agent, index) => ({
 			value: agent.name,
-			text: agent.name,
+			text:
+				index === 0
+					? `<img src="${iaThumb}" width="28" height="28" style="vertical-align:middle;border-radius:6px;margin-right:8px" alt="">${agent.name}`
+					: agent.name,
 			subText: `${agent.description} [${TIER_LABEL[agent.tier]}]`,
 		})),
 		{ hideOnSelect: true },

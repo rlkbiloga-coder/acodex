@@ -1,6 +1,7 @@
 /**
  * Presets de modelos open source em provedores com free tier
- * (OpenRouter ":free" e Groq). Requerem API key própria, gratuita.
+ * (OpenRouter ":free", Groq e OpenCode Zen). Requerem API key
+ * própria, gratuita.
  */
 
 /** @typedef {{id: string, label: string, badges: string[]}} PresetModel */
@@ -68,5 +69,76 @@ export const GROQ_MODELS = [
 		id: "deepseek-r1-distill-llama-70b",
 		label: "DeepSeek R1 Distill 70B (Groq)",
 		badges: ["Groq", "free", "raciocínio"],
+	},
+];
+
+/**
+ * Endpoint OpenAI-compatible do OpenCode Zen. Os modelos "free" do Zen
+ * não custam nada; a key sai do login em opencode.ai/auth (console).
+ */
+export const OPENCODE_ZEN_BASE_URL = "https://opencode.ai/inference/openai/v1";
+
+/**
+ * Modelos free do OpenCode Zen (testados pelo time do OpenCode).
+ * Key gratuita: faça login em opencode.ai/auth, copie a API key do
+ * console e cole nas configurações do AcodeX IA. Mesma key usada pelo
+ * CLI `opencode`.
+ * @type {PresetModel[]}
+ */
+export const OPENCODE_ZEN_FREE_MODELS = [
+	{
+		id: "nemotron-3.5-lightning-free",
+		label: "Nemotron 3.5 Lightning free (Zen)",
+		badges: ["Zen free", "código"],
+	},
+	{
+		id: "nemotron-3-ultra-free",
+		label: "Nemotron 3 Ultra free (Zen)",
+		badges: ["Zen free", "agente"],
+	},
+	{
+		id: "nemotron-3.5-super-vl-free",
+		label: "Nemotron 3.5 Super VL free (Zen)",
+		badges: ["Zen free", "visão"],
+	},
+	{
+		id: "deepseek-v4.1-flash-free",
+		label: "DeepSeek V4.1 Flash free (Zen)",
+		badges: ["Zen free", "código"],
+	},
+	{
+		id: "big-pickle",
+		label: "Big Pickle free (Zen)",
+		badges: ["Zen free", "código"],
+	},
+	{
+		id: "mimo-v2.6-flash-free",
+		label: "MiMo V2.6 Flash free (Zen)",
+		badges: ["Zen free", "rápido"],
+	},
+	{
+		id: "mimo-v2.5-free",
+		label: "MiMo V2.5 free (Zen)",
+		badges: ["Zen free"],
+	},
+	{
+		id: "space-bunny-free",
+		label: "Space Bunny free (Zen)",
+		badges: ["Zen free"],
+	},
+	{
+		id: "cat-jam-free",
+		label: "Cat Jam free (Zen)",
+		badges: ["Zen free"],
+	},
+	{
+		id: "exo-free",
+		label: "Exo free (Zen)",
+		badges: ["Zen free"],
+	},
+	{
+		id: "longcat-2.5-preview-free",
+		label: "LongCat 2.5 Preview free (Zen)",
+		badges: ["Zen free"],
 	},
 ];

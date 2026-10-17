@@ -74,6 +74,38 @@ export default function Contextmenu(content, options) {
 
 	if (!options.innerHTML) addTabindex();
 
+	/**
+	 * Garante que o menu caiba na tela: se o posicionamento calculado
+	 * deixou o menu cortado (abaixo, acima ou nos lados do viewport),
+	 * desloca o menu para dentro. Corrige menus abertos perto das
+	 * bordas em telas pequenas.
+	 * @param {HTMLElement} $menu menu posicionado
+	 */
+	function clampToViewport($menu) {
+		requestAnimationFrame(() => {
+			const rect = $menu.getBoundingClientRect();
+			if (!rect.width && !rect.height) return;
+			const vw = window.innerWidth;
+			const vh = window.innerHeight;
+
+			if (rect.bottom > vh && rect.height < vh) {
+				$menu.style.bottom = `${Math.max(6, vh - rect.height - 6)}px`;
+				$menu.style.top = "auto";
+			} else if (rect.top < 0 && rect.height < vh) {
+				$menu.style.top = "6px";
+				$menu.style.bottom = "auto";
+			}
+
+			if (rect.right > vw) {
+				$menu.style.right = `${Math.max(6, vw - rect.width - 6)}px`;
+				$menu.style.left = "auto";
+			} else if (rect.left < 0) {
+				$menu.style.left = "6px";
+				$menu.style.right = "auto";
+			}
+		});
+	}
+
 	function show() {
 		actionStack.push({
 			id: "main-menu",
@@ -98,6 +130,7 @@ export default function Contextmenu(content, options) {
 		}
 
 		app.append($el, $mask);
+		clampToViewport($el);
 
 		const $firstChild = $el.firstChild;
 		if ($firstChild && $firstChild.focus) $firstChild.focus();

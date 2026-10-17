@@ -1,7 +1,7 @@
 # AcodeX — IDE • Code • Build
 
 <p align="center">
-  <img src="res/logo_1.png" width="180">
+  <img src="res/logo_1.png" width="280" alt="AcodeX">
 </p>
 
 <p align="center">
@@ -16,6 +16,28 @@
   <img alt="lint" src="https://img.shields.io/badge/lint-Biome-60a5fa">
   <img alt="license" src="https://img.shields.io/badge/license-MIT-blue">
 </p>
+
+## • AcodeX IA
+
+<p align="center">
+  <img src="res/acodex-ia/acodex-ia.png" width="280" alt="AcodeX IA">
+</p>
+
+O **AcodeX IA** coloca agentes de IA de programação dentro do seu terminal, com um único seletor (comando `acodex-ai` na paleta).
+
+- **Registro único de agentes** em `src/lib/acodexAgents.js`: adicionar um agente novo é adicionar uma entrada.
+- **17 agentes no catálogo.** Open-source e gratuitos: OpenCode, Crush, Aider, Ollama, Goose, OpenHands, **NVIDIA NIM (Nemotron)**, **OpenCode Zen (modelos free)**, **Groq**, **OpenRouter (:free)** e **Nous Hermes local**. Com tier grátis: Gemini CLI, Qwen Code, Amp, Base44 Superagent. Pagos (provisórios): Claude Code, OpenAI Codex.
+- **Modelos free verificados:** NVIDIA Nemotron direto da NVIDIA (build.nvidia.com), nemotron/deepseek/mimo hospedados grátis pelo OpenCode Zen, `gpt-oss-120b` no Groq e 15+ modelos `:free` no OpenRouter. Chaves grátis conectadas com `/connect` dentro do OpenCode.
+- **Base44 Superagent:** converse com o seu agente Base44 direto do terminal (`acodex-b44`). Suas credenciais ficam **criptografadas (AES-256) no seu aparelho**; nada de segredo vai para o repositório.
+- **Guarda de comandos críticos:** `rm -rf`, `dd`, `wipefs`, `fdisk` e formatadores pedem confirmação antes de executar.
+
+### AcodeX PC (comando `acodex-pc`)
+
+Capacidades de PC na nuvem no sandbox do terminal, tudo open-source:
+
+- **Programas de janela:** display virtual (Xvfb) + VNC (`acodex-gui start`) — rode apps gráficos e veja do celular.
+- **Processamento paralelo:** OpenCL via POCL — kernels OpenCL rodando em CPU, sem GPU.
+- **SDK Android na nuvem:** build do APK em CI grátis (GitHub Actions) — veja `.github/workflows/build-acodex.yml`.
 
 ---
 
@@ -122,6 +144,22 @@ npm run dev:android  # device/emulador Android
 
 - **`tests/`** — suíte unitária/integração rodada pelo **Vitest** (`npm test`). Espelha a resolução de módulos do bundler (aliases `utils/…`, `lib/…` → `src/…`).
 - **`src/test/`** — harness de testes *runtime* que roda on-device dentro do WebView (lançado pelos comandos do app). Depende de globais do Cordova/editorManager e é **excluído** da coleta do Vitest por design.
+
+## 🤖 AcodeX IA
+
+Assistente de IA embutido no app (app de sidebar `acodex-ai`, item do menu de 3 pontos), com chat, anexos, ferramentas do editor, MCP e seletor de agentes CLI no sandbox.
+
+- **Anexo universal:** envie *qualquer* arquivo de texto/código (js, py, md, json, log...) junto com a mensagem — o conteúdo real vai para o modelo em bloco de código com o nome do arquivo, além de imagens (visão).
+- **Tela cheia:** o chat abre em tela cheia real (antes ficava preso na largura da sidebar).
+- **Menu de 3 pontos:** itens consertados — `Acodex IA`, `Notificações`, `Plugins` e `Files` abrem os apps corretos; menus nunca mais saem da tela.
+- **Seletor de agentes (`ai-agents`):** Base44 Superagent, Gemini CLI, OpenCode, Crush, Aider, Ollama, Qwen Code, Goose, OpenHands, Amp, Claude Code, OpenAI Codex e **OpenClaw**.
+
+### OpenClaw na nuvem
+
+O [OpenClaw](https://github.com/openclaw/openclaw) é um assistente open-source (MIT) que roda um Gateway próprio e atende WhatsApp, Telegram, Discord, Slack, iMessage, Teams e 20+ canais. No AcodeX:
+
+- No sandbox do terminal: `openclaw onboard --install-daemon` (primeira vez), depois `openclaw gateway status` e `openclaw dashboard`.
+- Na nuvem: deploy oficial com `Dockerfile`, `docker-compose.yml`, `fly.toml` (Fly.io) e `render.yaml` (Render) do próprio repo `openclaw/openclaw` — seu assistente disponível 24/7 nos seus chats, sem serviço pago (o projeto não tem tier hospedado; a instância é sua).
 
 ## 🌍 Multi-language support
 

@@ -4,6 +4,8 @@
  * o chat integra via callbacks.
  */
 
+import { createCosmosBanner } from "./cosmos";
+
 const SVG_NS = "http://www.w3.org/2000/svg";
 
 /**
@@ -451,6 +453,7 @@ export function createAiHome(options) {
 	renderChatPane();
 	renderActionsPane();
 	$el.append(
+		createCosmosBanner(),
 		$hero,
 		$lead,
 		$tabs,

@@ -420,6 +420,13 @@ const APP_BINDING_CONFIG = [
 		readOnly: true,
 	},
 	{
+		name: "acodexPC",
+		description: "AcodeX PC: Sandbox PC tools (GUI, OpenCL, cloud SDK)",
+		key: null,
+		action: "acodex-pc",
+		readOnly: true,
+	},
+	{
 		name: "documentSymbols",
 		description: "Go to symbol in document",
 		key: null,
