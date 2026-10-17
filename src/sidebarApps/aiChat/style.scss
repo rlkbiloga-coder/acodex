@@ -1996,3 +1996,64 @@ html.ai-chat-fullscreen #sidebar.show {
 html.ai-chat-fullscreen body {
   overflow: hidden;
 }
+
+/* ===== Imersão: leveza e micro-detalhes ===== */
+
+/* Menos animação quando o usuário/pede ou o sistema pede (bateria/acessibilidade) */
+@media (prefers-reduced-motion: reduce) {
+  .acodex-ai *,
+  .acodex-ai *::before,
+  .acodex-ai *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Feedback tátil visual: leve encolhida ao tocar em botões do chat */
+.acodex-ai {
+  button:active {
+    transform: scale(0.97);
+    transition: transform 90ms ease;
+  }
+
+  input,
+  textarea {
+    scroll-behavior: smooth;
+  }
+}
+
+/* Botão flutuante "ir para o fim" */
+.ai-scroll-btn {
+  position: absolute;
+  right: 14px;
+  bottom: 118px;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  color: var(--primary-text-color);
+  background: color-mix(in srgb, var(--primary-color) 22%, var(--background-color));
+  box-shadow: 0 2px 10px rgb(0 0 0 / 25%);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(6px) scale(0.9);
+  transition:
+    opacity 0.16s ease,
+    transform 0.16s ease;
+
+  &.visible {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0) scale(1);
+  }
+
+  .icon {
+    font-size: 1.2rem;
+  }
+}

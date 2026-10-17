@@ -4,6 +4,8 @@
  *
  * Pure helpers are exported for unit tests; the CM6 wiring is below.
  */
+
+import { getFallbackModels } from "sidebarApps/aiChat/fallbackModels";
 import { Prec, StateEffect, StateField } from "@codemirror/state";
 import { Decoration, EditorView, keymap, WidgetType } from "@codemirror/view";
 import { createChatCompletion, withBuiltinKey } from "lib/acodexAi/client";
@@ -135,6 +137,8 @@ export async function requestCompletion(before, filename) {
 			messages: [
 				{ role: "user", content: buildCompletionPrompt(before, filename) },
 			],
+			max_tokens: 120,
+			fallbackModels: getFallbackModels(config),
 		});
 		return extractGhostText(message.content || "");
 	} catch (error) {

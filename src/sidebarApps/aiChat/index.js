@@ -23,6 +23,7 @@ import appSettings from "lib/settings";
 import { upgradeAssistantMessage } from "./advancedRender";
 import { createAgentActivity } from "./agentActivity";
 import { createRestScreen } from "./cosmos";
+import { getFallbackModels } from "./fallbackModels";
 import { renderAssistantMessage } from "./format";
 import { createAiHome, createIcon } from "./homeScreen";
 import {
@@ -30,10 +31,12 @@ import {
 	createImageInput,
 	DEFAULT_IMAGE_PROMPT,
 } from "./imageInput";
+import { haptic, shouldShowScrollButton } from "./immersion";
 import { createModelSwitcher } from "./modelSwitcher";
 import { describePowerModeChange, getPowerMode } from "./powerMode";
 import { createTokenMeter, createTokenMeterView } from "./tokenMeter";
 import { createAgentTracer, createTraceBus } from "./traceEvents";
+import { syncVesperTool } from "./vesperTool";
 import { createVoiceInput, isVoiceSupported } from "./voiceInput";
 
 const TOOL_LABELS = {
@@ -399,6 +402,22 @@ function initApp(el) {
 	$adjust.append(createIcon("sliders", 16));
 	$tools.append($adjust);
 	if ($micBtn) $tools.append($micBtn);
+	const $scrollBtn = (
+		<button
+			type="button"
+			className="ai-scroll-btn"
+			aria-label="Ir para o fim"
+			onclick={() => {
+				$messages.scrollTo({ top: $messages.scrollHeight, behavior: "smooth" });
+			}}
+		>
+			<span className="icon arrow_downward" />
+		</button>
+	);
+	$messages.addEventListener("scroll", () => {
+		$scrollBtn.classList.toggle("visible", shouldShowScrollButton($messages));
+	});
+
 	el.append(
 		$messages,
 		<div className="ai-composer">
@@ -413,6 +432,7 @@ function initApp(el) {
 			{$sendBtn}
 		</div>,
 	);
+	el.append($scrollBtn);
 	if ($voiceHint) el.append($voiceHint);
 	el.append(imageInput.$fileInput);
 	// Tela de descanso: aparece após ociosidade (nunca com a IA respondendo).
@@ -466,6 +486,8 @@ function onShortcut(id) {
  * Reconecta quando a URL muda e remove tools de sessões anteriores.
  */
 async function syncMcpTools() {
+	// tool do agente Vesper não depende de MCP; sincroniza sempre
+	syncVesperTool(registry);
 	for (const name of mcpToolNames) registry.removeTool(name);
 	mcpToolNames = [];
 	mcpClient = null;
@@ -922,6 +944,7 @@ async function send(rawText) {
 		}
 	}
 
+	haptic(8);
 	tokenMeter?.begin(text.length);
 	try {
 		await runAgent({
@@ -931,13 +954,12 @@ async function send(rawText) {
 			signal: controller.signal,
 			systemContext,
 			skillCatalog,
-			complete: powerMode.maxTokens
-				? (params) =>
-						createChatCompletion({
-							...params,
-							max_tokens: powerMode.maxTokens,
-						})
-				: undefined,
+			complete: (params) =>
+				createChatCompletion({
+					...params,
+					...(powerMode.maxTokens ? { max_tokens: powerMode.maxTokens } : {}),
+					fallbackModels: getFallbackModels(config),
+				}),
 			onEvent(event) {
 				// toda atividade do agente vira evento tipado no bus (nada simulado)
 				tracer.handleAgentEvent(event);
@@ -972,7 +994,9 @@ async function send(rawText) {
 		$liveMsg = null;
 		controller = null;
 		setBusy(false);
+		haptic(5);
 		tokenMeterView?.update();
+		$scrollBtn.classList.remove("visible");
 	}
 }
 
@@ -1037,6 +1061,7 @@ async function openSettings() {
 			false,
 		);
 		await syncMcpTools();
+		syncVesperTool(registry);
 	} catch {
 		// Dialog dismissed.
 	}

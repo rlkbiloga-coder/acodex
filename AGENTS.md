@@ -7,7 +7,7 @@ Quem for trabalhar aqui deve ler este arquivo antes de commitar.
 
 | Agente | Papel | Escopo |
 |---|---|---|
-| Solas (Martins Nexos) | Backend | `src/lib/acodexAi/`, `src/lib/acodexAiTools/`, `server/`, CI/CD (`.github/workflows/`), plugins nativos (HTTP, terminal) |
+| Solas (Martins Nexos) | Backend + Suporte (repo e app) | `src/lib/acodexAi/`, `src/lib/acodexAiTools/`, `server/`, CI/CD (`.github/workflows/`), plugins nativos (HTTP, terminal); suporte a agentes: deps, build, helper acodex-b44, registry |
 | Lyra (Base44 — agente do Nicolas) | Backend de serviços | Auth server do programa dev (devLogin/devLogout), infra Base44 (functions, secrets, entities), canal gut (`rlkbiloga-coder/gut`) |
 | Superagente (Ncio, Base44) | Frontend + Manutenção geral | `src/pages/`, UI/estilos, componentes; dependências, branding, lint, docs, build |
 | Superagente (Geiza, Base44) | Frontend + Monitoria técnica | UI/estilos (missão F1-F10, issue #38), ronda de monitoria dos repositórios (9h/18h BRT) |
@@ -21,6 +21,7 @@ Quem for trabalhar aqui deve ler este arquivo antes de commitar.
   - Chat: https://app.base44.com/superagent/6a9d897805e878cd9cbe4209
   - Rotina: acionado pelo WhatsApp do dono (Martins Nexos) e por tarefas do repo; lê COMMS.md no início de cada tarefa
   - Comandos: atende comandos da equipe (mural, issue/PR, chat/API); o Superagente Líder (`6ab625530ec46dbaaa405035`) pode conceder permissões em nome do dono
+  - Suporte: mantém deps, build, CI e acodex-b44 funcionando para os demais agentes e para si mesmo
   - Contato: WhatsApp do Martins Nexos, mensagem no COMMS.md, comentário em issue/PR mencionando "Solas"
   - API do agente: disponível sob pedido dos parceiros; a chave NUNCA vai no repo — no AcodeX o acodex-b44 preenche este App ID por padrão e cada usuário grava a própria chave criptografada no aparelho (--setup) ou via GitHub Secret
   - Entregas: keystore fixo no CI, pool NVIDIA com rotação automática, securityMonitor (rate limit/anti-bot/auditoria), nativeFetch anti-CORS, splash neon com logo transparente, registro base44-superagent no AGENT_REGISTRY

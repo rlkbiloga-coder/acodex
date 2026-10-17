@@ -188,14 +188,14 @@ module.exports = (env, options) => {
         crypto: false,
         // sql.js (build asm, sem arquivo wasm) referencia builtins do node no UMD
         fs: false,
-        'node:fs': false,
-        'node:crypto': false,
-        'node:path': false,
       },
       modules: ['node_modules', 'src'],
       roots: [],
     },
     plugins: [
+      new rspack.NormalModuleReplacementPlugin(/^node:/, (resource) => {
+        resource.request = resource.request.replace(/^node:/, '');
+      }),
       new rspack.DefinePlugin({
         __DEV_MODE__: JSON.stringify(isDev),
         __DEV_HOST__: JSON.stringify(devHost),

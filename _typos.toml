@@ -176,3 +176,12 @@ aprox = "aprox"
 
 # portugues (curadoria awesome)
 editores = "editores"
+
+# portugues (fallback + vesper tool)
+alternativos = "alternativos"
+candidata = "candidata"
+candidatas = "candidatas"
+varios = "varios"
+repete = "repete"
+itens = "itens"
+
