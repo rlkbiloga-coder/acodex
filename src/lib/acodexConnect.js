@@ -74,7 +74,7 @@ ask_pass() {
 
 save_enc() {
   mkdir -p "\$DIR" && chmod 700 "\$DIR"
-  printf '%s' "\$2" | openssl enc -aes-256-cbc -pbkdf2 -salt -out "\$DIR/\$1" -pass pass:"\$3" 2>/dev/null \\
+  printf '%s' "\$2" | ACX_ENC_PASS="\$3" openssl enc -aes-256-cbc -pbkdf2 -salt -out "\$DIR/\$1" -pass env:ACX_ENC_PASS 2>/dev/null \\
     && chmod 600 "\$DIR/\$1" && echo "salvo criptografado em \$DIR/\$1"
 }
 
@@ -131,13 +131,13 @@ connect_gmail() {
   echo '\\naguardando a autorizacao voltar para o terminal...'
   JSON=\$(node -e 'const http=require("http"),https=require("https");const srv=http.createServer((q,s)=>{const code=new URL(q.url,"http://x").searchParams.get("code");if(!code){s.writeHead(400);s.end("sem codigo");return;}const body="code="+encodeURIComponent(code)+"&client_id="+process.env.GID+"&client_secret="+process.env.GSEC+"&redirect_uri="+encodeURIComponent("http://127.0.0.1:49152/oauth2callback")+"&grant_type=authorization_code";const r=https.request("https://oauth2.googleapis.com/token",{method:"POST",headers:{"Content-Type":"application/x-www-form-urlencoded","Content-Length":Buffer.byteLength(body)}},rr=>{let d="";rr.on("data",x=>d+=x);rr.on("end",()=>{s.writeHead(200,{"Content-Type":"text/plain"});s.end("Autorizado! Volte ao terminal do AcodeX.");console.log(d);srv.close();});});r.on("error",()=>{s.writeHead(500);s.end("erro");srv.close();});r.end(body);});srv.listen(49152,"127.0.0.1");setTimeout(()=>process.exit(1),600000);')
   REFRESH=\$(printf '%s' "\$JSON" | sed -n 's/.*"refresh_token"[[:space:]]*:[[:space:]]*"\\([^"]*\\)".*/\\1/p')
-  [ -z "\$REFRESH" ] && { echo "falha ao obter refresh_token: \$JSON"; return 1; }
+  [ -z "\$REFRESH" ] && { echo "falha ao obter refresh_token: \$(printf '%s' "\$JSON" | sed -E 's/"(access_token|refresh_token|id_token)"[[:space:]]*:[[:space:]]*"[^"]*"/"\\1":"[REDACTED]"/g')"; return 1; }
   save_enc gmail.enc "\$REFRESH" "\$(ask_pass)"
 }
 
 connect_whatsapp() {
   hdr "WhatsApp — pareamento por QR (via OpenClaw)"
-  command -v openclaw >/dev/null 2>&1 || npm install -g openclaw@latest >/dev/null 2>&1 || curl -fsSL https://openclaw.ai/install.sh | bash
+  command -v openclaw >/dev/null 2>&1 || npm install -g openclaw@latest >/dev/null 2>&1
   command -v openclaw >/dev/null 2>&1 || { echo "nao consegui instalar o openclaw"; return 1; }
   [ -d "\$HOME/.openclaw" ] || { echo "primeira vez: onboarding do OpenClaw"; openclaw onboard --install-daemon || return 1; }
   echo "Escolha WhatsApp no menu e escaneie o QR pelo app do celular:"
