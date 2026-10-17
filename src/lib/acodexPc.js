@@ -7,7 +7,7 @@
  */
 
 import select from "dialogs/select";
-import { SANDBOX_TOOLS, buildGuiHelperInstall } from "lib/acodexAgents";
+import { buildGuiHelperInstall, SANDBOX_TOOLS } from "lib/acodexAgents";
 
 /**
  * AcodeX PC — capacidades de "PC na nuvem" no sandbox do terminal.

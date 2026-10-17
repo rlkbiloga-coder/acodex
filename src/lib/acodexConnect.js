@@ -207,8 +207,7 @@ export default async function acodexConnect() {
 			id: "status",
 			name: "Estado das conexões",
 			cmd: "status",
-			description:
-				"Mostra o que já está conectado (GitHub, Gmail, WhatsApp)",
+			description: "Mostra o que já está conectado (GitHub, Gmail, WhatsApp)",
 			note: "",
 		},
 	];
@@ -223,5 +222,8 @@ export default async function acodexConnect() {
 	);
 	const connector = entries.find(({ name }) => name === choice);
 	if (!connector) return;
-	await launchShellInTerminal(`Conexão: ${connector.name}`, buildConnectCommand(connector));
+	await launchShellInTerminal(
+		`Conexão: ${connector.name}`,
+		buildConnectCommand(connector),
+	);
 }

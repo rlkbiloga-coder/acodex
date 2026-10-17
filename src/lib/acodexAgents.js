@@ -59,8 +59,7 @@ export const AGENT_REGISTRY = {
 		tier: "free",
 		status: "ativo",
 		bin: "openclaw",
-		install:
-			"npm install -g openclaw@latest",
+		install: "npm install -g openclaw@latest",
 		description:
 			"Assistente open-source que atende WhatsApp, Telegram, Discord, Slack e 20+ canais (Gateway + CLI)",
 		note: "primeira vez: openclaw onboard --install-daemon; na nuvem: Docker/Fly/Render oficiais no repo openclaw/openclaw",
@@ -100,7 +99,8 @@ export const AGENT_REGISTRY = {
 		status: "ativo",
 		bin: "ollama",
 		install: "curl -fsSL https://ollama.com/install.sh | sh",
-		description: "Modelos de IA locais, open-source e offline (llama3.3, qwen3, hermes3...)",
+		description:
+			"Modelos de IA locais, open-source e offline (llama3.3, qwen3, hermes3...)",
 	},
 	"qwen-code": {
 		name: "Qwen Code",
@@ -159,7 +159,8 @@ export const AGENT_REGISTRY = {
 		bin: "opencode",
 		install: "npm install -g opencode-ai",
 		args: "--model opencode/nemotron-3-ultra-free",
-		description: "Modelos free hospedados pelo OpenCode (nemotron, deepseek, mimo)",
+		description:
+			"Modelos free hospedados pelo OpenCode (nemotron, deepseek, mimo)",
 		note: "conta grátis do OpenCode: opencode auth login, depois /connect",
 	},
 	"groq-free": {
@@ -181,7 +182,8 @@ export const AGENT_REGISTRY = {
 		bin: "opencode",
 		install: "npm install -g opencode-ai",
 		args: "--model openrouter/nvidia/nemotron-3-ultra-550b-a55b:free",
-		description: "15+ modelos gratuitos no OpenRouter (nemotron, gemma, inkling)",
+		description:
+			"15+ modelos gratuitos no OpenRouter (nemotron, gemma, inkling)",
 		note: "chave grátis em openrouter.ai, depois /connect no OpenCode",
 	},
 	"ollama-hermes": {
@@ -225,13 +227,15 @@ export const SANDBOX_TOOLS = {
 	gpu: {
 		name: "OpenCL (POCL)",
 		what: "processamento paralelo estilo GPU rodando em CPU (Portable Computing Language)",
-		install: "apt-get update && apt-get install -y pocl-opencl-icd && python3 -m pip install pyopencl",
+		install:
+			"apt-get update && apt-get install -y pocl-opencl-icd && python3 -m pip install pyopencl",
 		note: "sem GPU física no sandbox: POCL executa kernels OpenCL na CPU",
 	},
 	gui: {
 		name: "Programas de janela (Xvfb + VNC)",
 		what: "display virtual + VNC para rodar apps gráficos no sandbox e ver do celular",
-		install: "apt-get update && apt-get install -y xvfb x11-apps x11vnc websockify novnc",
+		install:
+			"apt-get update && apt-get install -y xvfb x11-apps x11vnc websockify novnc",
 		note: "acodex-gui inicia tudo e mostra o endereço para abrir no navegador",
 	},
 	cloudSdk: {

@@ -22,8 +22,8 @@ import openFile from "lib/openFile";
 import appSettings from "lib/settings";
 import { upgradeAssistantMessage } from "./advancedRender";
 import { createAgentActivity } from "./agentActivity";
-import { renderAssistantMessage } from "./format";
 import { createRestScreen } from "./cosmos";
+import { renderAssistantMessage } from "./format";
 import { createAiHome, createIcon } from "./homeScreen";
 import {
 	buildVisionContent,
@@ -850,7 +850,8 @@ async function send(rawText) {
 	let text = rawText.trim();
 	if (!text && image) text = DEFAULT_IMAGE_PROMPT;
 	if (!text && textFile)
-		text = "Analise o arquivo anexado: identifique a linguagem/estrutura, aponte erros e dê recomendações.";
+		text =
+			"Analise o arquivo anexado: identifique a linguagem/estrutura, aponte erros e dê recomendações.";
 	if ((!text && !attachment) || controller) return;
 	if (textFile) {
 		const fence = textFile.content.includes(FENCE) ? "````" : FENCE;
