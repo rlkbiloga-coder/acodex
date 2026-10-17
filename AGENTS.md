@@ -67,3 +67,45 @@ Quem for trabalhar aqui deve ler este arquivo antes de commitar.
 - 2026-10-10: Keystore debug persistente via actions/cache — assinatura fixa entre builds.
 - 2026-10-10: Chave NVIDIA embutida via secret `NVAPI_BUILTIN` no build; chave local do usuário sempre tem prioridade.
 - 2026-10-10: Solas é o dono do backend. Mudanças de contrato em `src/lib/acodexAi/` precisam de mensagem prévia em COMMS.md.
+
+## Ambiente de dev no sandbox Base44 (preview web)
+
+Não óbvio, e o resto dos manifests não diz:
+
+- **Submódulo primeiro.** `codemirror-lsp-client/` é submódulo e a dependência
+  `file:codemirror-lsp-client` do package.json. O checkout do Base44 vem sem os
+  arquivos do submódulo, então `npm ci` falha até rodar
+  `git submodule update --init --recursive`.
+- **Subir:** `docker compose -f docker-compose.base44.yml up -d` (o `--build` só
+  refaz o pull das imagens base). Serviços: `builder` (node:22, `npm ci` a partir
+  do `package-lock.json` e `rspack --watch` -> `www/build/`) e `web` (nginx
+  servindo `www/` na porta 3000). O primeiro boot leva ~40-60 s (instalação de
+  deps + build) e o `web` só fica healthy depois que o bundle existe.
+- **Não rode `node utils/config.js` aqui.** Ele é o passo de variante do build
+  Android e reescreve identidade versionada: troca o id do `config.xml`
+  (`com.acodex.editor` -> `com.foxdebug.acode`) e sobrescreve
+  `res/android/values/ic_launcher_background.xml`. O preview web não precisa dele
+  (só de `utils/scripts/web-cordova-shim.js` + `rspack`).
+- **Sem credenciais para bootar.** O preview é o build web do projeto e sobe sem
+  nenhum segredo. `NVAPI_BUILTIN`/`NVAPI_POOL` são injetados pelo
+  `.github/workflows/build-apk.yml` no build do APK; no navegador as chaves de IA
+  são digitadas pelo usuário no próprio app.
+- **Nada de live reload na página.** O harness de dev do projeto
+  (`utils/scripts/dev.js`) depende de um device Android conectado e sorteia porta,
+  por isso o preview usa o caminho web + nginx. Depois de editar: espere o rebuild
+  em `docker compose -f docker-compose.base44.yml logs -f builder` e recarregue o
+  preview (o `rspack --watch` recompila sozinho, em ~5 s).
+- **Plugins nativos não existem no navegador** (terminal, filesystem, SMB/FTP,
+  advanced-http, ads): `www/cordova.js` é o stub de browser gerado pelo shim, então
+  esses recursos falham do jeito deles — a UI do editor carrega normalmente.
+- **Verificar / testar:**
+  ```sh
+  curl -sfI http://localhost:3000/            # index.html
+  curl -sfI http://localhost:3000/build/main.js
+  docker compose -f docker-compose.base44.yml exec builder npx vitest run
+  docker compose -f docker-compose.base44.yml exec builder npx tsc --noEmit
+  ```
+- **BASE44_PREVIEW_MODE:** nenhum override de código/config foi necessário — nginx
+  aceita qualquer Host e o proxy do preview alcança a porta 3000 direto. O flag
+  segue obrigatório para qualquer override de sandbox que venha a ser adicionado
+  (gate exato em `"1"`, comportamento original preservado quando ausente).

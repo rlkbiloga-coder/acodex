@@ -1,0 +1,70 @@
+# Base44 dev environment — AcodeX (Acode/Cordova fork).
+#
+# AcodeX is a Cordova WebView app. The browser preview runs the project's own
+# WEB build — rspack -> www/build/ plus utils/scripts/web-cordova-shim.js, which
+# generates the browser stub for www/cordova.js (same path Vercel uses via
+# `VERCEL=1 npm run build`). No Android SDK is involved.
+#
+#   builder — node:22, installs deps from package-lock.json on startup and runs
+#             `rspack --watch` so every source edit rebuilds www/build/.
+#   web     — nginx:alpine serving www/ on host port 3000 (the preview entry).
+#
+# This project has no live-reload web dev server (its dev harness
+# utils/scripts/dev.js targets a connected Android device and picks a random
+# port), so the bundle rebuilds automatically but the page needs a refresh.
+
+name: acodex
+
+services:
+  builder:
+    image: node:22-bookworm
+    working_dir: /app
+    restart: on-failure
+    volumes:
+      - ./:/app
+      # Dependencies live in a volume so npm never writes into the checkout.
+      - node_modules:/app/node_modules
+    command:
+      - sh
+      - -ec
+      - |
+        npm ci --no-audit --no-fund
+        node utils/scripts/web-cordova-shim.js
+        rm -f /tmp/bundle-ready
+        npx rspack --mode development
+        touch /tmp/bundle-ready
+        exec npx rspack --watch --mode development
+    healthcheck:
+      # Proves the first build emitted the app bundle and the watcher is up.
+      test:
+        - CMD-SHELL
+        - |
+          [ -f /tmp/bundle-ready ] || { echo "initial build not finished"; exit 1; }
+          [ -s /app/www/build/main.js ] || { echo "missing www/build/main.js"; exit 1; }
+          [ -s /app/www/build/main.css ] || { echo "missing www/build/main.css"; exit 1; }
+      interval: 5s
+      timeout: 5s
+      retries: 60
+      start_period: 180s
+
+  web:
+    image: nginx:alpine
+    restart: on-failure
+    depends_on:
+      builder:
+        condition: service_healthy
+    ports:
+      - "3000:80"
+    volumes:
+      - ./www:/usr/share/nginx/html:ro
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - |
+          wget -q -O /dev/null http://127.0.0.1/index.html && wget -q -O /dev/null http://127.0.0.1/build/main.js || { echo "nginx could not serve index.html or build/main.js"; exit 1; }
+      interval: 10s
+      timeout: 5s
+      retries: 6
+
+volumes:
+  node_modules:
