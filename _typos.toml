@@ -185,3 +185,14 @@ varios = "varios"
 repete = "repete"
 itens = "itens"
 
+
+# portugues (AcodeX IA Conexões / PC / registry — PRs #86-#91)
+conector = "conector"
+conectores = "conectores"
+autorize = "autorize"
+registre = "registre"
+correspondente = "correspondente"
+credencial = "credencial"
+programas = "programas"
+Programas = "Programas"
+saem = "saem"
