@@ -337,9 +337,9 @@ case "\${1:-start}" in
     [ -d "$CONF" ] || mkdir -p "$CONF"
     pgrep -f "Xvfb :9" >/dev/null 2>&1 || Xvfb :9 -screen 0 1280x800x24 -nolisten tcp >/dev/null 2>&1 &
     sleep 1
-    pgrep -f "x11vnc.*:9" >/dev/null 2>&1 || x11vnc -display :9 -forever -shared -nopw -quiet -rfbport 5909 >/dev/null 2>&1 &
+    pgrep -f "x11vnc.*:9" >/dev/null 2>&1 || x11vnc -display :9 -listen 127.0.0.1 -forever -shared -nopw -quiet -rfbport 5909 >/dev/null 2>&1 &
     echo "acodex-gui: display :9 ativo (Xvfb 1280x800) e VNC na porta 5909"
-    command -v websockify >/dev/null 2>&1 && { websockify 8137 localhost:5909 >/dev/null 2>&1 & echo "noVNC: http://localhost:8137 (abra no navegador)"; } || echo "dica: websockify + noVNC para ver no navegador"
+    command -v websockify >/dev/null 2>&1 && { websockify 127.0.0.1:8137 localhost:5909 >/dev/null 2>&1 & echo "noVNC: http://localhost:8137 (abra no navegador)"; } || echo "dica: websockify + noVNC para ver no navegador"
     ;;
   run)
     [ -z "\${2:-}" ] && { echo "uso: acodex-gui run \"xclock\""; exit 1; }
