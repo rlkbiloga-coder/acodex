@@ -5,7 +5,16 @@ import {
 	createChatCompletion,
 	validateAiConfig,
 	clearResponseCache,
+	sanitizeSecrets,
+	AiRequestError,
 } from "lib/acodexAi/client";
+import {
+	getModelHealth,
+	setModelHealth,
+} from "lib/acodexAi/healthCheck";
+import {
+	getCachedResponse,
+} from "lib/acodexAi/responseCache";
 import { createToolRegistry, truncate } from "lib/acodexAi/tools";
 import { splitMarkdownCode } from "sidebarApps/aiChat/format";
 
@@ -83,16 +92,82 @@ describe("acodexAi client", () => {
 		expect(fetchImpl.mock.calls[0][1].headers.Authorization).toBe("Bearer key");
 	});
 
-	it("surfaces API error messages", async () => {
+	it("surfaces API error messages e sanitiza segredos em erros", async () => {
 		clearResponseCache(); // evita resposta da cache do teste anterior
 		const fetchImpl = async () => ({
 			ok: false,
 			status: 401,
-			json: async () => ({ error: { message: "bad key" } }),
+			json: async () => ({ error: { message: "Invalid key: nvapi-secretkey12345" } }),
 		});
-		await expect(
-			createChatCompletion({ config, messages: [], fetchImpl }),
-		).rejects.toThrow("bad key");
+		const promise = createChatCompletion({ config, messages: [], fetchImpl });
+		await expect(promise).rejects.toThrow("Invalid key: nvapi-[REDACTED]");
+	});
+
+	it("sanitizeSecrets oculta chaves e tokens em strings", () => {
+		expect(sanitizeSecrets("Bearer secret_token_123456789")).toBe("Bearer [REDACTED]");
+		expect(sanitizeSecrets("Key: nvapi-1234567890abcdef")).toBe("Key: nvapi-[REDACTED]");
+		expect(sanitizeSecrets("sk-1234567890abcdef")).toBe("sk-[REDACTED]");
+	});
+
+	it("processa SSE stream com buffer final sem duplo newline", async () => {
+		const encoder = new TextEncoder();
+		const chunks = [
+			'data: {"choices":[{"delta":{"content":"Hello"}}]}\n\n',
+			'data: {"choices":[{"delta":{"content":" world"}}]}', // sem \n\n no final
+		];
+		let chunkIdx = 0;
+		const stream = new ReadableStream({
+			pull(controller) {
+				if (chunkIdx < chunks.length) {
+					controller.enqueue(encoder.encode(chunks[chunkIdx++]));
+				} else {
+					controller.close();
+				}
+			},
+		});
+		const fetchImpl = async () => ({
+			ok: true,
+			body: stream,
+		});
+		let deltas = "";
+		const msg = await createChatCompletion({
+			config,
+			messages: [],
+			onDelta: (d) => (deltas += d),
+			fetchImpl,
+		});
+		expect(deltas).toBe("Hello world");
+		expect(msg.content).toBe("Hello world");
+	});
+});
+
+describe("acodexAi healthCheck e responseCache", () => {
+	it("setModelHealth ignora atualizações mais antigas (corrida de concorrência)", () => {
+		setModelHealth({ "m1": 100 }, 1000);
+		expect(getModelHealth("m1")).toBe(100);
+
+		// Atualização mais recente
+		setModelHealth({ "m1": 50 }, 2000);
+		expect(getModelHealth("m1")).toBe(50);
+
+		// Atualização atrasada/antiga deve ser ignorada
+		setModelHealth({ "m1": 500 }, 1500);
+		expect(getModelHealth("m1")).toBe(50);
+	});
+
+	it("getCachedResponse lida com JSON não-array corrompido no localStorage", () => {
+		const origGetItem = globalThis.localStorage?.getItem;
+		try {
+			if (!globalThis.localStorage) {
+				globalThis.localStorage = { getItem: () => "{}", setItem: () => {}, removeItem: () => {} };
+			} else {
+				vi.spyOn(globalThis.localStorage, "getItem").mockReturnValue("{}");
+			}
+			clearResponseCache();
+			expect(getCachedResponse(config, [{ role: "user", content: "x" }])).toBeNull();
+		} finally {
+			if (origGetItem) globalThis.localStorage.getItem = origGetItem;
+		}
 	});
 });
 

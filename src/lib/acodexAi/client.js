@@ -36,10 +36,19 @@ export const DEFAULT_AI_CONFIG = Object.freeze({
 import { BUILTIN_API_KEYS } from "./builtinCredentials";
 
 /**
- * Retorna a chave embutida no build para a URL base, se houver.
- * @param {string} baseUrl
- * @returns {string} chave ou ""
+ * Sanitiza segredos (chaves de API, Bearer tokens) de textos e mensagens de erro.
+ * @param {string} text
+ * @returns {string}
  */
+export function sanitizeSecrets(text) {
+	if (!text || typeof text !== "string") return text;
+	return text
+		.replace(/(Bearer\s+)[A-Za-z0-9_\-\.]{8,}/gi, "$1[REDACTED]")
+		.replace(/(nvapi-[A-Za-z0-9_\-]{8,})/gi, "nvapi-[REDACTED]")
+		.replace(/(sk-[A-Za-z0-9_\-]{8,})/gi, "sk-[REDACTED]")
+		.replace(/(gsk_[A-Za-z0-9_\-]{8,})/gi, "gsk_[REDACTED]");
+}
+
 const keyPoolState = { index: 0, failed: {} };
 
 /**
@@ -94,7 +103,7 @@ export class AiRequestError extends Error {
 	 * @param {number} [status]
 	 */
 	constructor(message, status) {
-		super(message);
+		super(sanitizeSecrets(message));
 		this.name = "AiRequestError";
 		this.status = status;
 	}
@@ -255,10 +264,8 @@ async function performChatCompletion({
 		} catch {
 			// Non-JSON error body; fall back to the status text.
 		}
-		throw new AiRequestError(
-			detail || response.statusText || `HTTP ${response.status}`,
-			response.status,
-		);
+		const rawMsg = detail || response.statusText || `HTTP ${response.status}`;
+		throw new AiRequestError(sanitizeSecrets(rawMsg), response.status);
 	}
 
 	if (!onDelta || !response.body?.getReader) {
@@ -341,6 +348,11 @@ async function readStream(stream, onDelta) {
 				for (const line of rawEvent.split("\n")) {
 					if (line.startsWith("data:")) handleEvent(line.slice(5).trim());
 				}
+			}
+		}
+		if (buffer.trim()) {
+			for (const line of buffer.split("\n")) {
+				if (line.startsWith("data:")) handleEvent(line.slice(5).trim());
 			}
 		}
 	} finally {
