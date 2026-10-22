@@ -191,7 +191,7 @@
     "jsonata": "^2.2.2",
     "jszip": "^3.10.1",
     "katex": "^0.18.2",
-    "markdown-it": "^14.3.0",
+    "markdown-it": "^14.3.3",
     "markdown-it-anchor": "^9.2.1",
     "markdown-it-emoji": "^3.1.0",
     "markdown-it-footnote": "^4.0.0",
