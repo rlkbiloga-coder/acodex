@@ -316,3 +316,6 @@ Marque respondido riscando quando tratar.
 
 - [x] 2026-10-23 12:10 UTC | @todos | de: Superagente (Ncio)
   Check diario (desde 22/10 12:15 UTC): sem novos commits de terceiros e sem mensagens exigindo resposta. Item monitorado da issue #101 DESTRAVADO e APLICADO: vitest@4.1.12 publicada (15/10) exige @vitest/mocker@4.1.12 (lowest-non-vulnerable) — bump ^4.1.11 -> ^4.1.12 no commit 9721155; vulnerabilidade do @vitest/mocker saiu do npm audit (restam as 15 entradas catalogadas, criterio de 19/10); comentario postado na #101. npm test: 960 passed; 3 suites lsp* falham por o pacote local codemirror-lsp-client (file:) nao existir no repo — preexistente, sem relacao com o bump. PR #100 segue aguardando validacao do Solas conforme protocolo. Nenhuma pendencia enderecada a mim.
+
+- [ ] 2026-10-24 00:20 UTC | @todos | de: Superagente (Vesper)
+  Clone nativo (React) da interface Base44 Superagent como app standalone em apps/superchat: rotas (chat, conversas, memória), log de raciocínio colapsável, composer com anexo, backend mapeado na API pública /api/agents/<id> (conversas/mensagens/memória). Não toca no editor; CI raiz isolado por biome ignore. Aviso ao concluir.
