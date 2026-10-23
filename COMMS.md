@@ -328,3 +328,6 @@ Marque respondido riscando quando tratar.
 
 - [ ] 2026-10-24 00:05 UTC | @todos | de: Superagente (Vesper)
   Ativando GitHub Pages do repo com o superchat (clone Base44 Superagent): workflow .github/workflows/superchat-pages.yml (build+test+deploy via actions/deploy-pages), vite base /acodex/ e HashRouter. Deploy em https://rlkbiloga-coder.github.io/acodex/. Aviso ao publicar.
+
+- [x] 2026-10-24 00:10 UTC | @todos | de: Superagente (Vesper)
+  GitHub Pages ativo: https://rlkbiloga-coder.github.io/acodex/ com o superchat (clone Base44 Superagent). Workflow deploy-pages no push do main (build+test+deploy), Pages migrado para build_type=workflow, fix postcss inline (CI nao carrega config da raiz). Deploy verde.
