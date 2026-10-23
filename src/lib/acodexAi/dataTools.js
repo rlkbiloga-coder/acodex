@@ -46,6 +46,7 @@ export function detectFormat(data) {
 
 /** Converte valores de célula que parecem números (soma/filtro do JSONata). */
 function coerceRow(row) {
+	if (!row || typeof row !== "object") return row;
 	const out = {};
 	for (const [key, value] of Object.entries(row)) {
 		if (
@@ -85,7 +86,9 @@ export function extractRows(data, format = "auto") {
 			`Falha ao extrair: ${parsed.errors[0].message} (linha ${parsed.errors[0].row}).`,
 		);
 	}
-	return parsed.data.filter((row) => Object.keys(row).length).map(coerceRow);
+	return parsed.data
+		.filter((row) => row && typeof row === "object" && Object.keys(row).length)
+		.map(coerceRow);
 }
 
 /**
@@ -105,15 +108,15 @@ export async function transform(input, expression) {
  */
 export function serialize(rows, to = "json") {
 	if (to === "csv") {
-		const list = Array.isArray(rows) ? rows : [rows];
+		const list = Array.isArray(rows) ? rows : [rows ?? {}];
 		return papaparse.unparse(list);
 	}
-	return JSON.stringify(rows, null, 2);
+	return JSON.stringify(rows ?? null, null, 2);
 }
 
 /** Abrevia resultado para caber no contexto do modelo. */
 function limit(text) {
-	const str = String(text);
+	const str = String(text ?? "");
 	return str.length > MAX_RESULT_CHARS
 		? `${str.slice(0, MAX_RESULT_CHARS)}\n…(truncado)`
 		: str;
@@ -128,17 +131,27 @@ export async function runSql({ sql, data, format }) {
 		if (data && String(data).trim()) {
 			const rows = extractRows(data, format);
 			if (rows.length) {
-				const columns = [...new Set(rows.flatMap((r) => Object.keys(r)))];
-				db.run(
-					`CREATE TABLE input (${columns
-						.map((c) => `"${c.replace(/"/g, '""')}"`)
-						.join(", ")});`,
-				);
-				for (const row of rows) {
+				const columns = [
+					...new Set(
+						rows.flatMap((r) =>
+							r && typeof r === "object" ? Object.keys(r) : [],
+						),
+					),
+				];
+				if (columns.length) {
 					db.run(
-						`INSERT INTO input VALUES (${columns.map(() => "?").join(", ")});`,
-						columns.map((c) => row[c] ?? null),
+						`CREATE TABLE input (${columns
+							.map((c) => `"${c.replace(/"/g, '""')}"`)
+							.join(", ")});`,
 					);
+					for (const row of rows) {
+						if (row && typeof row === "object") {
+							db.run(
+								`INSERT INTO input VALUES (${columns.map(() => "?").join(", ")});`,
+								columns.map((c) => row[c] ?? null),
+							);
+						}
+					}
 				}
 			}
 		}
@@ -171,7 +184,7 @@ export function lintYaml(content) {
 	} catch (error) {
 		return {
 			ok: false,
-			message: error.reason ?? String(error.message),
+			message: error.reason ?? String(error.message ?? error),
 			line: error.mark?.line != null ? error.mark.line + 1 : undefined,
 		};
 	}
@@ -307,9 +320,10 @@ export function registerDataTools(registry, deps) {
 					threshold: 0.4,
 				},
 			);
+			const max = args.limit != null ? Math.max(0, Number(args.limit)) : 10;
 			const hits = fuse
 				.search(String(args.query ?? ""))
-				.slice(0, Number(args.limit) || 10)
+				.slice(0, max)
 				.map((hit) => hit.item.name);
 			return { matches: hits };
 		},

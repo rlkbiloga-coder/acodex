@@ -134,4 +134,9 @@ describe("createMcpClient (SDK oficial)", () => {
 		await client.initialize();
 		expect(await client.callTool("bad", {})).toEqual({ error: "falhou" });
 	});
+
+	it("fecha cliente sem lançar unhandled rejection mesmo se não inicializado", async () => {
+		const client = createMcpClient({ url: "https://srv/mcp" });
+		await expect(client.close()).resolves.toBeUndefined();
+	});
 });

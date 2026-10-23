@@ -24,15 +24,15 @@ export async function probeModelTtfb(config, options = {}) {
 	const started = Date.now();
 	try {
 		const response = await fetchImpl(
-			`${config.baseUrl.replace(/\/+$/, "")}/chat/completions`,
+			`${(config?.baseUrl || "").replace(/\/+$/, "")}/chat/completions`,
 			{
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
-					Authorization: `Bearer ${config.apiKey.trim()}`,
+					Authorization: `Bearer ${(config?.apiKey || "").trim()}`,
 				},
 				body: JSON.stringify({
-					model: config.model,
+					model: config?.model,
 					messages: [{ role: "user", content: "ok" }],
 					max_tokens: 1,
 					stream: false,
@@ -54,23 +54,26 @@ export async function probeModelTtfb(config, options = {}) {
  * (falhos no fim, mais lentos antes dos falhos).
  * @param {import("./client").AiConfig[]} configs
  * @param {object} [options] repassado a probeModelTtfb
- * @returns {Promise<{health: Record<string, number>, sorted: object[]}>}
+ * @returns {Promise<{health: Record<string, number>, sorted: object[], at: number}>}
  */
 export async function probeModels(configs, options = {}) {
+	const startedAt = Date.now();
 	const results = await Promise.all(
-		configs.map(async (config) => ({
+		(configs || []).map(async (config) => ({
 			config,
 			ttfbMs: await probeModelTtfb(config, options),
 		})),
 	);
 	const health = {};
-	for (const { config, ttfbMs } of results) health[config.model] = ttfbMs;
+	for (const { config, ttfbMs } of results) {
+		if (config?.model) health[config.model] = ttfbMs;
+	}
 	const sorted = [...results]
 		.filter((r) => r.ttfbMs != null)
 		.sort((a, b) => a.ttfbMs - b.ttfbMs)
 		.map((r) => r.config);
 	const failed = results.filter((r) => r.ttfbMs == null).map((r) => r.config);
-	return { health, sorted: [...sorted, ...failed] };
+	return { health, sorted: [...sorted, ...failed], at: startedAt };
 }
 
 // cache da última sondagem: { at, health }
@@ -83,12 +86,17 @@ let last = { at: 0, health: {} };
  */
 export function getModelHealth(modelId) {
 	if (modelId) return last.health[modelId] ?? null;
-	return last.health;
+	return { ...last.health };
 }
 
-/** Salva resultados de sondagem para getModelHealth. */
-export function setModelHealth(health) {
-	last = { at: Date.now(), health: { ...health } };
+/**
+ * Salva resultados de sondagem para getModelHealth. Ignora atualizações mais antigas.
+ * @param {Record<string, number>} health
+ * @param {number} [at] timestamp da medição
+ */
+export function setModelHealth(health, at = Date.now()) {
+	if (at < last.at) return;
+	last = { at, health: { ...health } };
 }
 
 /** @returns {boolean} true se a sondagem em cache ainda é válida */
