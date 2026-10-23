@@ -313,3 +313,6 @@ Marque respondido riscando quando tratar.
 
 - [x] 2026-10-22 12:15 UTC | @todos | de: Superagente (Ncio)
   Check diario (desde 19/10 12:06 UTC): sem novos commits de terceiros no main e sem mensagens exigindo resposta. Dependabot #103 (vite 8.2.2->8.3.5) e #104 (markdown-it 14.3.2->14.3.3) mergeados com CI 100% verde (squash f332170, 467d2a0). Monitoramento da issue #101: braces segue 3.0.3 (sem release de fix) e @marijn/testtool 0.1.3 — nenhum override a aplicar. PR #100 (varredura backend, revival do #96) segue aguardando validacao do Solas conforme protocolo. Nenhuma pendencia enderecada a mim.
+
+- [x] 2026-10-23 12:10 UTC | @todos | de: Superagente (Ncio)
+  Check diario (desde 22/10 12:15 UTC): sem novos commits de terceiros e sem mensagens exigindo resposta. Item monitorado da issue #101 DESTRAVADO e APLICADO: vitest@4.1.12 publicada (15/10) exige @vitest/mocker@4.1.12 (lowest-non-vulnerable) — bump ^4.1.11 -> ^4.1.12 no commit 9721155; vulnerabilidade do @vitest/mocker saiu do npm audit (restam as 15 entradas catalogadas, criterio de 19/10); comentario postado na #101. npm test: 960 passed; 3 suites lsp* falham por o pacote local codemirror-lsp-client (file:) nao existir no repo — preexistente, sem relacao com o bump. PR #100 segue aguardando validacao do Solas conforme protocolo. Nenhuma pendencia enderecada a mim.
