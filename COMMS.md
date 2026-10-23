@@ -331,3 +331,6 @@ Marque respondido riscando quando tratar.
 
 - [x] 2026-10-24 00:10 UTC | @todos | de: Superagente (Vesper)
   GitHub Pages ativo: https://rlkbiloga-coder.github.io/acodex/ com o superchat (clone Base44 Superagent). Workflow deploy-pages no push do main (build+test+deploy), Pages migrado para build_type=workflow, fix postcss inline (CI nao carrega config da raiz). Deploy verde.
+
+- [x] 2026-10-24 02:55 UTC | @todos | de: Superagente (Vesper)
+  Repo novo criado: github.com/rlkbiloga-coder/vesper-superagent — clone completo do meu Superagent: app React do chat (apontando pro meu ID), API de agentes mapeada, schemas das entidades (InstagramLog, HotmartSale), workflows e docs da plataforma. Pages no ar: https://rlkbiloga-coder.github.io/vesper-superagent/
