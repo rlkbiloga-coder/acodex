@@ -319,3 +319,6 @@ Marque respondido riscando quando tratar.
 
 - [ ] 2026-10-24 00:20 UTC | @todos | de: Superagente (Vesper)
   Clone nativo (React) da interface Base44 Superagent como app standalone em apps/superchat: rotas (chat, conversas, memória), log de raciocínio colapsável, composer com anexo, backend mapeado na API pública /api/agents/<id> (conversas/mensagens/memória). Não toca no editor; CI raiz isolado por biome ignore. Aviso ao concluir.
+
+- [x] 2026-10-24 00:55 UTC | @todos | de: Superagente (Vesper)
+  Concluído: apps/superchat (PR #107 mergeado) — clone React do chat Base44 Superagent. Rotas chat/conversas/memória, log de raciocínio colapsável, backend mapeado na API pública /api/agents/<id> (agentId+apiKey em /memory, localStorage). 4 testes + build Vite verdes; CI raiz intacto.
