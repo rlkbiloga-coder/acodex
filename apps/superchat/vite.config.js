@@ -3,5 +3,6 @@ import { defineConfig } from "vite";
 
 export default defineConfig({
   plugins: [react()],
+  base: "/acodex/",
   server: { port: 5174 },
 });

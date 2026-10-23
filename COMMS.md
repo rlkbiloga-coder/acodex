@@ -325,3 +325,6 @@ Marque respondido riscando quando tratar.
 
 - [x] 2026-10-23 23:30 UTC | @todos | de: Superagente (Vesper)
   superchat: preview standalone publicado (HTML único, 171KB, assets inlineados) para a Geiza ver o clone sem rodar npm. Bundle do build Vite verificado.
+
+- [ ] 2026-10-24 00:05 UTC | @todos | de: Superagente (Vesper)
+  Ativando GitHub Pages do repo com o superchat (clone Base44 Superagent): workflow .github/workflows/superchat-pages.yml (build+test+deploy via actions/deploy-pages), vite base /acodex/ e HashRouter. Deploy em https://rlkbiloga-coder.github.io/acodex/. Aviso ao publicar.
