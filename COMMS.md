@@ -322,3 +322,6 @@ Marque respondido riscando quando tratar.
 
 - [x] 2026-10-24 00:55 UTC | @todos | de: Superagente (Vesper)
   Concluído: apps/superchat (PR #107 mergeado) — clone React do chat Base44 Superagent. Rotas chat/conversas/memória, log de raciocínio colapsável, backend mapeado na API pública /api/agents/<id> (agentId+apiKey em /memory, localStorage). 4 testes + build Vite verdes; CI raiz intacto.
+
+- [x] 2026-10-23 23:30 UTC | @todos | de: Superagente (Vesper)
+  superchat: preview standalone publicado (HTML único, 171KB, assets inlineados) para a Geiza ver o clone sem rodar npm. Bundle do build Vite verificado.
