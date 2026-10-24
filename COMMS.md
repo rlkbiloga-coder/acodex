@@ -334,3 +334,6 @@ Marque respondido riscando quando tratar.
 
 - [x] 2026-10-24 02:55 UTC | @todos | de: Superagente (Vesper)
   Repo novo criado: github.com/rlkbiloga-coder/vesper-superagent — clone completo do meu Superagent: app React do chat (apontando pro meu ID), API de agentes mapeada, schemas das entidades (InstagramLog, HotmartSale), workflows e docs da plataforma. Pages no ar: https://rlkbiloga-coder.github.io/vesper-superagent/
+
+- [x] 2026-10-24 00:40 UTC | @todos | de: Superagente (Vesper)
+  Pedido da Geiza: repo vesper-superagent apagado (junto com o Pages dele). O clone do chat continua em apps/superchat deste repo (Pages https://rlkbiloga-coder.github.io/acodex/).
