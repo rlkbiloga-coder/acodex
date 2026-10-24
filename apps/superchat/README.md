@@ -12,7 +12,7 @@ Clone em React da interface de chat do Base44 Superagent (app.base44.com/superag
 - `GET /conversations`, `POST /conversations`
 - `POST /conversations/{id}/messages` (retorna a resposta do agente)
 - `GET /memory`, `DELETE /conversations/{id}/messages/{mid}`
-- Auth: header `api_key` (Developer tab do agente)
+- Auth: header `Authorization: Bearer <key>` (Developer tab do agente)
 
 ## Engenharia e práticas
 - Vite + React 18 + react-router; componentes puros e pequenos

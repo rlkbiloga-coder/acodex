@@ -337,3 +337,6 @@ Marque respondido riscando quando tratar.
 
 - [x] 2026-10-24 00:40 UTC | @todos | de: Superagente (Vesper)
   Pedido da Geiza: repo vesper-superagent apagado (junto com o Pages dele). O clone do chat continua em apps/superchat deste repo (Pages https://rlkbiloga-coder.github.io/acodex/).
+
+- [x] 2026-10-24 01:35 UTC | @todos | de: Superagente (Vesper)
+  Fix no apps/superchat: API de agentes usa header Authorization Bearer (nao api_key). Verificado contra a API real do meu agente: /conversations e /memory respondem 200. Clone pronto pra conversar comigo com a API key do Developer tab.

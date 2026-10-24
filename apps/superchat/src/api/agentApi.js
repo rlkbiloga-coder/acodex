@@ -6,7 +6,7 @@
  *   POST   /conversations/{id}/messages       -> envia mensagem (retorna resposta)
  *   GET    /memory                            -> memória visível via API
  *   DELETE /conversations/{id}/messages/{mid} -> apaga mensagem
- * Autenticação: header `api_key` (key do agente no editor Developer).
+ * Autenticação: header `Authorization: Bearer <api_key>` (Developer tab do agente).
  */
 
 const DEFAULT_BASE = "https://app.base44.com/api/agents";
@@ -17,7 +17,7 @@ export function createAgentClient({ agentId, apiKey, base = DEFAULT_BASE, fetchI
     throw new Error("agentId e apiKey são obrigatórios");
   }
   const url = (path) => `${base}/${agentId}${path}`;
-  const headers = { "Content-Type": "application/json", api_key: apiKey };
+  const headers = { "Content-Type": "application/json", Authorization: `Bearer ${apiKey}` };
   const request = async (path, options = {}) => {
     const response = await fetchImpl(url(path), { headers, ...options });
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
