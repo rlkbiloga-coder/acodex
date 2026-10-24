@@ -180,7 +180,7 @@
     "cordova": "13.0.0",
     "core-js": "^3.50.0",
     "dayjs": "^1.11.23",
-    "dompurify": "^3.4.14",
+    "dompurify": "^3.4.17",
     "escape-string-regexp": "^5.0.0",
     "esprima": "^4.0.1",
     "filesize": "^11.0.22",
