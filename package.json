@@ -107,7 +107,7 @@
     "cordova-plugin-websocket": "file:src/plugins/websocket",
     "css-loader": "^7.1.4",
     "elementtree": "^0.1.7",
-    "happy-dom": "^20.11.6",
+    "happy-dom": "^21.0.4",
     "mini-css-extract-plugin": "^2.10.2",
     "path-browserify": "^1.0.1",
     "postcss-loader": "^8.2.1",
