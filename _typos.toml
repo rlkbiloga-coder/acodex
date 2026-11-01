@@ -197,6 +197,9 @@ programas = "programas"
 Programas = "Programas"
 saem = "saem"
 
+# portugues usado no COMMS.md (check diario)
+dependencias = "dependencias"
+
 # portugues (superchat clone)
 componente = "componente"
 
