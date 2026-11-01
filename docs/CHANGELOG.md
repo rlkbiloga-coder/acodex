@@ -5,14 +5,11 @@
 * **Issue #81**: Respondido com o ID do Superagente (Geiza: `6ab67c8cce89ca33ff6ee7b9`), registrando o escopo do agente (frontend do Acodex e monitoria técnica) sem exposição de chaves.
 * **PR #79 (Navegador remoto)**: Fechado e descartado pela equipe nesse formato devido a falhas nos checks do Vercel/CodeQL e por tocar em áreas restritas do backend sem aprovação.
 * **Vulnerabilidades de dependências (Issue #101)**: 14 vulnerabilidades de nível high apontadas pelo `npm audit` foram analisadas. Identificado que todas residem em ferramentas de dev/build (cadeias Cordova e CodeMirror) e não possuem correção não-destrutiva sem quebrar o build do app. Decisão documentada no issue #101 com plano de monitoramento de releases.
-* **Polimento visual (PR #99 / #94)**: PR #99 (`fix(ui): polimento visual com design tokens`, revival do #94) mesclado com sucesso, trazendo 91 padronizações visuais (design tokens, contraste, elevação e bordas) em 15 arquivos CSS/SCSS.
-* **Varredura de bugs do frontend (PR #102)**: PR #102 (`fix(ui): varredura de bugs do frontend`) mesclado na main, corrigindo 7 bugs (remoção de event listeners em menus/painéis, prevenção de TypeError em setters, eliminação de unhandled rejections em IAP e remoção de console.log).
+* **Polimento visual (PR #99 / #94)**: PR #99 (`fix(ui): polimento visual com design tokens`, revival do #94, SHA `03d435a8`) mesclado com sucesso, trazendo 91 padronizações visuais (design tokens, contraste, elevação e bordas) em 15 arquivos CSS/SCSS.
+* **Varredura de bugs do frontend (PR #102)**: PR #102 (`fix(ui): varredura de bugs do frontend`, SHA `0d7be1dc`) mesclado na main, corrigindo 7 bugs (remoção de event listeners em menus/painéis, prevenção de TypeError em setters, eliminação de unhandled rejections em IAP e remoção de console.log).
 * **Varredura de bugs do backend (PR #100)**: PR #100 (`fix(ai): varredura de bugs do backend`, revival do #96) aberto com 7 correções de backend e testes unitários verdes (leak de listeners, sanitização de segredos, unhandled rejections no MCP e race conditions no healthCheck), aguardando validação do Solas por afetar a área de backend.
 * **Dependabot PRs #70, #71 e #72**: Mesclados com sucesso (`actions/checkout` v7, `actions/cache` v6 e `devcontainers/node` v2.1.1).
 * **Features parceiras (#86–#91)**: PRs #86, #87, #88, #89, #90 e #91 (branding, AcodeX PC, Zen, Conexões e Cosmos) integrados e mesclados via PR #97.
-
-
-# Change Log
 
 ## v1.13.5
 
