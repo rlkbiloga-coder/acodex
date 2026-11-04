@@ -86,6 +86,15 @@ describe("runSql (sql.js)", () => {
 			{ nome: "Pedro", total: 13 },
 		]);
 	});
+
+	it("manipula dados sem colunas sem lançar erro de sintaxe SQL", async () => {
+		const out = await runSql({
+			sql: "SELECT 123 AS v",
+			data: "[{}, {}]",
+			format: "json",
+		});
+		expect(out[0].rows).toEqual([{ v: 123 }]);
+	});
 });
 
 describe("lintYaml", () => {
@@ -118,6 +127,14 @@ describe("registry", () => {
 		expect(out.format).toBe("csv");
 		expect(out.rows).toBe(1);
 		expect(out.content).toContain("A");
+	});
+
+	it("etl_pipeline lida com resultado de transformação undefined sem quebrar", async () => {
+		const out = await registry.execute(
+			"etl_pipeline",
+			'{"data":"[1, 2, 3]","transform":"$[idade > 99]"}',
+		);
+		expect(out.content).toBe("null");
 	});
 
 	it("etl_pipeline salva com aprovacao do usuario", async () => {
@@ -155,6 +172,14 @@ describe("registry", () => {
 			'{"query":"termnal"}',
 		);
 		expect(out.matches[0]).toBe("abrir-terminal");
+	});
+
+	it("fuzzy_search_commands respeita limite 0 sem padronizar para 10", async () => {
+		const out = await registry.execute(
+			"fuzzy_search_commands",
+			'{"query":"termnal","limit":0}',
+		);
+		expect(out.matches).toEqual([]);
 	});
 
 	it("yaml_lint usa o arquivo ativo", async () => {
