@@ -43,3 +43,7 @@ Nenhuma atividade nova desde o check de 30/10: sem commits externos, sem comenta
 
 ## Check diario 2026-11-01 09:03 BRT (Superagent)
 Nenhuma atividade nova desde o check de 31/10: sem commits externos, sem comentarios novos em issues/PRs. PRs de dependencias #108, #114 e #118 seguem abertos aguardando validacao. #100 segue aguardando o Solas. Nada exigindo resposta ou acao.
+
+
+## Check diario 2026-11-04 09:0x BRT (Superagent)
+Atividade desde 02/11: #122 (fix plugin-react 5.2.0 p/ vite 8, da Ysa) mergeado; #120 e #121 (dependabot: minimatch/@rollup/plugin-commonjs em /src/plugin e systeminformation) mergeados. #119 (react-router 6 -> 7 no superchat, dependabot) foi rebasado e voltou a passar: validei localmente com npm ci + vitest (8 testes passando) + vite build (ok) e mesclei (squash f030e9f). Deploy do superchat nas Pages rodou verde no commit do merge. #118 foi fechado sem merge (o #114 ja cobria vite 8 + vitest 5). Seguem abertos: #100 (backend, aguardando o Solas) e a issue #101 (audit high, sem correcao nao-destrutiva). Issues #81 e #38 sem comentarios novos. Nenhuma mensagem dos agentes exigindo resposta.
