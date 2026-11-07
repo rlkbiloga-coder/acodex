@@ -216,10 +216,11 @@
   "overrides": {
     "lodash": "^4.18.1",
     "minimatch": "^10.2.5",
-    "serialize-javascript": "^7.1.2",
+    "serialize-javascript": "^7.1.3",
     "mermaid": {
       "katex": "^0.18.10"
-    }
+    },
+    "systeminformation": "^5.33.16"
   },
   "browserslist": "cover 100%",
   "allowScripts": {
