@@ -91,6 +91,8 @@ export function createMcpClient(options) {
 		async close() {
 			try {
 				await client.close();
+			} catch {
+				// ignora erro ao fechar cliente não inicializado ou com transporte encerrado
 			} finally {
 				initialized = false;
 			}
